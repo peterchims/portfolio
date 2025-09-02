@@ -36,14 +36,14 @@ const AboutSection: React.FC = () => {
           {/* Left Column - Content */}
           <div className="space-y-8">
             <div className="space-y-4">
-              {/* <CustomText
+              <CustomText
                 variant="overline"
                 font="roboto"
                 weight="semibold"
                 color="accent"
               >
                 About Me
-              </CustomText> */}
+              </CustomText>
 
               <CustomText
                 variant="h2"
