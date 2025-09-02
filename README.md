@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Professional Portfolio Website
 
 A stunning, fully responsive portfolio website built with React, TypeScript, and Tailwind CSS. Features beautiful animations, professional design, and Docker containerization for easy deployment.
@@ -134,3 +135,7 @@ Access your portfolio at `http://localhost:3000`
 - Production-ready optimization
 
 Perfect for developers looking to make a strong impression with potential employers or clients!
+=======
+# portfolio
+Personal portfolio showcasing my projects, skills, and professional experience in web development, and technical solutions.
+>>>>>>> 81a76254315bc2b72f130d759973c741dc7fa221
