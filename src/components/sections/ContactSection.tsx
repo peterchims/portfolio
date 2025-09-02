@@ -1,14 +1,14 @@
-import React, { useState } from "react";
-import { Mail, Phone, MapPin, Send, CheckCircle } from "lucide-react";
-import CustomText from "../ui/CustomText";
-import CustomButton from "../ui/CustomButton";
+import React, { useState } from 'react';
+import { Mail, Phone, MapPin, Send, CheckCircle } from 'lucide-react';
+import CustomText from '../ui/CustomText';
+import CustomButton from '../ui/CustomButton';
 
 const ContactSection: React.FC = () => {
   const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    subject: "",
-    message: "",
+    name: '',
+    email: '',
+    subject: '',
+    message: '',
   });
   const [isSubmitted, setIsSubmitted] = useState(false);
 
@@ -17,13 +17,13 @@ const ContactSection: React.FC = () => {
     // Simulate form submission
     setIsSubmitted(true);
     setTimeout(() => setIsSubmitted(false), 3000);
-    setFormData({ name: "", email: "", subject: "", message: "" });
+    setFormData({ name: '', email: '', subject: '', message: '' });
   };
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    setFormData((prev) => ({
+    setFormData(prev => ({
       ...prev,
       [e.target.name]: e.target.value,
     }));
@@ -32,21 +32,21 @@ const ContactSection: React.FC = () => {
   const contactInfo = [
     {
       icon: Mail,
-      title: "Email",
-      value: "hello@yourname.com",
-      href: "mailto:hello@yourname.com",
+      title: 'Email',
+      value: 'hello@yourname.com',
+      href: 'mailto:hello@yourname.com',
     },
     {
       icon: Phone,
-      title: "Phone",
-      value: "+1 (555) 123-4567",
-      href: "tel:+15551234567",
+      title: 'Phone',
+      value: '+1 (555) 123-4567',
+      href: 'tel:+15551234567',
     },
     {
       icon: MapPin,
-      title: "Location",
-      value: "Your City, Country",
-      href: "#",
+      title: 'Location',
+      value: 'Your City, Country',
+      href: '#',
     },
   ];
 
@@ -107,7 +107,7 @@ const ContactSection: React.FC = () => {
               </CustomText>
 
               <div className="space-y-4">
-                {contactInfo.map((info) => (
+                {contactInfo.map(info => (
                   <a
                     key={info.title}
                     href={info.href}
@@ -242,7 +242,7 @@ const ContactSection: React.FC = () => {
                 className="w-full"
                 disabled={isSubmitted}
               >
-                {isSubmitted ? "Message Sent!" : "Send Message"}
+                {isSubmitted ? 'Message Sent!' : 'Send Message'}
               </CustomButton>
             </form>
           </div>

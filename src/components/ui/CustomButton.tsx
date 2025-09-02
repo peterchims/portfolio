@@ -1,28 +1,28 @@
-import React from "react";
-import { DivideIcon as LucideIcon } from "lucide-react";
+import React from 'react';
+import { DivideIcon as LucideIcon } from 'lucide-react';
 
 interface CustomButtonProps {
   children: React.ReactNode;
-  variant?: "primary" | "secondary" | "outline" | "ghost";
-  size?: "sm" | "md" | "lg";
+  variant?: 'primary' | 'secondary' | 'outline' | 'ghost';
+  size?: 'sm' | 'md' | 'lg';
   icon?: LucideIcon;
-  iconPosition?: "left" | "right";
+  iconPosition?: 'left' | 'right';
   className?: string;
   onClick?: () => void;
   disabled?: boolean;
-  type?: "button" | "submit" | "reset";
+  type?: 'button' | 'submit' | 'reset';
 }
 
 const CustomButton: React.FC<CustomButtonProps> = ({
   children,
-  variant = "primary",
-  size = "md",
+  variant = 'primary',
+  size = 'md',
   icon: Icon,
-  iconPosition = "left",
-  className = "",
+  iconPosition = 'left',
+  className = '',
   onClick,
   disabled = false,
-  type = "button",
+  type = 'button',
 }) => {
   const baseClasses = `
     inline-flex items-center justify-center gap-2 font-medium rounded-lg
@@ -57,15 +57,15 @@ const CustomButton: React.FC<CustomButtonProps> = ({
   };
 
   const sizeClasses = {
-    sm: "px-3 py-2 text-sm",
-    md: "px-6 py-3 text-base",
-    lg: "px-8 py-4 text-lg",
+    sm: 'px-3 py-2 text-sm',
+    md: 'px-6 py-3 text-base',
+    lg: 'px-8 py-4 text-lg',
   };
 
   const iconSizeClasses = {
-    sm: "w-4 h-4",
-    md: "w-5 h-5",
-    lg: "w-6 h-6",
+    sm: 'w-4 h-4',
+    md: 'w-5 h-5',
+    lg: 'w-6 h-6',
   };
 
   return (
@@ -80,11 +80,11 @@ const CustomButton: React.FC<CustomButtonProps> = ({
         ${className}
       `}
     >
-      {Icon && iconPosition === "left" && (
+      {Icon && iconPosition === 'left' && (
         <Icon className={iconSizeClasses[size]} />
       )}
       <span className="relative z-10">{children}</span>
-      {Icon && iconPosition === "right" && (
+      {Icon && iconPosition === 'right' && (
         <Icon className={iconSizeClasses[size]} />
       )}
     </button>

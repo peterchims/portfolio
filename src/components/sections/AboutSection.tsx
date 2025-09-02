@@ -1,31 +1,31 @@
-import React from "react";
-import { User, Award, Target, Heart } from "lucide-react";
-import CustomText from "../ui/CustomText";
+import React from 'react';
+import { User, Award, Target, Heart } from 'lucide-react';
+import CustomText from '../ui/CustomText';
 
 const AboutSection: React.FC = () => {
   const highlights = [
     {
       icon: User,
-      title: "Professional",
+      title: 'Professional',
       description:
-        "Dedicated to delivering high-quality solutions with attention to detail.",
+        'Dedicated to delivering high-quality solutions with attention to detail.',
     },
     {
       icon: Award,
-      title: "Experienced",
-      description: "Proven track record in building scalable web applications.",
+      title: 'Experienced',
+      description: 'Proven track record in building scalable web applications.',
     },
     {
       icon: Target,
-      title: "Goal-Oriented",
+      title: 'Goal-Oriented',
       description:
-        "Focused on achieving project objectives and exceeding expectations.",
+        'Focused on achieving project objectives and exceeding expectations.',
     },
     {
       icon: Heart,
-      title: "Passionate",
+      title: 'Passionate',
       description:
-        "Love for clean code, innovative solutions, and continuous learning.",
+        'Love for clean code, innovative solutions, and continuous learning.',
     },
   ];
 

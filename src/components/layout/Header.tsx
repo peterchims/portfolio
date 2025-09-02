@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
-import { Menu, X, Github, Linkedin, Mail } from "lucide-react";
-import CustomButton from "../ui/CustomButton";
-import CustomText from "../ui/CustomText";
+import React, { useState, useEffect } from 'react';
+import { Menu, X, Github, Linkedin, Mail } from 'lucide-react';
+import CustomButton from '../ui/CustomButton';
+import CustomText from '../ui/CustomText';
 
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -12,22 +12,22 @@ const Header: React.FC = () => {
       setIsScrolled(window.scrollY > 50);
     };
 
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   const navigation = [
-    { name: "Home", href: "#home" },
-    { name: "About", href: "#about" },
-    { name: "Skills", href: "#skills" },
-    { name: "Projects", href: "#projects" },
-    { name: "Contact", href: "#contact" },
+    { name: 'Home', href: '#home' },
+    { name: 'About', href: '#about' },
+    { name: 'Skills', href: '#skills' },
+    { name: 'Projects', href: '#projects' },
+    { name: 'Contact', href: '#contact' },
   ];
 
   const socialLinks = [
-    { icon: Github, href: "#", label: "GitHub" },
-    { icon: Linkedin, href: "#", label: "LinkedIn" },
-    { icon: Mail, href: "#contact", label: "Email" },
+    { icon: Github, href: '#', label: 'GitHub' },
+    { icon: Linkedin, href: '#', label: 'LinkedIn' },
+    { icon: Mail, href: '#contact', label: 'Email' },
   ];
 
   return (
@@ -36,8 +36,8 @@ const Header: React.FC = () => {
         fixed top-0 left-0 right-0 z-50 transition-all duration-300
         ${
           isScrolled
-            ? "bg-white/90 backdrop-blur-lg shadow-lg border-b border-gray-200/20"
-            : "bg-transparent"
+            ? 'bg-white/90 backdrop-blur-lg shadow-lg border-b border-gray-200/20'
+            : 'bg-transparent'
         }
       `}
     >
@@ -58,7 +58,7 @@ const Header: React.FC = () => {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
-            {navigation.map((item) => (
+            {navigation.map(item => (
               <a
                 key={item.name}
                 href={item.href}
@@ -75,7 +75,7 @@ const Header: React.FC = () => {
           {/* Social Links & CTA */}
           <div className="hidden md:flex items-center space-x-4">
             <div className="flex items-center space-x-3">
-              {socialLinks.map((social) => (
+              {socialLinks.map(social => (
                 <a
                   key={social.label}
                   href={social.href}
@@ -109,7 +109,7 @@ const Header: React.FC = () => {
         {isMenuOpen && (
           <div className="md:hidden absolute top-full left-0 right-0 bg-white/95 backdrop-blur-lg border-t border-gray-200/20 shadow-lg">
             <nav className="p-4 space-y-4">
-              {navigation.map((item) => (
+              {navigation.map(item => (
                 <a
                   key={item.name}
                   href={item.href}
@@ -124,7 +124,7 @@ const Header: React.FC = () => {
               <div className="pt-4 border-t border-gray-200">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-4">
-                    {socialLinks.map((social) => (
+                    {socialLinks.map(social => (
                       <a
                         key={social.label}
                         href={social.href}

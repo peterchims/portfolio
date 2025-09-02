@@ -1,21 +1,21 @@
-import React from "react";
-import { Github, Linkedin, Twitter, Mail, Heart } from "lucide-react";
-import CustomText from "../ui/CustomText";
+import React from 'react';
+import { Github, Linkedin, Twitter, Mail, Heart } from 'lucide-react';
+import CustomText from '../ui/CustomText';
 
 const Footer: React.FC = () => {
   const socialLinks = [
-    { icon: Github, href: "#", label: "GitHub" },
-    { icon: Linkedin, href: "#", label: "LinkedIn" },
-    { icon: Twitter, href: "#", label: "Twitter" },
-    { icon: Mail, href: "#contact", label: "Email" },
+    { icon: Github, href: '#', label: 'GitHub' },
+    { icon: Linkedin, href: '#', label: 'LinkedIn' },
+    { icon: Twitter, href: '#', label: 'Twitter' },
+    { icon: Mail, href: '#contact', label: 'Email' },
   ];
 
   const quickLinks = [
-    { name: "Home", href: "#home" },
-    { name: "About", href: "#about" },
-    { name: "Skills", href: "#skills" },
-    { name: "Projects", href: "#projects" },
-    { name: "Contact", href: "#contact" },
+    { name: 'Home', href: '#home' },
+    { name: 'About', href: '#about' },
+    { name: 'Skills', href: '#skills' },
+    { name: 'Projects', href: '#projects' },
+    { name: 'Contact', href: '#contact' },
   ];
 
   return (
@@ -38,7 +38,7 @@ const Footer: React.FC = () => {
               technology.
             </CustomText>
             <div className="flex space-x-4">
-              {socialLinks.map((social) => (
+              {socialLinks.map(social => (
                 <a
                   key={social.label}
                   href={social.href}
@@ -62,7 +62,7 @@ const Footer: React.FC = () => {
               Quick Links
             </CustomText>
             <nav className="space-y-2">
-              {quickLinks.map((link) => (
+              {quickLinks.map(link => (
                 <a
                   key={link.name}
                   href={link.href}

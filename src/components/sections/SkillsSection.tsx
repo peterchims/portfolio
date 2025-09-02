@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import {
   Code2,
   Database,
@@ -6,74 +6,74 @@ import {
   Server,
   Smartphone,
   Globe,
-} from "lucide-react";
-import CustomText from "../ui/CustomText";
+} from 'lucide-react';
+import CustomText from '../ui/CustomText';
 
 const SkillsSection: React.FC = () => {
   const skillCategories = [
     {
       icon: Code2,
-      title: "Frontend Development",
-      color: "from-blue-400 to-blue-600",
+      title: 'Frontend Development',
+      color: 'from-blue-400 to-blue-600',
       skills: [
-        "React",
-        "TypeScript",
-        "Next.js",
-        "Tailwind CSS",
-        "Vue.js",
-        "Angular",
+        'React',
+        'TypeScript',
+        'Next.js',
+        'Tailwind CSS',
+        'Vue.js',
+        'Angular',
       ],
     },
     {
       icon: Server,
-      title: "Backend Development",
-      color: "from-green-400 to-green-600",
+      title: 'Backend Development',
+      color: 'from-green-400 to-green-600',
       skills: [
-        "Node.js",
-        "Python",
-        "Express",
-        "FastAPI",
-        "GraphQL",
-        "REST APIs",
+        'Node.js',
+        'Python',
+        'Express',
+        'FastAPI',
+        'GraphQL',
+        'REST APIs',
       ],
     },
     {
       icon: Database,
-      title: "Database & Cloud",
-      color: "from-purple-400 to-purple-600",
-      skills: ["PostgreSQL", "MongoDB", "Redis", "AWS", "Docker", "Kubernetes"],
+      title: 'Database & Cloud',
+      color: 'from-purple-400 to-purple-600',
+      skills: ['PostgreSQL', 'MongoDB', 'Redis', 'AWS', 'Docker', 'Kubernetes'],
     },
     {
       icon: Palette,
-      title: "Design & UX",
-      color: "from-pink-400 to-pink-600",
+      title: 'Design & UX',
+      color: 'from-pink-400 to-pink-600',
       skills: [
-        "Figma",
-        "Adobe XD",
-        "Photoshop",
-        "UI Design",
-        "UX Research",
-        "Prototyping",
+        'Figma',
+        'Adobe XD',
+        'Photoshop',
+        'UI Design',
+        'UX Research',
+        'Prototyping',
       ],
     },
     {
       icon: Smartphone,
-      title: "Mobile Development",
-      color: "from-orange-400 to-orange-600",
+      title: 'Mobile Development',
+      color: 'from-orange-400 to-orange-600',
       skills: [
-        "React Native",
-        "Flutter",
-        "iOS",
-        "Android",
-        "Progressive Web Apps",
-        "Responsive Design",
+        'React Native',
+        'Flutter',
+        'iOS',
+        'Android',
+        'Progressive Web Apps',
+        'Responsive Design',
       ],
     },
     {
       icon: Globe,
-      title: "DevOps & Tools",
-      color: "from-teal-400 to-teal-600",
-      skills: ["Git", "CI/CD", "Jenkins", "Terraform", "Monitoring", "Testing"],
+      title: 'DevOps & Tools',
+      color: 'from-teal-400 to-teal-600',
+      skills: ['Git', 'CI/CD', 'Jenkins', 'Terraform', 'Monitoring', 'Testing'],
     },
   ];
 
@@ -177,25 +177,25 @@ const SkillsSection: React.FC = () => {
           </CustomText>
           <div className="flex flex-wrap justify-center gap-3">
             {[
-              "JavaScript",
-              "Python",
-              "Go",
-              "Rust",
-              "PostgreSQL",
-              "MongoDB",
-              "Redis",
-              "Docker",
-              "Kubernetes",
-              "AWS",
-              "GCP",
-              "Vercel",
-              "Figma",
-              "Adobe Creative Suite",
-              "Git",
-              "Linux",
-              "Nginx",
-              "GraphQL",
-            ].map((tech) => (
+              'JavaScript',
+              'Python',
+              'Go',
+              'Rust',
+              'PostgreSQL',
+              'MongoDB',
+              'Redis',
+              'Docker',
+              'Kubernetes',
+              'AWS',
+              'GCP',
+              'Vercel',
+              'Figma',
+              'Adobe Creative Suite',
+              'Git',
+              'Linux',
+              'Nginx',
+              'GraphQL',
+            ].map(tech => (
               <span
                 key={tech}
                 className="px-4 py-2 bg-gradient-to-r from-gray-100 to-gray-200 hover:from-lime-100 hover:to-green-100 text-gray-700 hover:text-green-800 rounded-full text-sm font-medium transition-all duration-300 hover:scale-105 cursor-default"

@@ -1,7 +1,7 @@
-import React from "react";
-import { Download, ArrowRight, Code, Briefcase } from "lucide-react";
-import CustomButton from "../ui/CustomButton";
-import CustomText from "../ui/CustomText";
+import React from 'react';
+import { Download, ArrowRight, Code, Briefcase } from 'lucide-react';
+import CustomButton from '../ui/CustomButton';
+import CustomText from '../ui/CustomText';
 
 const HeroSection: React.FC = () => {
   return (
@@ -14,11 +14,11 @@ const HeroSection: React.FC = () => {
         <div className="absolute top-20 left-10 w-72 h-72 bg-lime-400/10 rounded-full blur-3xl floating"></div>
         <div
           className="absolute bottom-20 right-10 w-96 h-96 bg-green-400/10 rounded-full blur-3xl floating"
-          style={{ animationDelay: "2s" }}
+          style={{ animationDelay: '2s' }}
         ></div>
         <div
           className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-gray-300/5 rounded-full blur-3xl floating"
-          style={{ animationDelay: "4s" }}
+          style={{ animationDelay: '4s' }}
         ></div>
       </div>
 
@@ -135,13 +135,13 @@ const HeroSection: React.FC = () => {
               </CustomText>
               <div className="flex flex-wrap gap-2">
                 {[
-                  "React",
-                  "TypeScript",
-                  "Node.js",
-                  "Python",
-                  "Docker",
-                  "AWS",
-                ].map((tech) => (
+                  'React',
+                  'TypeScript',
+                  'Node.js',
+                  'Python',
+                  'Docker',
+                  'AWS',
+                ].map(tech => (
                   <span
                     key={tech}
                     className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm font-medium hover:bg-lime-100 hover:text-lime-700 transition-colors duration-300"
@@ -180,13 +180,13 @@ const HeroSection: React.FC = () => {
                     <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
                       <div
                         className="h-full bg-gradient-to-r from-blue-400 to-blue-500 rounded-full w-3/5 animate-pulse"
-                        style={{ animationDelay: "0.5s" }}
+                        style={{ animationDelay: '0.5s' }}
                       ></div>
                     </div>
                     <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
                       <div
                         className="h-full bg-gradient-to-r from-purple-400 to-purple-500 rounded-full w-4/6 animate-pulse"
-                        style={{ animationDelay: "1s" }}
+                        style={{ animationDelay: '1s' }}
                       ></div>
                     </div>
                   </div>
@@ -196,7 +196,7 @@ const HeroSection: React.FC = () => {
               {/* Floating Cards */}
               <div
                 className="absolute -top-4 -right-4 w-24 h-24 bg-white rounded-xl shadow-lg flex items-center justify-center floating"
-                style={{ animationDelay: "1s" }}
+                style={{ animationDelay: '1s' }}
               >
                 <CustomText
                   variant="h5"
@@ -210,7 +210,7 @@ const HeroSection: React.FC = () => {
 
               <div
                 className="absolute -bottom-4 -left-4 w-28 h-28 bg-white rounded-xl shadow-lg flex items-center justify-center floating"
-                style={{ animationDelay: "3s" }}
+                style={{ animationDelay: '3s' }}
               >
                 <CustomText
                   variant="h5"
