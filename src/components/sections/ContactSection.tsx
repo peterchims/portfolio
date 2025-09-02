@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
-import { Mail, Phone, MapPin, Send, CheckCircle } from 'lucide-react';
-import CustomText from '../ui/CustomText';
-import CustomButton from '../ui/CustomButton';
+import React, { useState } from "react";
+import { Mail, Phone, MapPin, Send, CheckCircle } from "lucide-react";
+import CustomText from "../ui/CustomText";
+import CustomButton from "../ui/CustomButton";
 
 const ContactSection: React.FC = () => {
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    subject: '',
-    message: '',
+    name: "",
+    email: "",
+    subject: "",
+    message: "",
   });
   const [isSubmitted, setIsSubmitted] = useState(false);
 
@@ -17,11 +17,13 @@ const ContactSection: React.FC = () => {
     // Simulate form submission
     setIsSubmitted(true);
     setTimeout(() => setIsSubmitted(false), 3000);
-    setFormData({ name: '', email: '', subject: '', message: '' });
+    setFormData({ name: "", email: "", subject: "", message: "" });
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData(prev => ({
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    setFormData((prev) => ({
       ...prev,
       [e.target.name]: e.target.value,
     }));
@@ -30,26 +32,29 @@ const ContactSection: React.FC = () => {
   const contactInfo = [
     {
       icon: Mail,
-      title: 'Email',
-      value: 'hello@yourname.com',
-      href: 'mailto:hello@yourname.com',
+      title: "Email",
+      value: "hello@yourname.com",
+      href: "mailto:hello@yourname.com",
     },
     {
       icon: Phone,
-      title: 'Phone',
-      value: '+1 (555) 123-4567',
-      href: 'tel:+15551234567',
+      title: "Phone",
+      value: "+1 (555) 123-4567",
+      href: "tel:+15551234567",
     },
     {
       icon: MapPin,
-      title: 'Location',
-      value: 'Your City, Country',
-      href: '#',
+      title: "Location",
+      value: "Your City, Country",
+      href: "#",
     },
   ];
 
   return (
-    <section id="contact" className="py-20 bg-gradient-to-br from-gray-900 to-gray-800 text-white relative overflow-hidden">
+    <section
+      id="contact"
+      className="py-20 bg-gradient-to-br from-gray-900 to-gray-800 text-white relative overflow-hidden"
+    >
       {/* Background Elements */}
       <div className="absolute inset-0">
         <div className="absolute top-20 left-10 w-72 h-72 bg-lime-400/10 rounded-full blur-3xl"></div>
@@ -58,35 +63,33 @@ const ContactSection: React.FC = () => {
 
       <div className="container-custom relative z-10">
         <div className="text-center space-y-4 mb-16">
-          <CustomText 
-            variant="overline" 
-            font="roboto" 
-            weight="semibold" 
+          <CustomText
+            variant="overline"
+            font="roboto"
+            weight="semibold"
             color="accent"
           >
             Get In Touch
           </CustomText>
-          
-          <CustomText 
-            variant="h2" 
-            font="roboto" 
-            weight="bold" 
+
+          <CustomText
+            variant="h2"
+            font="roboto"
+            weight="bold"
             color="white"
             className="text-balance"
           >
             Let's Work
-            <span className="gradient-text">
-              {" "}Together
-            </span>
+            <span className="gradient-text"> Together</span>
           </CustomText>
-          
-          <CustomText 
-            variant="body" 
+
+          <CustomText
+            variant="body"
             color="muted"
             className="max-w-2xl mx-auto text-balance text-gray-300"
           >
-            Ready to bring your ideas to life? Let's discuss your project and create 
-            something amazing together.
+            Ready to bring your ideas to life? Let's discuss your project and
+            create something amazing together.
           </CustomText>
         </div>
 
@@ -94,10 +97,15 @@ const ContactSection: React.FC = () => {
           {/* Contact Information */}
           <div className="space-y-8">
             <div className="space-y-6">
-              <CustomText variant="h4" font="roboto" weight="semibold" color="white">
+              <CustomText
+                variant="h4"
+                font="roboto"
+                weight="semibold"
+                color="white"
+              >
                 Contact Information
               </CustomText>
-              
+
               <div className="space-y-4">
                 {contactInfo.map((info) => (
                   <a
@@ -109,7 +117,11 @@ const ContactSection: React.FC = () => {
                       <info.icon className="w-6 h-6 text-white" />
                     </div>
                     <div>
-                      <CustomText variant="caption" color="muted" className="text-gray-400">
+                      <CustomText
+                        variant="caption"
+                        color="muted"
+                        className="text-gray-400"
+                      >
                         {info.title}
                       </CustomText>
                       <CustomText variant="body" weight="medium" color="white">
@@ -125,13 +137,18 @@ const ContactSection: React.FC = () => {
             <div className="p-6 bg-gradient-to-r from-lime-400/10 to-green-500/10 rounded-xl border border-lime-400/20">
               <div className="flex items-center space-x-3 mb-3">
                 <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
-                <CustomText variant="h6" font="roboto" weight="semibold" color="white">
+                <CustomText
+                  variant="h6"
+                  font="roboto"
+                  weight="semibold"
+                  color="white"
+                >
                   Available for Projects
                 </CustomText>
               </div>
               <CustomText variant="caption" className="text-gray-300">
-                Currently open to new opportunities and exciting projects. 
-                Let's discuss how I can help bring your vision to life.
+                Currently open to new opportunities and exciting projects. Let's
+                discuss how I can help bring your vision to life.
               </CustomText>
             </div>
           </div>
@@ -141,7 +158,10 @@ const ContactSection: React.FC = () => {
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <label htmlFor="name" className="block text-sm font-medium text-gray-300">
+                  <label
+                    htmlFor="name"
+                    className="block text-sm font-medium text-gray-300"
+                  >
                     Name
                   </label>
                   <input
@@ -155,9 +175,12 @@ const ContactSection: React.FC = () => {
                     placeholder="Your Name"
                   />
                 </div>
-                
+
                 <div className="space-y-2">
-                  <label htmlFor="email" className="block text-sm font-medium text-gray-300">
+                  <label
+                    htmlFor="email"
+                    className="block text-sm font-medium text-gray-300"
+                  >
                     Email
                   </label>
                   <input
@@ -174,7 +197,10 @@ const ContactSection: React.FC = () => {
               </div>
 
               <div className="space-y-2">
-                <label htmlFor="subject" className="block text-sm font-medium text-gray-300">
+                <label
+                  htmlFor="subject"
+                  className="block text-sm font-medium text-gray-300"
+                >
                   Subject
                 </label>
                 <input
@@ -190,7 +216,10 @@ const ContactSection: React.FC = () => {
               </div>
 
               <div className="space-y-2">
-                <label htmlFor="message" className="block text-sm font-medium text-gray-300">
+                <label
+                  htmlFor="message"
+                  className="block text-sm font-medium text-gray-300"
+                >
                   Message
                 </label>
                 <textarea
@@ -213,7 +242,7 @@ const ContactSection: React.FC = () => {
                 className="w-full"
                 disabled={isSubmitted}
               >
-                {isSubmitted ? 'Message Sent!' : 'Send Message'}
+                {isSubmitted ? "Message Sent!" : "Send Message"}
               </CustomButton>
             </form>
           </div>

@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { Menu, X, Github, Linkedin, Mail } from 'lucide-react';
-import CustomButton from '../ui/CustomButton';
-import CustomText from '../ui/CustomText';
+import React, { useState, useEffect } from "react";
+import { Menu, X, Github, Linkedin, Mail } from "lucide-react";
+import CustomButton from "../ui/CustomButton";
+import CustomText from "../ui/CustomText";
 
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -12,31 +12,32 @@ const Header: React.FC = () => {
       setIsScrolled(window.scrollY > 50);
     };
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const navigation = [
-    { name: 'Home', href: '#home' },
-    { name: 'About', href: '#about' },
-    { name: 'Skills', href: '#skills' },
-    { name: 'Projects', href: '#projects' },
-    { name: 'Contact', href: '#contact' },
+    { name: "Home", href: "#home" },
+    { name: "About", href: "#about" },
+    { name: "Skills", href: "#skills" },
+    { name: "Projects", href: "#projects" },
+    { name: "Contact", href: "#contact" },
   ];
 
   const socialLinks = [
-    { icon: Github, href: '#', label: 'GitHub' },
-    { icon: Linkedin, href: '#', label: 'LinkedIn' },
-    { icon: Mail, href: '#contact', label: 'Email' },
+    { icon: Github, href: "#", label: "GitHub" },
+    { icon: Linkedin, href: "#", label: "LinkedIn" },
+    { icon: Mail, href: "#contact", label: "Email" },
   ];
 
   return (
     <header
       className={`
         fixed top-0 left-0 right-0 z-50 transition-all duration-300
-        ${isScrolled 
-          ? 'bg-white/90 backdrop-blur-lg shadow-lg border-b border-gray-200/20' 
-          : 'bg-transparent'
+        ${
+          isScrolled
+            ? "bg-white/90 backdrop-blur-lg shadow-lg border-b border-gray-200/20"
+            : "bg-transparent"
         }
       `}
     >
@@ -44,10 +45,10 @@ const Header: React.FC = () => {
         <div className="flex items-center justify-between h-16 md:h-20">
           {/* Logo */}
           <div className="flex-shrink-0">
-            <CustomText 
-              variant="h4" 
-              font="roboto" 
-              weight="bold" 
+            <CustomText
+              variant="h4"
+              font="roboto"
+              weight="bold"
               color="gradient"
               className="cursor-pointer"
             >
@@ -96,7 +97,11 @@ const Header: React.FC = () => {
             className="md:hidden p-2 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors duration-300"
             aria-label="Toggle menu"
           >
-            {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            {isMenuOpen ? (
+              <X className="w-6 h-6" />
+            ) : (
+              <Menu className="w-6 h-6" />
+            )}
           </button>
         </div>
 

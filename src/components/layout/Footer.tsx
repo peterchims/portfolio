@@ -1,21 +1,21 @@
-import React from 'react';
-import { Github, Linkedin, Twitter, Mail, Heart } from 'lucide-react';
-import CustomText from '../ui/CustomText';
+import React from "react";
+import { Github, Linkedin, Twitter, Mail, Heart } from "lucide-react";
+import CustomText from "../ui/CustomText";
 
 const Footer: React.FC = () => {
   const socialLinks = [
-    { icon: Github, href: '#', label: 'GitHub' },
-    { icon: Linkedin, href: '#', label: 'LinkedIn' },
-    { icon: Twitter, href: '#', label: 'Twitter' },
-    { icon: Mail, href: '#contact', label: 'Email' },
+    { icon: Github, href: "#", label: "GitHub" },
+    { icon: Linkedin, href: "#", label: "LinkedIn" },
+    { icon: Twitter, href: "#", label: "Twitter" },
+    { icon: Mail, href: "#contact", label: "Email" },
   ];
 
   const quickLinks = [
-    { name: 'Home', href: '#home' },
-    { name: 'About', href: '#about' },
-    { name: 'Skills', href: '#skills' },
-    { name: 'Projects', href: '#projects' },
-    { name: 'Contact', href: '#contact' },
+    { name: "Home", href: "#home" },
+    { name: "About", href: "#about" },
+    { name: "Skills", href: "#skills" },
+    { name: "Projects", href: "#projects" },
+    { name: "Contact", href: "#contact" },
   ];
 
   return (
@@ -24,20 +24,18 @@ const Footer: React.FC = () => {
         <div className="grid md:grid-cols-3 gap-8 mb-8">
           {/* Brand */}
           <div className="space-y-4">
-            <CustomText 
-              variant="h4" 
-              font="roboto" 
-              weight="bold" 
+            <CustomText
+              variant="h4"
+              font="roboto"
+              weight="bold"
               color="gradient"
             >
               Portfolio
             </CustomText>
-            <CustomText 
-              variant="body" 
-              className="text-gray-400 leading-7"
-            >
-              Building digital experiences that matter. Passionate about creating 
-              innovative solutions and helping businesses grow through technology.
+            <CustomText variant="body" className="text-gray-400 leading-7">
+              Building digital experiences that matter. Passionate about
+              creating innovative solutions and helping businesses grow through
+              technology.
             </CustomText>
             <div className="flex space-x-4">
               {socialLinks.map((social) => (
@@ -55,7 +53,12 @@ const Footer: React.FC = () => {
 
           {/* Quick Links */}
           <div className="space-y-4">
-            <CustomText variant="h6" font="roboto" weight="semibold" color="white">
+            <CustomText
+              variant="h6"
+              font="roboto"
+              weight="semibold"
+              color="white"
+            >
               Quick Links
             </CustomText>
             <nav className="space-y-2">
@@ -65,9 +68,7 @@ const Footer: React.FC = () => {
                   href={link.href}
                   className="block text-gray-400 hover:text-lime-400 transition-colors duration-300"
                 >
-                  <CustomText variant="body">
-                    {link.name}
-                  </CustomText>
+                  <CustomText variant="body">{link.name}</CustomText>
                 </a>
               ))}
             </nav>
@@ -75,7 +76,12 @@ const Footer: React.FC = () => {
 
           {/* Contact Info */}
           <div className="space-y-4">
-            <CustomText variant="h6" font="roboto" weight="semibold" color="white">
+            <CustomText
+              variant="h6"
+              font="roboto"
+              weight="semibold"
+              color="white"
+            >
               Let's Connect
             </CustomText>
             <div className="space-y-3 text-gray-400">
@@ -104,15 +110,11 @@ const Footer: React.FC = () => {
             <CustomText variant="caption" className="text-gray-400">
               © 2025 Your Name. All rights reserved.
             </CustomText>
-            
+
             <div className="flex items-center space-x-2 text-gray-400">
-              <CustomText variant="caption">
-                Made with
-              </CustomText>
+              <CustomText variant="caption">Made with</CustomText>
               <Heart className="w-4 h-4 text-red-500 animate-pulse" />
-              <CustomText variant="caption">
-                and lots of coffee
-              </CustomText>
+              <CustomText variant="caption">and lots of coffee</CustomText>
             </div>
           </div>
         </div>

@@ -68,17 +68,20 @@ src/
 ## 🎨 Design System
 
 ### Colors
+
 - **Primary**: Dark greens and lime accents
 - **Secondary**: Professional grays
 - **Accent**: Bright lime green
 - **Background**: Subtle gradients
 
 ### Typography
+
 - **Headings**: Roboto (Clean, modern)
 - **Body**: Raleway (Readable, elegant)
 - **Weights**: Light to Bold variants
 
 ### Components
+
 - **CustomButton**: Multiple variants with animations
 - **CustomText**: Flexible typography component
 - **Responsive**: Mobile-first approach
