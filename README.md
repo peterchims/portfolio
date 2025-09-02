@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Professional Portfolio Website
 
 A stunning, fully responsive portfolio website built with React, TypeScript, and Tailwind CSS. Features beautiful animations, professional design, and Docker containerization for easy deployment.
@@ -105,13 +104,13 @@ docker-compose up -d
 
 Access your portfolio at `http://localhost:3000`
 
-## 📝 Customization
+<!-- ## 📝 Customization
 
 1. **Personal Information**: Update content in each section component
 2. **Projects**: Modify the projects array in `ProjectsSection.tsx`
 3. **Skills**: Update skill categories in `SkillsSection.tsx`
 4. **Colors**: Adjust CSS variables in `globals.css`
-5. **Fonts**: Change font imports and classes as needed
+5. **Fonts**: Change font imports and classes as needed -->
 
 ## 🔧 Available Scripts
 
@@ -136,9 +135,3 @@ Access your portfolio at `http://localhost:3000`
 - Mobile-responsive design
 - Docker containerization
 - Production-ready optimization
-
-Perfect for developers looking to make a strong impression with potential employers or clients!
-=======
-# portfolio
-Personal portfolio showcasing my projects, skills, and professional experience in web development, and technical solutions.
->>>>>>> 81a76254315bc2b72f130d759973c741dc7fa221
