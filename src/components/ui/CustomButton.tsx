@@ -1,65 +1,44 @@
+// ui/CustomButton.tsx
 import React from 'react';
-import { DivideIcon as LucideIcon } from 'lucide-react';
+import { useTheme } from '../../contexts/ThemeContext';
+import cn from '../../lib/utils/cn';
+
+type Variant = 'primary' | 'secondary' | 'outline' | 'ghost' | 'muted';
+type Size = 'sm' | 'md' | 'lg';
 
 interface CustomButtonProps {
   children: React.ReactNode;
-  variant?: 'primary' | 'secondary' | 'outline' | 'ghost';
-  size?: 'sm' | 'md' | 'lg';
-  icon?: LucideIcon;
-  iconPosition?: 'left' | 'right';
-  className?: string;
   onClick?: () => void;
-  disabled?: boolean;
+  variant?: Variant;
+  size?: Size;
+  fullWidth?: boolean;
+  className?: string;
   type?: 'button' | 'submit' | 'reset';
+  disabled?: boolean;
+  style?: React.CSSProperties;
+  icon?: React.ComponentType<{ className?: string }>;
+  iconPosition?: 'left' | 'right';
 }
 
 const CustomButton: React.FC<CustomButtonProps> = ({
   children,
+  onClick,
   variant = 'primary',
   size = 'md',
+  fullWidth = false,
+  className = '',
+  type = 'button',
+  disabled = false,
+  style,
   icon: Icon,
   iconPosition = 'left',
-  className = '',
-  onClick,
-  disabled = false,
-  type = 'button',
 }) => {
-  const baseClasses = `
-    inline-flex items-center justify-center gap-2 font-medium rounded-lg
-    transition-all duration-300 ease-in-out transform hover:scale-105
-    focus:outline-none focus:ring-2 focus:ring-offset-2
-    disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100
-    relative overflow-hidden group
-  `;
-
-  const variantClasses = {
-    primary: `
-      bg-gradient-to-r from-lime-400 to-green-500 hover:from-lime-500 hover:to-green-600
-      text-white shadow-lg hover:shadow-xl
-      focus:ring-lime-500
-      before:absolute before:inset-0 before:bg-white before:opacity-0 
-      before:transition-opacity before:duration-300 hover:before:opacity-10
-    `,
-    secondary: `
-      bg-gradient-to-r from-gray-700 to-gray-800 hover:from-gray-800 hover:to-gray-900
-      text-white shadow-md hover:shadow-lg
-      focus:ring-gray-500
-    `,
-    outline: `
-      border-2 border-lime-400 text-lime-600 hover:bg-lime-400 hover:text-white
-      shadow-sm hover:shadow-md
-      focus:ring-lime-500
-    `,
-    ghost: `
-      text-gray-700 hover:bg-gray-100 hover:text-gray-900
-      focus:ring-gray-300
-    `,
-  };
+  const { colors } = useTheme();
 
   const sizeClasses = {
-    sm: 'px-3 py-2 text-sm',
-    md: 'px-6 py-3 text-base',
-    lg: 'px-8 py-4 text-lg',
+    sm: 'px-3 py-1 text-sm gap-2',
+    md: 'px-4 py-2 text-base gap-3',
+    lg: 'px-6 py-3 text-lg gap-3',
   };
 
   const iconSizeClasses = {
@@ -68,17 +47,66 @@ const CustomButton: React.FC<CustomButtonProps> = ({
     lg: 'w-6 h-6',
   };
 
+  const baseClasses = cn(`
+    rounded-lg font-semibold transition-all duration-300 ease-in-out
+    flex items-center justify-center
+    hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2
+    disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100
+    relative overflow-hidden group
+    ${sizeClasses[size]}
+    ${fullWidth ? 'w-full' : ''}
+    ${className}
+  `);
+
+  const buttonStyle: React.CSSProperties = {
+    fontFamily: 'BricolageGrotesque, system-ui, sans-serif',
+    ...style,
+  };
+
+  switch (variant) {
+    case 'primary':
+      Object.assign(buttonStyle, {
+        backgroundColor: colors.primary,
+        color: colors.surface,
+        backgroundImage: `linear-gradient(135deg, ${colors.primaryLight}, ${colors.primary})`,
+      });
+      break;
+    case 'secondary':
+      Object.assign(buttonStyle, {
+        backgroundColor: colors.secondary,
+        color: colors.text,
+        backgroundImage: `linear-gradient(135deg, ${colors.grayFaded}, ${colors.secondary})`,
+      });
+      break;
+    case 'outline':
+      Object.assign(buttonStyle, {
+        backgroundColor: 'transparent',
+        border: `2px solid ${colors.primary}`,
+        color: colors.primary,
+      });
+      break;
+    case 'ghost':
+      Object.assign(buttonStyle, {
+        backgroundColor: 'transparent',
+        color: colors.text,
+      });
+      break;
+    case 'muted':
+      Object.assign(buttonStyle, {
+        backgroundColor: colors.background,
+        border: `1px solid ${colors.border}`,
+        color: colors.text,
+      });
+      break;
+  }
+
   return (
     <button
+      onClick={disabled ? undefined : onClick}
+      className={baseClasses}
+      style={buttonStyle}
       type={type}
-      onClick={onClick}
       disabled={disabled}
-      className={`
-        ${baseClasses}
-        ${variantClasses[variant]}
-        ${sizeClasses[size]}
-        ${className}
-      `}
     >
       {Icon && iconPosition === 'left' && (
         <Icon className={iconSizeClasses[size]} />

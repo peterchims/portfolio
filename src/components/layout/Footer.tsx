@@ -1,5 +1,6 @@
 import React from 'react';
 import { Github, Linkedin, Twitter, Mail, Heart } from 'lucide-react';
+
 import CustomText from '../ui/CustomText';
 
 const Footer: React.FC = () => {
@@ -32,7 +33,7 @@ const Footer: React.FC = () => {
             >
               Portfolio
             </CustomText>
-            <CustomText variant="body" className="text-gray-400 leading-7">
+            <CustomText variant="body" className="text-gray-200 leading-7">
               Building digital experiences that matter. Passionate about
               creating innovative solutions and helping businesses grow through
               technology.
@@ -66,7 +67,8 @@ const Footer: React.FC = () => {
                 <a
                   key={link.name}
                   href={link.href}
-                  className="block text-gray-400 hover:text-lime-400 transition-colors duration-300"
+                  className="block text-red-900 hover:text-lime-400
+                   transition-colors duration-300"
                 >
                   <CustomText variant="body">{link.name}</CustomText>
                 </a>
@@ -107,11 +109,11 @@ const Footer: React.FC = () => {
         {/* Bottom Bar */}
         <div className="pt-8 border-t border-gray-800">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-            <CustomText variant="caption" className="text-gray-400">
+            <CustomText variant="caption" className="text-gray-200">
               © 2025 Your Name. All rights reserved.
             </CustomText>
 
-            <div className="flex items-center space-x-2 text-gray-400">
+            <div className="flex items-center space-x-2 text-gray-200">
               <CustomText variant="caption">Made with</CustomText>
               <Heart className="w-4 h-4 text-red-500 animate-pulse" />
               <CustomText variant="caption">and lots of coffee</CustomText>

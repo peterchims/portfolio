@@ -1,6 +1,8 @@
 version: '3.8'
-
 services:
+  # -----------------
+  # Production service
+  # -----------------
   portfolio-prod:
     build:
       context: .
@@ -9,10 +11,14 @@ services:
     ports:
       - "3000:80"
     environment:
-      - NODE_ENV=production
+      NODE_ENV: production
     restart: unless-stopped
-    profiles: ["prod"]
+    profiles:
+      - prod
 
+  # -----------------
+  # Development service
+  # -----------------
   portfolio-dev:
     build:
       context: .
@@ -21,14 +27,14 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - .:/app:cached
-      - /app/node_modules
-      - /app/.next  # Add this for Next.js if you're using it
+      - .:/app:cached         # Mount project source
+      - /app/node_modules     # Preserve container node_modules
     environment:
-      - NODE_ENV=development
-      - CHOKIDAR_USEPOLLING=true  # Important for file watching in Docker
-      - WATCHPACK_POLLING=true    # Additional polling for better detection
+      NODE_ENV: development
+      CHOKIDAR_USEPOLLING: "true"  # For file watching in Docker
+      WATCHPACK_POLLING: "true"    # Extra polling for Vite hot reload
     command: npm run dev -- --host 0.0.0.0 --port 3000
-    profiles: ["dev"]
-    stdin_open: true  # Keep STDIN open
-    tty: true         # Allocate pseudo-TTY
+    profiles:
+      - dev
+    stdin_open: true
+    tty: true

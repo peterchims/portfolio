@@ -68,9 +68,9 @@ const ContactSection: React.FC = () => {
           </CustomText>
         </header>
 
-        {/* Main Grid */}
-        <div className="grid gap-12 lg:grid-cols-2">
-          {/* Contact Info */}
+        {/* Main Content */}
+        <main className="grid gap-12 lg:grid-cols-2">
+          {/* Contact Information Sidebar */}
           <aside className="space-y-8">
             <section>
               <CustomText
@@ -115,7 +115,7 @@ const ContactSection: React.FC = () => {
               </ul>
             </section>
 
-            {/* Availability */}
+            {/* Availability Status */}
             <section className="p-6 rounded-xl border border-lime-400/20 bg-gradient-to-r from-lime-400/10 to-green-500/10">
               <header className="flex items-center gap-3 mb-3">
                 <span className="w-3 h-3 rounded-full bg-green-400 animate-pulse" />
@@ -128,15 +128,15 @@ const ContactSection: React.FC = () => {
                   Available for Projects
                 </CustomText>
               </header>
-              <CustomText variant="caption" className="text-gray-300">
+              <CustomText variant="caption" className="text-gray-200">
                 Currently open to new opportunities and exciting projects.
                 Let&apos;s discuss how I can help bring your vision to life.
               </CustomText>
             </section>
           </aside>
 
-          {/* Contact Form */}
-          <article className="p-8 rounded-xl border border-white/10 bg-white/5 backdrop-blur-lg">
+          {/* Contact Form Section */}
+          <section className="p-8 rounded-xl border border-white/10 bg-white/5 backdrop-blur-lg">
             <form onSubmit={handleSubmit} className="space-y-6">
               <fieldset className="grid gap-4 sm:grid-cols-2">
                 <label className="space-y-2">
@@ -211,8 +211,8 @@ const ContactSection: React.FC = () => {
                 {isSubmitted ? 'Message Sent!' : 'Send Message'}
               </CustomButton>
             </form>
-          </article>
-        </div>
+          </section>
+        </main>
       </div>
     </section>
   );
