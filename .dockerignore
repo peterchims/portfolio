@@ -1,18 +1,16 @@
+# Dependencies
 node_modules
 npm-debug.log
-Dockerfile
-.dockerignore
-.git
-.gitignore
-README.md
-.env
-.nyc_output
-coverage
-.nyc_output
-.coverage
-.vscode
-.idea
+yarn.lock
+pnpm-lock.yaml
+
+# Build output
 dist
 build
-.DS_Store
-*.log
+
+# Git
+.git
+.gitignore
+
+# Docker
+docker-compose.yml

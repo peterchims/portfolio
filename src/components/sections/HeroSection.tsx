@@ -36,7 +36,7 @@ const HeroSection: React.FC = () => {
                 animated
                 delay={1}
               >
-                Full Stack Developer
+                Frontend Developer
               </CustomText>
 
               <CustomText

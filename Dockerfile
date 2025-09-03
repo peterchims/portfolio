@@ -1,39 +1,42 @@
-# -------------------------
-# Build stage
-# -------------------------
-FROM node:18-alpine AS builder
-
-# Set working directory
+# -----------------
+# Base dependencies
+# -----------------
+FROM node:18-alpine AS base
 WORKDIR /app
-
-# Install dependencies (include devDependencies for build)
 COPY package*.json ./
-RUN npm ci
 
-# Copy all source code
+# -----------------
+# Development stage
+# -----------------
+FROM base AS dev
+ENV NODE_ENV=development
+RUN npm install
 COPY . .
+EXPOSE 3000
+CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0", "--port", "3000"]
 
-# Build the application
+
+# -----------------
+# Build stage
+# -----------------
+FROM base AS build
+ENV NODE_ENV=production
+# Disable Husky during build
+ENV HUSKY=0
+RUN npm ci --omit=dev && npm cache clean --force
+COPY . .
 RUN npm run build
 
-
-# -------------------------
-# Production stage
-# -------------------------
-FROM nginx:alpine
-
-# Copy built assets from builder stage
-COPY --from=builder /app/dist /usr/share/nginx/html
-
-# Copy custom nginx config
+# -----------------
+# Production stage (nginx)
+# -----------------
+FROM nginx:alpine AS prod
+COPY --from=build /app/dist /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# Expose port 80
 EXPOSE 80
 
-# Health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD wget -q --spider http://localhost/ || exit 1
+  CMD curl -f http://localhost/ || exit 1
 
-# Run nginx in foreground
 CMD ["nginx", "-g", "daemon off;"]

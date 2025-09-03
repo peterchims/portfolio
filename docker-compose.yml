@@ -1,32 +1,39 @@
 version: '3.8'
 
 services:
+  # -------------------
+  # Production (Nginx)
+  # -------------------
   portfolio:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: prod
     ports:
       - '3000:80'
     environment:
       - NODE_ENV=production
     restart: unless-stopped
     healthcheck:
-      test: ['CMD', 'curl', '-f', 'http://localhost/']
+      test: ['CMD', 'wget', '-q', '--spider', 'http://localhost/']
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 40s
 
-  # Development service (optional)
+  # -------------------
+  # Development (Vite hot reload)
+  # -------------------
   portfolio-dev:
     build:
       context: .
-      target: builder
+      dockerfile: Dockerfile
+      target: dev
     ports:
-      - '5173:5173'
+      - '3000:3000'   # dev server on port 3000
     volumes:
-      - ./src:/app/src
-      - ./public:/app/public
+      - .:/app
+      - /app/node_modules   # prevent overwriting node_modules
     environment:
       - NODE_ENV=development
-    command: npm run dev -- --host 0.0.0.0
-    profiles:
-      - dev
+    command: npm run dev -- --host 0.0.0.0 --port 3000
