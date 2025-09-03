@@ -1,34 +1,8 @@
 import React from 'react';
 import { User, Award, Target, Heart } from 'lucide-react';
 import CustomText from '../ui/CustomText';
-
+import { highlights } from '../data/Data';
 const AboutSection: React.FC = () => {
-  const highlights = [
-    {
-      icon: User,
-      title: 'Professional',
-      description:
-        'Dedicated to delivering high-quality solutions with attention to detail.',
-    },
-    {
-      icon: Award,
-      title: 'Experienced',
-      description: 'Proven track record in building scalable web applications.',
-    },
-    {
-      icon: Target,
-      title: 'Goal-Oriented',
-      description:
-        'Focused on achieving project objectives and exceeding expectations.',
-    },
-    {
-      icon: Heart,
-      title: 'Passionate',
-      description:
-        'Love for clean code, innovative solutions, and continuous learning.',
-    },
-  ];
-
   return (
     <section id="about" className="py-20 bg-white">
       <div className="container-custom">

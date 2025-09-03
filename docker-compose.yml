@@ -1,39 +1,34 @@
 version: '3.8'
 
 services:
-  # -------------------
-  # Production (Nginx)
-  # -------------------
-  portfolio:
+  portfolio-prod:
     build:
       context: .
       dockerfile: Dockerfile
       target: prod
     ports:
-      - '3000:80'
+      - "3000:80"
     environment:
       - NODE_ENV=production
     restart: unless-stopped
-    healthcheck:
-      test: ['CMD', 'wget', '-q', '--spider', 'http://localhost/']
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
+    profiles: ["prod"]
 
-  # -------------------
-  # Development (Vite hot reload)
-  # -------------------
   portfolio-dev:
     build:
       context: .
       dockerfile: Dockerfile
       target: dev
     ports:
-      - '3000:3000'   # dev server on port 3000
+      - "3000:3000"
     volumes:
-      - .:/app
-      - /app/node_modules   # prevent overwriting node_modules
+      - .:/app:cached
+      - /app/node_modules
+      - /app/.next  # Add this for Next.js if you're using it
     environment:
       - NODE_ENV=development
+      - CHOKIDAR_USEPOLLING=true  # Important for file watching in Docker
+      - WATCHPACK_POLLING=true    # Additional polling for better detection
     command: npm run dev -- --host 0.0.0.0 --port 3000
+    profiles: ["dev"]
+    stdin_open: true  # Keep STDIN open
+    tty: true         # Allocate pseudo-TTY
