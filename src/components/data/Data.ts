@@ -1,4 +1,14 @@
-import { Mail, Phone, MapPin, User, Award, Target, Heart } from 'lucide-react';
+import {
+  Mail,
+  Phone,
+  MapPin,
+  User,
+  Award,
+  Target,
+  Heart,
+  Github,
+  Linkedin,
+} from 'lucide-react';
 
 export const contactInfo = [
   {
@@ -43,5 +53,30 @@ export const highlights = [
     title: 'Passionate',
     description:
       'Love for clean code, innovative solutions, and continuous learning.',
+  },
+];
+export const navigation = [
+  { name: 'Home', href: '#home' },
+  { name: 'About', href: '#about' },
+  { name: 'Skills', href: '#skills' },
+  { name: 'Projects', href: '#projects' },
+  { name: 'Contact', href: '#contact' },
+];
+
+export const socialLinks = [
+  {
+    icon: Github,
+    href: 'https://github.com/peterchims',
+    label: 'GitHub',
+  },
+  {
+    icon: Linkedin,
+    href: 'https://www.linkedin.com/in/peter-ogba-970a0615b/',
+    label: 'LinkedIn',
+  },
+  {
+    icon: Mail,
+    href: 'https://mail.google.com/mail/?view=cm&fs=1&to=peter4tech@gmail.com&su=Portfolio%20Contact&body=Hello%20Peter%2C%0D%0A%0D%0AI%20came%20across%20your%20portfolio%20and%20would%20like%20to%20connect.%0D%0A%0D%0ABest%2C',
+    label: 'Email',
   },
 ];
