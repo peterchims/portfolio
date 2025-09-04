@@ -129,6 +129,7 @@ const HeroSection: React.FC = () => {
                 size="lg"
                 icon={ArrowRight}
                 iconPosition="right"
+                className="w-full sm:w-auto"
               >
                 View My Work
               </CustomButton>
@@ -136,9 +137,14 @@ const HeroSection: React.FC = () => {
               <a
                 href="/public/UpdatedTechResume (1).pdf"
                 download="Peter4Tech_CV.pdf"
-                className="inline-block"
+                className="block w-full sm:w-auto"
               >
-                <CustomButton variant="outline" size="lg" icon={Download}>
+                <CustomButton
+                  variant="outline"
+                  size="lg"
+                  icon={Download}
+                  className="w-full sm:w-auto"
+                >
                   Download CV
                 </CustomButton>
               </a>
@@ -162,7 +168,6 @@ const HeroSection: React.FC = () => {
                   'Angular',
                   'NextJs',
                   'Docker',
-                  'AWS',
                   'Javascript',
                   'React Native',
                 ].map(tech => (
@@ -249,11 +254,11 @@ const HeroSection: React.FC = () => {
 
       {/* Scroll Indicator */}
       <div
-        className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce"
+        className="absolute bottom-4 sm:bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce"
         aria-hidden="true"
       >
-        <div className="w-6 h-10 border-2 border-gray-400 rounded-full flex justify-center">
-          <div className="w-1 h-3 bg-gray-400 rounded-full mt-2 animate-pulse" />
+        <div className="w-5 h-8 sm:w-6 sm:h-10 border-2 border-gray-400 rounded-full flex justify-center">
+          <div className="w-1 h-2 sm:h-3 bg-gray-400 rounded-full mt-1 sm:mt-2 animate-pulse" />
         </div>
       </div>
     </main>

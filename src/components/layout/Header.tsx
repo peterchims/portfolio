@@ -1,3 +1,4 @@
+// src/components/layout/Header.tsx
 import React, { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
 import CustomButton from '../ui/CustomButton';
@@ -10,6 +11,7 @@ const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isHireModalOpen, setIsHireModalOpen] = useState(false);
+  const [selectedRole, setSelectedRole] = useState<string | null>(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -151,7 +153,10 @@ const Header: React.FC = () => {
             {/* Backdrop */}
             <motion.div
               className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40"
-              onClick={() => setIsHireModalOpen(false)}
+              onClick={() => {
+                setIsHireModalOpen(false);
+                setSelectedRole(null);
+              }}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -165,35 +170,82 @@ const Header: React.FC = () => {
               exit={{ scale: 0.9, opacity: 0 }}
               transition={{ duration: 0.2 }}
             >
-              <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-6 w-80">
-                <h2 className="text-xl font-semibold text-center mb-4">
-                  Hire Me For
+              <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-6 w-96 max-w-[90%]">
+                <h2 className="text-xl font-semibold text-center mb-4 text-gray-900 dark:text-white">
+                  {selectedRole
+                    ? `Apply for ${selectedRole} role`
+                    : 'Hire Me For'}
                 </h2>
 
-                <div className="flex flex-col gap-3">
-                  <CustomButton
-                    variant="secondary"
-                    onClick={() => alert('Onsite role selected')}
+                {!selectedRole ? (
+                  // Step 1: Role selection
+                  <div className="flex flex-col gap-3">
+                    <CustomButton
+                      variant="secondary"
+                      onClick={() => setSelectedRole('Onsite')}
+                    >
+                      Onsite Roles
+                    </CustomButton>
+                    <CustomButton
+                      variant="secondary"
+                      onClick={() => setSelectedRole('Contract')}
+                    >
+                      Contract Roles
+                    </CustomButton>
+                    <CustomButton
+                      variant="secondary"
+                      onClick={() => setSelectedRole('Remote')}
+                    >
+                      Remote Roles
+                    </CustomButton>
+                  </div>
+                ) : (
+                  // Step 2: Role-based form
+                  <form
+                    className="flex flex-col gap-3"
+                    onSubmit={e => {
+                      e.preventDefault();
+                      alert(`Form submitted for ${selectedRole} role`);
+                    }}
                   >
-                    Onsite Roles
-                  </CustomButton>
-                  <CustomButton
-                    variant="secondary"
-                    onClick={() => alert('Contract role selected')}
-                  >
-                    Contract Roles
-                  </CustomButton>
-                  <CustomButton
-                    variant="secondary"
-                    onClick={() => alert('Remote role selected')}
-                  >
-                    Remote Roles
-                  </CustomButton>
-                </div>
+                    <input
+                      type="text"
+                      placeholder="Your Name"
+                      required
+                      className="p-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-transparent"
+                    />
+                    <input
+                      type="email"
+                      placeholder="Your Email"
+                      required
+                      className="p-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-transparent"
+                    />
+                    <textarea
+                      placeholder={`Tell us why you're a good fit for a ${selectedRole} role...`}
+                      className="p-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-transparent"
+                    />
 
+                    <CustomButton variant="primary" type="submit">
+                      Submit Application
+                    </CustomButton>
+
+                    <button
+                      type="button"
+                      className="text-sm text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+                      onClick={() => setSelectedRole(null)}
+                    >
+                      ← Back to role selection
+                    </button>
+                  </form>
+                )}
+
+                {/* Cancel closes the modal completely */}
                 <button
                   className="mt-5 w-full text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
-                  onClick={() => setIsHireModalOpen(false)}
+                  onClick={() => {
+                    setIsHireModalOpen(false);
+                    setSelectedRole(null);
+                  }}
                 >
                   Cancel
                 </button>

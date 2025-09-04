@@ -33,7 +33,11 @@ const Footer: React.FC = () => {
             >
               Portfolio
             </CustomText>
-            <CustomText variant="body" className="text-gray-200 leading-7">
+            <CustomText
+              variant="body"
+              color="white"
+              className="text-gray-200 leading-7"
+            >
               Building digital experiences that matter. Passionate about
               creating innovative solutions and helping businesses grow through
               technology.
@@ -67,10 +71,13 @@ const Footer: React.FC = () => {
                 <a
                   key={link.name}
                   href={link.href}
+                  color="muted"
                   className="block text-red-900 hover:text-lime-400
                    transition-colors duration-300"
                 >
-                  <CustomText variant="body">{link.name}</CustomText>
+                  <CustomText color="muted" variant="body">
+                    {link.name}
+                  </CustomText>
                 </a>
               ))}
             </nav>
@@ -88,17 +95,17 @@ const Footer: React.FC = () => {
             </CustomText>
             <div className="space-y-3 text-gray-400">
               <div>
-                <CustomText variant="caption">
+                <CustomText variant="caption" color="muted">
                   Open to new opportunities and exciting projects.
                 </CustomText>
               </div>
               <div>
-                <CustomText variant="caption" weight="medium">
-                  hello@yourname.com
+                <CustomText variant="caption" weight="medium" color="muted">
+                  peter4tech@gmail.com
                 </CustomText>
               </div>
               <div>
-                <CustomText variant="caption">
+                <CustomText variant="caption" color="muted">
                   Available for freelance and full-time positions.
                 </CustomText>
               </div>
@@ -109,14 +116,22 @@ const Footer: React.FC = () => {
         {/* Bottom Bar */}
         <div className="pt-8 border-t border-gray-800">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-            <CustomText variant="caption" className="text-gray-200">
+            <CustomText
+              variant="caption"
+              color="white"
+              className="text-gray-200"
+            >
               © 2025 Your Name. All rights reserved.
             </CustomText>
 
             <div className="flex items-center space-x-2 text-gray-200">
-              <CustomText variant="caption">Made with</CustomText>
+              <CustomText variant="caption" color="muted">
+                Made with
+              </CustomText>
               <Heart className="w-4 h-4 text-red-500 animate-pulse" />
-              <CustomText variant="caption">and lots of coffee</CustomText>
+              <CustomText variant="caption" color="muted">
+                and lots of coffee
+              </CustomText>
             </div>
           </div>
         </div>
