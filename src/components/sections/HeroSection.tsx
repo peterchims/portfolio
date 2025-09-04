@@ -124,7 +124,7 @@ const HeroSection: React.FC = () => {
               className="flex flex-col sm:flex-row gap-4 fade-in-up stagger-5"
               aria-label="Call to actions"
             >
-              {/* <CustomButton
+              <CustomButton
                 variant="primary"
                 size="lg"
                 icon={ArrowRight}
@@ -132,7 +132,7 @@ const HeroSection: React.FC = () => {
                 className="w-full sm:w-auto"
               >
                 View My Work
-              </CustomButton> */}
+              </CustomButton>
 
               <a
                 href="/public/UpdatedTechResume (1).pdf"
