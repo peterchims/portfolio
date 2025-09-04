@@ -1,7 +1,4 @@
-// ui/CustomText.tsx
 import React from 'react';
-import { useTheme } from '../../contexts/ThemeContext';
-import cn from '../../lib/utils/cn';
 
 interface CustomTextProps {
   children: React.ReactNode;
@@ -15,16 +12,9 @@ interface CustomTextProps {
     | 'body'
     | 'caption'
     | 'overline';
-  font?: 'roboto' | 'raleway' | 'bricolage' | 'system';
+  font?: 'roboto' | 'raleway' | 'system';
   weight?: 'light' | 'normal' | 'medium' | 'semibold' | 'bold';
-  color?:
-    | 'primary'
-    | 'secondary'
-    | 'accent'
-    | 'muted'
-    | 'white'
-    | 'gradient'
-    | 'text';
+  color?: 'primary' | 'secondary' | 'accent' | 'muted' | 'white' | 'gradient';
   align?: 'left' | 'center' | 'right' | 'justify';
   className?: string;
   animated?: boolean;
@@ -36,19 +26,17 @@ const CustomText: React.FC<CustomTextProps> = ({
   variant = 'body',
   font = 'raleway',
   weight = 'normal',
-  color = 'text',
+  color = 'primary',
   align = 'left',
   className = '',
   animated = false,
   delay = 0,
 }) => {
-  const { colors } = useTheme();
   const Component = variant.startsWith('h') ? variant : 'p';
 
   const fontClasses = {
     roboto: 'font-roboto',
     raleway: 'font-raleway',
-    bricolage: 'font-bricolage',
     system: 'font-system',
   };
 
@@ -72,6 +60,15 @@ const CustomText: React.FC<CustomTextProps> = ({
     bold: 'font-bold',
   };
 
+  const colorClasses = {
+    primary: 'text-gray-900',
+    secondary: 'text-gray-600',
+    accent: 'text-lime-500',
+    muted: 'text-gray-500',
+    white: 'text-white',
+    gradient: 'gradient-text',
+  };
+
   const alignClasses = {
     left: 'text-left',
     center: 'text-center',
@@ -82,44 +79,21 @@ const CustomText: React.FC<CustomTextProps> = ({
   const animationClasses = animated ? 'fade-in-up' : '';
   const staggerClass = delay > 0 ? `stagger-${Math.min(delay, 5)}` : '';
 
-  const colorStyles: React.CSSProperties = {
-    color:
-      color === 'primary'
-        ? colors.primary
-        : color === 'secondary'
-          ? colors.secondary
-          : color === 'accent'
-            ? colors.accent
-            : color === 'muted'
-              ? colors.mutedText
-              : color === 'white'
-                ? colors.white
-                : color === 'gradient'
-                  ? `linear-gradient(135deg, ${colors.primaryLight}, ${colors.primary})`
-                  : colors.text,
-  };
-
   return React.createElement(
     Component,
     {
-      className: cn(
-        fontClasses[font],
-        variantClasses[variant],
-        weightClasses[weight],
-        alignClasses[align],
-        animationClasses,
-        staggerClass,
-        className
-      ),
-      style:
-        color === 'gradient'
-          ? {
-              background: colorStyles.color,
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
-            }
-          : colorStyles,
+      className: `
+        ${fontClasses[font]}
+        ${variantClasses[variant]}
+        ${weightClasses[weight]}
+        ${colorClasses[color]}
+        ${alignClasses[align]}
+        ${animationClasses}
+        ${staggerClass}
+        ${className}
+      `
+        .trim()
+        .replace(/\s+/g, ' '),
     },
     children
   );

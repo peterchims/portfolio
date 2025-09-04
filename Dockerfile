@@ -29,21 +29,21 @@ CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0", "--port", "3000"]
 
 # -----------------
 # Build stage
-# -----------------
 FROM base AS build
 ENV NODE_ENV=production
 
-# Disable Husky during build
+# Disable Husky
 ENV HUSKY=0
 
-# Install only production dependencies for smaller image
-RUN npm ci --omit=dev && npm cache clean --force
+# Install all dependencies (not just prod)
+RUN npm install
 
-# Copy the source code
+# Copy source code
 COPY . .
 
-# Build the Vite project
+# Build Vite project
 RUN npm run build
+
 
 # -----------------
 # Production stage (Nginx)
