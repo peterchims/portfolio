@@ -1,7 +1,7 @@
 // src/ui/CustomButton.tsx
 import React from 'react';
 
-type Variant = 'primary' | 'secondary' | 'outline';
+type Variant = 'primary' | 'secondary' | 'outline' | 'ghost';
 type Size = 'sm' | 'md' | 'lg';
 
 interface CustomButtonProps {
@@ -39,6 +39,7 @@ const CustomButton: React.FC<CustomButtonProps> = ({
     primary: 'bg-green-900 text-white hover:bg-green-800',
     secondary: 'bg-gray-200 text-gray-800 hover:bg-gray-300',
     outline: 'border-2 border-green-900 text-green-900 hover:bg-green-50',
+    ghost: 'bg-transparent text-green-900 hover:bg-green-50', // your style here
   };
 
   const baseClasses = `
