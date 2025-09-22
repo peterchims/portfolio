@@ -128,14 +128,14 @@ const ContactSection: React.FC = () => {
                   Available for Projects
                 </CustomText>
               </header>
-              <CustomText
+              {/* <CustomText
                 variant="caption"
                 color="white"
                 className="text-gray-200"
               >
                 Currently open to new opportunities and exciting projects.
                 Let&apos;s discuss how I can help bring your vision to life.
-              </CustomText>
+              </CustomText> */}
             </section>
           </aside>
 
