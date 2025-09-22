@@ -121,7 +121,12 @@ const HeroSection: React.FC = () => {
 
             {/* CTA Buttons */}
             <nav
-              className="flex flex-col sm:flex-row gap-4 fade-in-up stagger-5"
+              className="flex 
+              flex-col 
+              sm:flex-row 
+              gap-4 
+              fade-in-up 
+              stagger-5"
               aria-label="Call to actions"
             >
               <CustomButton
