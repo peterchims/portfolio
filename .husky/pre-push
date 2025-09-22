@@ -1,5 +1,5 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
-# run lint before push
-npm run lint
+echo "🔎 Running lint before push..."
+npm run lint || exit 1
