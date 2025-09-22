@@ -87,7 +87,7 @@ const AboutSection: React.FC = () => {
                     color: 'from-orange-400 to-red-500',
                     delay: '900',
                   },
-                ].map((item, index) => (
+                ].map(item => (
                   <div key={item.skill} className="space-y-2">
                     <div className="flex justify-between">
                       <CustomText variant="caption" weight="medium">

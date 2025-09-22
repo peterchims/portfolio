@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 // src/contexts/ThemeContext/ThemeContext.tsx
 import React, {
   createContext,
