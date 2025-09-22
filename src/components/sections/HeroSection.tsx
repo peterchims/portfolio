@@ -216,10 +216,10 @@ const HeroSection: React.FC = () => {
                     />
                   </div>
                   <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
-                    {/* <div
+                    <div
                       className="h-full bg-gradient-to-r from-purple-400 to-purple-500 rounded-full w-4/6 animate-pulse"
                       style={{ animationDelay: '1s' }}
-                    /> */}
+                    />
                   </div>
                 </div>
               </div>
