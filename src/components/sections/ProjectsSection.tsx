@@ -63,16 +63,29 @@ const ProjectsSection: React.FC = () => {
                   <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   <div className="absolute bottom-4 left-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     <div className="flex space-x-3">
-                      <CustomButton variant="outline" size="sm" icon={Github}>
-                        Code
-                      </CustomButton>
-                      <CustomButton
-                        variant="primary"
-                        size="sm"
-                        icon={ExternalLink}
+                      <a
+                        href="https://github.com/peterchims/your-project-repo"
+                        target="_blank"
+                        rel="noopener noreferrer"
                       >
-                        Live Demo
-                      </CustomButton>
+                        <CustomButton variant="outline" size="sm" icon={Github}>
+                          Code
+                        </CustomButton>
+                      </a>
+
+                      <a
+                        href="https://claudygod.org/#/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <CustomButton
+                          variant="primary"
+                          size="sm"
+                          icon={ExternalLink}
+                        >
+                          Live
+                        </CustomButton>
+                      </a>
                     </div>
                   </div>
                 </div>

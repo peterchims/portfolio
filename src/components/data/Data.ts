@@ -15,6 +15,7 @@ import {
   Smartphone,
   Globe,
 } from 'lucide-react';
+import { Mobile, cashra, Proj1 } from '../../assets';
 
 export const contactInfo = [
   {
@@ -167,26 +168,86 @@ export const additionalTechnologies = [
 ];
 export const projects = [
   {
-    title: 'E-Commerce Platform',
-    description:
-      'Full-stack e-commerce solution with payment integration, inventory management, and admin dashboard.',
-    image:
-      'https://images.pexels.com/photos/230544/pexels-photo-230544.jpeg?auto=compress&cs=tinysrgb&w=600',
-    technologies: ['React', 'Node.js', 'PostgreSQL', 'Stripe'],
-    category: 'Web Application',
-    date: '2024',
+    title: 'Cashra Finance Manager',
+    description: `Cashra Finance Manager is a simple and powerful app designed to help you take control of your money. 
+Easily track income and expenses, set financial goals, monitor budgets, and view insightful reports — all in one secure place. 
+Stay organized, make smarter decisions, and keep your finances on track anytime, anywhere.`,
+    image: cashra,
+    technologies: [
+      'Vite',
+      'React',
+      'TypeScript',
+      'Tailwind CSS',
+      'GSAP',
+      'React Hook Form',
+      'Yup',
+      'React-Redux',
+      'TanStack Query (React Query)',
+      'React Router',
+      'Axios',
+      'dotenv',
+      'Prettier',
+      'Simple-git-hooks',
+      'Nano-staged',
+      'clsx',
+      'tailwind-merge',
+      'PostCSS',
+      'ESM',
+      'HMR',
+    ],
+    category: 'Music & Ministry Platform',
+    date: '2025',
     featured: true,
+    liveUrl: 'https://taskmanager-demo.com', // 👈 demo link
+    codeUrl: 'https://github.com/username/taskmanager', // 👈 repo link
   },
   {
-    title: 'Task Management App',
-    description:
-      'Collaborative project management tool with real-time updates, team collaboration, and progress tracking.',
-    image:
-      'https://images.pexels.com/photos/7688336/pexels-photo-7688336.jpeg?auto=compress&cs=tinysrgb&w=600',
-    technologies: ['React', 'TypeScript', 'Socket.io', 'MongoDB'],
-    category: 'SaaS',
+    title: 'ClaudyGod Music & Ministries',
+    description: `An inspirational platform combining music streaming with ministry outreach.
+    Fans can discover and stream gospel tracks, watch live ministry events, and support artists.`,
+    image: Proj1,
+    technologies: [
+      'React 18',
+      'TypeScript',
+      'Vite',
+      'Tailwind CSS',
+      'Responsive Design',
+      'Component-Based Architecture',
+      'ESLint',
+      'Prettier',
+      'Husky',
+      'lint-staged',
+      'Environment Variables',
+      'SEO Optimization',
+      'React Router',
+      'Axios',
+      'Render',
+      'npm',
+      'clsx',
+      'tailwind-merge',
+      'Node.js',
+      'Vercel',
+      'Netlify',
+    ],
+    category: 'Music & Ministry Platform',
     date: '2024',
     featured: true,
+    liveUrl: 'https://claudygod.org/#/', // 👈 live link
+    codeUrl: 'https://github.com/peterchims/claudygod', // 👈 repo link
+  },
+  {
+    title: 'ClaudyGod Music App',
+    description: `ClaudyGod – Music on the Go is a simple and inspiring app where you can discover, 
+play, and enjoy ClaudyGod Music and Ministries content anytime. 
+Stream uplifting songs, listen to messages, explore curated playlists, 
+and stay connected with the latest releases from ClaudyGod wherever you are.`,
+    image: Mobile,
+    technologies: ['React Native', 'TypeScript', 'Socket.io', 'MongoDB', ''],
+    category: 'Music & Ministry Platform',
+    date: '2025',
+    featured: true,
+    liveUrl: 'https://taskmanager-demo.com', // 👈 demo link
+    codeUrl: 'https://github.com/username/taskmanager', // 👈 repo link
   },
   {
     title: 'Weather Analytics Dashboard',
@@ -198,6 +259,8 @@ export const projects = [
     category: 'Data Visualization',
     date: '2023',
     featured: false,
+    liveUrl: 'https://weatheranalytics-demo.com',
+    codeUrl: 'https://github.com/username/weatheranalytics',
   },
   {
     title: 'Social Media App',
@@ -209,6 +272,8 @@ export const projects = [
     category: 'Mobile App',
     date: '2023',
     featured: false,
+    liveUrl: 'https://socialapp-demo.com',
+    codeUrl: 'https://github.com/username/socialapp',
   },
   {
     title: 'AI-Powered Blog',
@@ -220,6 +285,8 @@ export const projects = [
     category: 'AI/ML',
     date: '2024',
     featured: false,
+    liveUrl: 'https://aiblog-demo.com',
+    codeUrl: 'https://github.com/username/aiblog',
   },
   {
     title: 'Crypto Trading Bot',
@@ -231,5 +298,7 @@ export const projects = [
     category: 'FinTech',
     date: '2023',
     featured: false,
+    liveUrl: 'https://cryptobot-demo.com',
+    codeUrl: 'https://github.com/username/cryptobot',
   },
 ];
