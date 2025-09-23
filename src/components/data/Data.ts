@@ -196,7 +196,7 @@ Stay organized, make smarter decisions, and keep your finances on track anytime,
       'ESM',
       'HMR',
     ],
-    category: 'Music & Ministry Platform',
+    category: 'Finance Manager Platform',
     date: '2025',
     featured: true,
     liveUrl: 'https://taskmanager-demo.com', // 👈 demo link
