@@ -14,6 +14,7 @@ import {
   Server,
   Smartphone,
   Globe,
+  Twitter,
 } from 'lucide-react';
 import { Mobile, cashra, Proj1 } from '../../assets';
 
@@ -301,4 +302,19 @@ and stay connected with the latest releases from ClaudyGod wherever you are.`,
     liveUrl: 'https://cryptobot-demo.com',
     codeUrl: 'https://github.com/username/cryptobot',
   },
+];
+// Footer-data
+export const FooterLinks = [
+  { icon: Github, href: '#', label: 'GitHub' },
+  { icon: Linkedin, href: '#', label: 'LinkedIn' },
+  { icon: Twitter, href: '#', label: 'Twitter' },
+  { icon: Mail, href: '#contact', label: 'Email' },
+];
+
+export const quickLinks = [
+  { name: 'Home', href: '#home' },
+  { name: 'About', href: '#about' },
+  { name: 'Skills', href: '#skills' },
+  { name: 'Projects', href: '#projects' },
+  { name: 'Contact', href: '#contact' },
 ];
