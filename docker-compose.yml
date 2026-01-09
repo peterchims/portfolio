@@ -1,40 +1,32 @@
 version: '3.8'
+
 services:
-  # -----------------
-  # Production service
-  # -----------------
-  portfolio-prod:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: prod
+  portfolio:
+    build: .
     ports:
       - "3000:80"
     environment:
-      NODE_ENV: production
+      - NODE_ENV=production
     restart: unless-stopped
-    profiles:
-      - prod
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
 
-  # -----------------
-  # Development service
-  # -----------------
+  # Development service (optional)
   portfolio-dev:
     build:
       context: .
-      dockerfile: Dockerfile
-      target: dev
+      target: builder
     ports:
-      - "3000:3000"
+      - "5173:5173"
     volumes:
-      - .:/app:cached         # Mount project source
-      - /app/node_modules     # Preserve container node_modules
+      - ./src:/app/src
+      - ./public:/app/public
     environment:
-      NODE_ENV: development
-      CHOKIDAR_USEPOLLING: "true"  # For file watching in Docker
-      WATCHPACK_POLLING: "true"    # Extra polling for Vite hot reload
-    command: npm run dev -- --host 0.0.0.0 --port 3000
+      - NODE_ENV=development
+    command: npm run dev -- --host 0.0.0.0
     profiles:
       - dev
-    stdin_open: true
-    tty: true

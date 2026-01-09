@@ -1,16 +1,89 @@
 import React from 'react';
-import { skillCategories, additionalTechnologies } from '../data/Data';
+import {
+  Code2,
+  Database,
+  Palette,
+  Server,
+  Smartphone,
+  Globe,
+} from 'lucide-react';
 import CustomText from '../ui/CustomText';
 
 const SkillsSection: React.FC = () => {
+  const skillCategories = [
+    {
+      icon: Code2,
+      title: 'Frontend Development',
+      color: 'from-blue-400 to-blue-600',
+      skills: [
+        'React',
+        'TypeScript',
+        'Next.js',
+        'Tailwind CSS',
+        'Vue.js',
+        'Angular',
+      ],
+    },
+    {
+      icon: Server,
+      title: 'Backend Development',
+      color: 'from-green-400 to-green-600',
+      skills: [
+        'Node.js',
+        'Python',
+        'Express',
+        'FastAPI',
+        'GraphQL',
+        'REST APIs',
+      ],
+    },
+    {
+      icon: Database,
+      title: 'Database & Cloud',
+      color: 'from-purple-400 to-purple-600',
+      skills: ['PostgreSQL', 'MongoDB', 'Redis', 'AWS', 'Docker', 'Kubernetes'],
+    },
+    {
+      icon: Palette,
+      title: 'Design & UX',
+      color: 'from-pink-400 to-pink-600',
+      skills: [
+        'Figma',
+        'Adobe XD',
+        'Photoshop',
+        'UI Design',
+        'UX Research',
+        'Prototyping',
+      ],
+    },
+    {
+      icon: Smartphone,
+      title: 'Mobile Development',
+      color: 'from-orange-400 to-orange-600',
+      skills: [
+        'React Native',
+        'Flutter',
+        'iOS',
+        'Android',
+        'Progressive Web Apps',
+        'Responsive Design',
+      ],
+    },
+    {
+      icon: Globe,
+      title: 'DevOps & Tools',
+      color: 'from-teal-400 to-teal-600',
+      skills: ['Git', 'CI/CD', 'Jenkins', 'Terraform', 'Monitoring', 'Testing'],
+    },
+  ];
+
   return (
     <section
       id="skills"
       className="py-20 bg-gradient-to-br from-gray-50 to-white"
     >
       <div className="container-custom">
-        {/* Section Header */}
-        <header className="text-center space-y-4 mb-16">
+        <div className="text-center space-y-4 mb-16">
           <CustomText
             variant="overline"
             font="roboto"
@@ -40,19 +113,19 @@ const SkillsSection: React.FC = () => {
             enable me to build full-stack applications from conception to
             deployment.
           </CustomText>
-        </header>
+        </div>
 
-        {/* Main Skills Content */}
-        <main className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {/* Skills Grid */}
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {skillCategories.map(category => (
-            <article
+            <div
               key={category.title}
               className="group relative p-6 bg-white rounded-xl shadow-sm hover:shadow-xl transition-all duration-500 border border-gray-100 hover:border-lime-200 overflow-hidden"
             >
               {/* Background Gradient */}
               <div
                 className={`absolute inset-0 bg-gradient-to-br ${category.color} opacity-0 group-hover:opacity-5 transition-opacity duration-500`}
-              />
+              ></div>
 
               <div className="relative z-10 space-y-4">
                 {/* Icon */}
@@ -73,27 +146,27 @@ const SkillsSection: React.FC = () => {
                 </CustomText>
 
                 {/* Skills List */}
-                <ul className="space-y-2">
+                <div className="space-y-2">
                   {category.skills.map((skill, skillIndex) => (
-                    <li
+                    <div
                       key={skill}
                       className="flex items-center space-x-2 opacity-80 group-hover:opacity-100 transition-opacity duration-300"
                       style={{ transitionDelay: `${skillIndex * 50}ms` }}
                     >
-                      <div className="w-2 h-2 bg-lime-400 rounded-full" />
+                      <div className="w-2 h-2 bg-lime-400 rounded-full"></div>
                       <CustomText variant="caption" color="secondary">
                         {skill}
                       </CustomText>
-                    </li>
+                    </div>
                   ))}
-                </ul>
+                </div>
               </div>
-            </article>
+            </div>
           ))}
-        </main>
+        </div>
 
-        {/* Additional Skills Section */}
-        <section className="mt-16 text-center">
+        {/* Additional Skills */}
+        <div className="mt-16 text-center">
           <CustomText
             variant="h6"
             font="roboto"
@@ -102,9 +175,27 @@ const SkillsSection: React.FC = () => {
           >
             Additional Technologies
           </CustomText>
-
           <div className="flex flex-wrap justify-center gap-3">
-            {additionalTechnologies.map(tech => (
+            {[
+              'JavaScript',
+              'Python',
+              'Go',
+              'Rust',
+              'PostgreSQL',
+              'MongoDB',
+              'Redis',
+              'Docker',
+              'Kubernetes',
+              'AWS',
+              'GCP',
+              'Vercel',
+              'Figma',
+              'Adobe Creative Suite',
+              'Git',
+              'Linux',
+              'Nginx',
+              'GraphQL',
+            ].map(tech => (
               <span
                 key={tech}
                 className="px-4 py-2 bg-gradient-to-r from-gray-100 to-gray-200 hover:from-lime-100 hover:to-green-100 text-gray-700 hover:text-green-800 rounded-full text-sm font-medium transition-all duration-300 hover:scale-105 cursor-default"
@@ -113,7 +204,7 @@ const SkillsSection: React.FC = () => {
               </span>
             ))}
           </div>
-        </section>
+        </div>
       </div>
     </section>
   );
