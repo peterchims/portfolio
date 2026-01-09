@@ -14,16 +14,7 @@ interface CustomTextProps {
     | 'overline';
   font?: 'roboto' | 'raleway' | 'system';
   weight?: 'light' | 'normal' | 'medium' | 'semibold' | 'bold';
-  color?:
-    | 'primary'
-    | 'secondary'
-    | 'accent'
-    | 'muted'
-    | 'white'
-    | 'gradient'
-    | 'lime-400'
-    | 'gray-300'
-    | 'gray-400';
+  color?: 'primary' | 'secondary' | 'accent' | 'muted' | 'white' | 'gradient';
   align?: 'left' | 'center' | 'right' | 'justify';
   className?: string;
   animated?: boolean;
@@ -76,9 +67,6 @@ const CustomText: React.FC<CustomTextProps> = ({
     muted: 'text-gray-500',
     white: 'text-white',
     gradient: 'gradient-text',
-    'lime-400': 'text-lime-400',
-    'gray-300': 'text-gray-300',
-    'gray-400': 'text-gray-400',
   };
 
   const alignClasses = {

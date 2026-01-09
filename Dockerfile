@@ -1,67 +1,36 @@
-# -----------------
-# Base dependencies
-# -----------------
-FROM node:18-alpine AS base
+# Use Node.js 18 Alpine as base image
+FROM node:18-alpine AS builder
+
+# Set working directory
 WORKDIR /app
-# Copy only package files first to leverage Docker cache
+
+# Copy package files
 COPY package*.json ./
 
-# -----------------
-# Development stage
-# -----------------
-FROM base AS dev
-ENV NODE_ENV=development
-
-# Install all dependencies including dev dependencies
-RUN npm install
+# Install dependencies
+RUN npm ci --only=production && npm cache clean --force
 
 # Copy source code
 COPY . .
 
-# Expose Vite default port
-EXPOSE 3000
-
-# Install nodemon globally for hot reload (optional)
-RUN npm install -g nodemon
-
-# Command to run Vite in dev mode
-CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0", "--port", "3000"]
-
-# -----------------
-# Build stage
-FROM base AS build
-ENV NODE_ENV=production
-
-# Disable Husky
-ENV HUSKY=0
-
-# Install all dependencies (not just prod)
-RUN npm install
-
-# Copy source code
-COPY . .
-
-# Build Vite project
+# Build the application
 RUN npm run build
 
+# Production stage
+FROM nginx:alpine
 
-# -----------------
-# Production stage (Nginx)
-# -----------------
-FROM nginx:alpine AS prod
+# Copy built assets from builder stage
+COPY --from=builder /app/dist /usr/share/nginx/html
 
-# Copy the built files from the build stage
-COPY --from=build /app/dist /usr/share/nginx/html
-
-# Copy custom Nginx config
+# Copy nginx configuration
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# Expose default HTTP port
+# Expose port 80
 EXPOSE 80
 
-# Optional healthcheck
+# Add health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD wget -q --spider http://localhost/ || exit 1
+  CMD curl -f http://localhost/ || exit 1
 
-# Start Nginx
+# Start nginx
 CMD ["nginx", "-g", "daemon off;"]
