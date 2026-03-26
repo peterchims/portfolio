@@ -1,1 +1,198 @@
-@import './styles/globals.css';
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=Manrope:wght@400;500;600;700;800&family=Syne:wght@500;700;800&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg-canvas: #f3ecdf;
+  --bg-surface: rgba(255, 248, 238, 0.74);
+  --bg-panel: #fff8ef;
+  --ink-strong: #102033;
+  --ink-soft: #42516a;
+  --ink-muted: #6b7288;
+  --line-soft: rgba(16, 32, 51, 0.1);
+  --accent-copper: #a74e33;
+  --accent-gold: #c98b2f;
+  --accent-teal: #195f67;
+  --accent-sand: #e2c38f;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top left, rgba(201, 139, 47, 0.15), transparent 28%),
+    radial-gradient(circle at top right, rgba(25, 95, 103, 0.14), transparent 32%),
+    linear-gradient(180deg, #f7f0e5 0%, #f3ecdf 50%, #efe7d8 100%);
+  color: var(--ink-strong);
+  font-family: 'Manrope', sans-serif;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(16, 32, 51, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(16, 32, 51, 0.04) 1px, transparent 1px);
+  background-size: 32px 32px;
+  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.25), transparent 70%);
+}
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  button,
+  input,
+  textarea,
+  select {
+    font: inherit;
+  }
+}
+
+@layer components {
+  .app-shell {
+    position: relative;
+    min-height: 100vh;
+    overflow: hidden;
+  }
+
+  .paper-panel {
+    border: 1px solid var(--line-soft);
+    background: var(--bg-surface);
+    backdrop-filter: blur(22px);
+    box-shadow: 0 24px 60px rgba(16, 32, 51, 0.08);
+  }
+
+  .section-frame {
+    border: 1px solid var(--line-soft);
+    background: var(--bg-surface);
+    backdrop-filter: blur(22px);
+    box-shadow: 0 24px 60px rgba(16, 32, 51, 0.08);
+    border-radius: 32px;
+    padding: 1.5rem;
+  }
+
+  .section-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.76rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--accent-teal);
+  }
+
+  .display-title {
+    font-family: 'Syne', sans-serif;
+    letter-spacing: -0.05em;
+    line-height: 0.95;
+  }
+
+  .body-copy {
+    color: var(--ink-soft);
+  }
+
+  .mono-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.74rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .grid-wash {
+    background-image:
+      radial-gradient(circle at top left, rgba(201, 139, 47, 0.16), transparent 30%),
+      radial-gradient(circle at bottom right, rgba(25, 95, 103, 0.14), transparent 32%);
+  }
+
+  .lift-card {
+    transition:
+      transform 220ms ease,
+      box-shadow 220ms ease,
+      border-color 220ms ease;
+  }
+
+  .lift-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 28px 72px rgba(16, 32, 51, 0.14);
+    border-color: rgba(16, 32, 51, 0.16);
+  }
+
+  .accent-orb {
+    position: absolute;
+    border-radius: 9999px;
+    filter: blur(72px);
+  }
+
+  .form-input {
+    width: 100%;
+    border: 1px solid rgba(16, 32, 51, 0.14);
+    background: rgba(255, 255, 255, 0.72);
+    border-radius: 20px;
+    padding: 0.95rem 1rem;
+    color: var(--ink-strong);
+    transition:
+      border-color 160ms ease,
+      box-shadow 160ms ease,
+      background-color 160ms ease;
+  }
+
+  .form-input:focus {
+    outline: none;
+    border-color: rgba(25, 95, 103, 0.45);
+    box-shadow: 0 0 0 4px rgba(25, 95, 103, 0.14);
+    background: rgba(255, 255, 255, 0.92);
+  }
+
+  .reveal-up {
+    animation: reveal-up 720ms ease both;
+  }
+}
+
+@media (min-width: 768px) {
+  @layer components {
+    .section-frame {
+      padding: 2rem;
+    }
+  }
+}
+
+@keyframes reveal-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 248, 238, 0.8);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(16, 32, 51, 0.2);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(16, 32, 51, 0.35);
+}
