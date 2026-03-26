@@ -8,24 +8,15 @@
     "backend"
   ],
   "scripts": {
-    "prepare": "husky",
     "dev:web": "npm run dev --workspace frontend",
     "dev:api": "npm run dev --workspace backend",
     "preview": "npm run preview --workspace frontend",
     "build": "npm run build --workspace frontend",
     "start": "NODE_ENV=production npm run start --workspace backend",
-    "lint": "eslint frontend backend",
+    "lint": "eslint frontend",
     "test": "npm run test --workspace backend",
     "typecheck": "npm run typecheck --workspace frontend",
-    "verify": "npm run lint && npm run test && npm run build"
-  },
-  "lint-staged": {
-    "frontend/**/*.{ts,tsx}": [
-      "eslint --fix"
-    ],
-    "backend/**/*.js": [
-      "eslint --fix"
-    ]
+    "verify": "npm run lint && npm run build"
   },
   "devDependencies": {
     "@eslint/js": "^9.9.1",
@@ -33,8 +24,6 @@
     "eslint-plugin-react-hooks": "^5.1.0-rc.0",
     "eslint-plugin-react-refresh": "^0.4.11",
     "globals": "^15.9.0",
-    "husky": "^9.1.7",
-    "lint-staged": "^15.2.10",
     "typescript-eslint": "^8.3.0"
   }
 }

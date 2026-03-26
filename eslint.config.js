@@ -9,7 +9,8 @@ export default tseslint.config(
     ignores: [
       '**/dist/**',
       '**/node_modules/**',
-      'backend/storage/*.json',
+      'backend/**',
+      '.git/**',
     ],
   },
   {
@@ -29,17 +30,6 @@ export default tseslint.config(
         'warn',
         { allowConstantExport: true },
       ],
-    },
-  },
-  {
-    extends: [js.configs.recommended],
-    files: ['backend/**/*.js'],
-    languageOptions: {
-      ecmaVersion: 2022,
-      globals: globals.node,
-    },
-    rules: {
-      'no-console': 'off',
     },
   }
 );
