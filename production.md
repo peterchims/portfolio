@@ -2,10 +2,17 @@
 
 ## Runtime Model
 
-Production runs through the Node server in `server/index.js`.
-The server exposes API routes and serves the built frontend from `dist/`.
+Production runs through `backend/index.js`.
+The backend serves API routes and serves the built frontend from `frontend/dist/`.
+
+## Directory Layout
+
+- `frontend/`: Vite application and public assets
+- `backend/`: HTTP server, validation, storage, and API contracts
 
 ## Environment Variables
+
+### Backend
 
 - `PORT`: HTTP port, default `8787`
 - `APP_ORIGIN`: allowed origin for CORS responses
@@ -13,8 +20,21 @@ The server exposes API routes and serves the built frontend from `dist/`.
 - `CONTACT_RATE_LIMIT_MAX`: max contact requests allowed per window
 - `INTERACTION_RATE_LIMIT_WINDOW_MS`: analytics rate-limit window in milliseconds
 - `INTERACTION_RATE_LIMIT_MAX`: max interaction requests allowed per window
+- `FRONTEND_DIST_DIR`: optional absolute path override for built frontend assets
 
-## Local Production Run
+### Frontend
+
+- `VITE_API_BASE_URL`: optional API base URL override
+- `VITE_API_PROXY_TARGET`: dev proxy target, default `http://localhost:8787`
+
+## Local Run
+
+1. `npm install`
+2. `npm run dev:api`
+3. `npm run dev:web`
+4. Open `http://localhost:5173`
+
+## Production Run
 
 1. `npm install`
 2. `npm run build`
@@ -29,15 +49,6 @@ The server exposes API routes and serves the built frontend from `dist/`.
 
 ## Operational Notes
 
-- Contact submissions are persisted to `server/storage/contact-submissions.json`
-- Interaction events are persisted to `server/storage/interaction-events.json`
-- Runtime storage is intentionally excluded from git
-- The server applies request ids, input validation, security headers, and memory-backed rate limiting
-
-## Hardening Recommendations
-
-- Replace local JSON persistence with a database or managed queue for real traffic
-- Wire `POST /api/contact` into transactional email or CRM delivery
-- Put the app behind a reverse proxy with TLS termination
-- Add centralized logging and metrics shipping
-- Add backups for `server/storage` if local persistence remains in use
+- Contact submissions persist to `backend/storage/contact-submissions.json`
+- Interaction events persist to `backend/storage/interaction-events.json`
+- Git hooks enforce staged-file linting before commit and full verification before push
