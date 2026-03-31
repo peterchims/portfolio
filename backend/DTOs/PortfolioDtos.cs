@@ -63,19 +63,19 @@ public class CreateContactDto
 {
     public string Name { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;
-    public string Subject { get; set; } = string.Empty;
+    public string Company { get; set; } = string.Empty;
+    public string ProjectType { get; set; } = string.Empty;
+    public string Budget { get; set; } = string.Empty;
+    public string Timeline { get; set; } = string.Empty;
     public string Message { get; set; } = string.Empty;
+    public string? Subject { get; set; }
 }
 
-public class TestimonialDto
+public class ContactSubmissionResponseDto
 {
-    public Guid Id { get; set; }
-    public string Name { get; set; } = string.Empty;
-    public string Title { get; set; } = string.Empty;
-    public string? Company { get; set; }
-    public string Content { get; set; } = string.Empty;
-    public string? ImageUrl { get; set; }
-    public int Rating { get; set; }
+    public bool Ok { get; set; }
+    public string Message { get; set; } = string.Empty;
+    public string SubmissionId { get; set; } = string.Empty;
 }
 
 public class TestimonialDto
@@ -115,4 +115,20 @@ public class CreateSkillDto
     public int Proficiency { get; set; } = 50;
     public string? Icon { get; set; }
     public int Order { get; set; }
+}
+
+public class InteractionDto
+{
+    public string Event { get; set; } = string.Empty;
+    public string? Section { get; set; }
+    public string? Label { get; set; }
+}
+
+public class HealthDto
+{
+    public string Status { get; set; } = string.Empty;
+    public string Timestamp { get; set; } = string.Empty;
+    public string StartedAt { get; set; } = string.Empty;
+    public double UptimeSeconds { get; set; }
+    public string Environment { get; set; } = string.Empty;
 }

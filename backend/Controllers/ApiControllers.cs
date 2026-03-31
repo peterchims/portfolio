@@ -36,7 +36,10 @@ public class ProjectsController : ControllerBase
     {
         var project = await _projectService.GetProjectByIdAsync(id);
         if (project == null)
+        {
             return NotFound();
+        }
+
         return Ok(project);
     }
 
@@ -74,10 +77,23 @@ public class BlogController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<object>> GetPosts([FromQuery] int page = 1, [FromQuery] int pageSize = 10, [FromQuery] string? category = null)
+    public async Task<ActionResult<object>> GetPosts(
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 10,
+        [FromQuery] string? category = null)
     {
         var (posts, total) = await _blogService.GetBlogPostsAsync(page, pageSize, category);
-        return Ok(new { posts, pagination = new { total, page, pageSize, pages = (int)Math.Ceiling((double)total / pageSize) } });
+        return Ok(new
+        {
+            posts,
+            pagination = new
+            {
+                total,
+                page,
+                pageSize,
+                pages = (int)Math.Ceiling((double)total / pageSize),
+            },
+        });
     }
 
     [HttpGet("{slug}")]
@@ -85,7 +101,10 @@ public class BlogController : ControllerBase
     {
         var post = await _blogService.GetPostBySlugAsync(slug);
         if (post == null)
+        {
             return NotFound();
+        }
+
         return Ok(post);
     }
 
@@ -125,11 +144,17 @@ public class ContactController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<ContactDto>> Submit(CreateContactDto dto)
+    public async Task<ActionResult<ContactSubmissionResponseDto>> Submit(CreateContactDto dto)
     {
         var ipAddress = _httpContextAccessor.HttpContext?.Connection.RemoteIpAddress?.ToString();
         var contact = await _contactService.SubmitContactAsync(dto, ipAddress);
-        return CreatedAtAction(nameof(GetById), new { id = contact.Id }, contact);
+
+        return Ok(new ContactSubmissionResponseDto
+        {
+            Ok = true,
+            Message = "Project brief received.",
+            SubmissionId = contact.Id.ToString(),
+        });
     }
 
     [HttpGet]
@@ -144,7 +169,10 @@ public class ContactController : ControllerBase
     {
         var contact = await _contactService.GetContactByIdAsync(id);
         if (contact == null)
+        {
             return NotFound();
+        }
+
         return Ok(contact);
     }
 
@@ -193,7 +221,10 @@ public class TestimonialsController : ControllerBase
     {
         var testimonial = await _testimonialService.GetTestimonialByIdAsync(id);
         if (testimonial == null)
+        {
             return NotFound();
+        }
+
         return Ok(testimonial);
     }
 
@@ -257,7 +288,10 @@ public class SkillsController : ControllerBase
     {
         var skill = await _skillService.GetSkillByIdAsync(id);
         if (skill == null)
+        {
             return NotFound();
+        }
+
         return Ok(skill);
     }
 

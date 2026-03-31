@@ -23,4 +23,10 @@
     <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="7.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="..\shared\portfolio-site-content.json" Link="Content\portfolio-site-content.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

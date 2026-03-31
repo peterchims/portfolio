@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
+using PortfolioAPI.Data;
 using PortfolioAPI.DTOs;
 using PortfolioAPI.Models;
-using PortfolioAPI.Data;
 
 namespace PortfolioAPI.Services;
 
@@ -25,13 +25,16 @@ public class ContactService : IContactService
 
     public async Task<ContactDto> SubmitContactAsync(CreateContactDto dto, string? ipAddress = null)
     {
+        var subject = BuildSubject(dto);
+        var message = BuildMessage(dto);
+
         var contact = new Contact
         {
             Name = dto.Name,
             Email = dto.Email,
-            Subject = dto.Subject,
-            Message = dto.Message,
-            IpAddress = ipAddress
+            Subject = subject,
+            Message = message,
+            IpAddress = ipAddress,
         };
 
         _context.Contacts.Add(contact);
@@ -75,6 +78,44 @@ public class ContactService : IContactService
         await _context.SaveChangesAsync();
     }
 
+    private static string BuildSubject(CreateContactDto dto)
+    {
+        if (!string.IsNullOrWhiteSpace(dto.Subject))
+        {
+            return dto.Subject.Trim();
+        }
+
+        var parts = new[]
+        {
+            dto.ProjectType?.Trim(),
+            dto.Company?.Trim(),
+        }
+        .Where(part => !string.IsNullOrWhiteSpace(part))
+        .ToArray();
+
+        return parts.Length > 0 ? string.Join(" · ", parts) : "Portfolio enquiry";
+    }
+
+    private static string BuildMessage(CreateContactDto dto)
+    {
+        var detailLines = new List<string>
+        {
+            $"Company: {FormatDetail(dto.Company)}",
+            $"Project Type: {FormatDetail(dto.ProjectType)}",
+            $"Budget: {FormatDetail(dto.Budget)}",
+            $"Timeline: {FormatDetail(dto.Timeline)}",
+            string.Empty,
+            dto.Message.Trim(),
+        };
+
+        return string.Join(Environment.NewLine, detailLines);
+    }
+
+    private static string FormatDetail(string? value)
+    {
+        return string.IsNullOrWhiteSpace(value) ? "Not provided" : value.Trim();
+    }
+
     private static ContactDto MapToDto(Contact contact)
     {
         return new ContactDto
@@ -84,7 +125,7 @@ public class ContactService : IContactService
             Email = contact.Email,
             Subject = contact.Subject,
             Message = contact.Message,
-            Status = contact.Status.ToString()
+            Status = contact.Status.ToString(),
         };
     }
 }

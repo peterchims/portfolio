@@ -20,15 +20,11 @@ import {
 } from 'lucide-react';
 import { sendContactRequest, trackInteraction } from './lib/api';
 import { usePortfolioContent } from './hooks/usePortfolioContent';
-import type { ContactPayload } from './types/portfolio';
-
-const navigation = [
-  { id: 'home', label: 'Home' },
-  { id: 'services', label: 'Services' },
-  { id: 'projects', label: 'Projects' },
-  { id: 'process', label: 'Process' },
-  { id: 'contact', label: 'Contact' },
-];
+import type {
+  ContactPayload,
+  ContactSelectFieldContent,
+  NavigationItem,
+} from './types/portfolio';
 
 const serviceIcons = [Sparkles, Briefcase, ShieldCheck] as const;
 const projectTones = [
@@ -84,7 +80,15 @@ function formatUptime(seconds: number): string {
   return `${Math.max(1, Math.floor(seconds / 60))}m uptime`;
 }
 
-function LoaderScreen({ name }: { name: string }) {
+function LoaderScreen({
+  name,
+  title,
+  subtitle,
+}: {
+  name: string;
+  title: string;
+  subtitle: string;
+}) {
   return (
     <motion.div
       className="loader-screen"
@@ -96,8 +100,8 @@ function LoaderScreen({ name }: { name: string }) {
       <div className="loader-panel">
         <div className="loader-brand">{toInitials(name)}</div>
         <div className="loader-spinner" aria-hidden="true" />
-        <p className="loader-title">Loading portfolio workspace</p>
-        <p className="loader-subtitle">Designing a cleaner view of product delivery.</p>
+        <p className="loader-title">{title}</p>
+        <p className="loader-subtitle">{subtitle}</p>
       </div>
     </motion.div>
   );
@@ -123,9 +127,17 @@ function SectionIntro({
 
 function SiteHeader({
   name,
+  role,
+  navigation,
+  ctaLabel,
+  ctaHref,
   onNavigate,
 }: {
   name: string;
+  role: string;
+  navigation: NavigationItem[];
+  ctaLabel: string;
+  ctaHref: string;
   onNavigate: (id: string, label: string) => void;
 }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -147,7 +159,7 @@ function SiteHeader({
           <span className="brand-mark">{brandMark}</span>
           <span className="brand-copy">
             <strong>{name}</strong>
-            <small>Portfolio system</small>
+            <small>{role}</small>
           </span>
         </a>
 
@@ -166,11 +178,11 @@ function SiteHeader({
 
         <div className="header-actions">
           <a
-            href="#contact"
+            href={ctaHref}
             className="button button-primary header-cta"
-            onClick={() => handleNavigate('contact', 'Contact')}
+            onClick={() => handleNavigate(ctaHref.replace('#', ''), ctaLabel)}
           >
-            Start a project
+            {ctaLabel}
           </a>
 
           <button
@@ -206,17 +218,46 @@ function SiteHeader({
               ))}
 
               <a
-                href="#contact"
+                href={ctaHref}
                 className="button button-primary mobile-nav-cta"
-                onClick={() => handleNavigate('contact', 'Contact')}
+                onClick={() => handleNavigate(ctaHref.replace('#', ''), ctaLabel)}
               >
-                Start a project
+                {ctaLabel}
               </a>
             </div>
           </motion.div>
         ) : null}
       </AnimatePresence>
     </header>
+  );
+}
+
+function SelectField({
+  field,
+  value,
+  onChange,
+}: {
+  field: ContactSelectFieldContent;
+  value: string;
+  onChange: (value: string) => void;
+}) {
+  return (
+    <label className="field-group">
+      <span>{field.label}</span>
+      <select
+        className="input-control"
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+        required
+      >
+        <option value="">{field.placeholder}</option>
+        {field.options.map((option) => (
+          <option key={option.value} value={option.value}>
+            {option.label}
+          </option>
+        ))}
+      </select>
+    </label>
   );
 }
 
@@ -268,11 +309,11 @@ export default function AppModern() {
     });
   };
 
-  const handleResumeClick = () => {
+  const handleActionClick = (section: string, label: string) => {
     void trackInteraction({
-      event: 'resume_open',
-      section: 'hero',
-      label: 'resume',
+      event: 'cta_click',
+      section,
+      label,
     });
   };
 
@@ -302,7 +343,9 @@ export default function AppModern() {
     }
   };
 
-  const liveState = source === 'api' ? 'Live content feed' : 'Fallback content feed';
+  const { loader, siteNavigation, profile, hero, sections, projectShowcase, contactForm, footer } =
+    content;
+  const liveState = source === 'api' ? hero.modeLabels.api : hero.modeLabels.fallback;
   const systemState = health
     ? `${health.status} · ${formatUptime(health.uptimeSeconds)}`
     : 'Service signal pending';
@@ -310,13 +353,26 @@ export default function AppModern() {
   return (
     <div className="portfolio-shell">
       <AnimatePresence mode="wait">
-        {showLoader ? <LoaderScreen name={content.profile.name} /> : null}
+        {showLoader ? (
+          <LoaderScreen
+            name={profile.name}
+            title={loader.title}
+            subtitle={loader.subtitle}
+          />
+        ) : null}
       </AnimatePresence>
 
       <div className="site-glow site-glow-left" aria-hidden="true" />
       <div className="site-glow site-glow-right" aria-hidden="true" />
 
-      <SiteHeader name={content.profile.name} onNavigate={handleNavigate} />
+      <SiteHeader
+        name={profile.name}
+        role={profile.role}
+        navigation={siteNavigation}
+        ctaLabel={hero.headerCta.label}
+        ctaHref={hero.headerCta.href}
+        onNavigate={handleNavigate}
+      />
 
       <main>
         <section id="home" className="hero-section">
@@ -328,31 +384,29 @@ export default function AppModern() {
               transition={{ duration: 0.65, ease: 'easeOut' }}
             >
               <div className="hero-kicker-row">
-                <span className="section-kicker">
-                  {content.profile.role} · {content.profile.location}
-                </span>
+                <span className="section-kicker">{hero.eyebrow}</span>
                 <span className="status-pill">{liveState}</span>
               </div>
 
-              <h1 className="hero-title">{content.profile.headline}</h1>
-              <p className="hero-lead">{content.profile.summary}</p>
+              <h1 className="hero-title">{profile.headline}</h1>
+              <p className="hero-lead">{profile.summary}</p>
 
               <div className="hero-actions">
                 <a
-                  href="#projects"
+                  href={hero.primaryCta.href}
                   className="button button-primary"
-                  onClick={() => handleNavigate('projects', 'Projects')}
+                  onClick={() => handleActionClick('hero', hero.primaryCta.label)}
                 >
-                  View projects
+                  {hero.primaryCta.label}
                   <ArrowRight size={18} />
                 </a>
 
                 <a
-                  href={content.profile.resumeUrl}
+                  href={hero.secondaryCta.href}
                   className="button button-secondary"
-                  onClick={handleResumeClick}
+                  onClick={() => handleActionClick('hero', hero.secondaryCta.label)}
                 >
-                  Download resume
+                  {hero.secondaryCta.label}
                   <Download size={18} />
                 </a>
               </div>
@@ -395,14 +449,14 @@ export default function AppModern() {
               transition={{ duration: 0.72, ease: 'easeOut', delay: 0.08 }}
             >
               <div className="panel-head">
-                <p className="mono-label">Operational snapshot</p>
+                <p className="mono-label">{hero.panelEyebrow}</p>
                 <span className="status-pill status-pill-strong">
                   {health?.environment ?? 'portfolio'}
                 </span>
               </div>
 
-              <h2 className="panel-title">Readable systems with backend discipline.</h2>
-              <p className="panel-copy">{content.profile.availability}</p>
+              <h2 className="panel-title">{hero.panelTitle}</h2>
+              <p className="panel-copy">{profile.availability}</p>
 
               <div className="signal-list">
                 {content.systemSignals.map((signal) => (
@@ -421,7 +475,7 @@ export default function AppModern() {
               <div className="profile-meta">
                 <div>
                   <MapPin size={16} />
-                  <span>{content.profile.location}</span>
+                  <span>{profile.location}</span>
                 </div>
                 <div>
                   <ShieldCheck size={16} />
@@ -429,7 +483,7 @@ export default function AppModern() {
                 </div>
                 <div>
                   <Mail size={16} />
-                  <a href={`mailto:${content.profile.email}`}>{content.profile.email}</a>
+                  <a href={`mailto:${profile.email}`}>{profile.email}</a>
                 </div>
               </div>
             </motion.aside>
@@ -439,9 +493,9 @@ export default function AppModern() {
         <section id="services" className="section-block">
           <div className="shell">
             <SectionIntro
-              kicker="Capabilities"
-              title="Product work that stays sharp in the interface and stable in delivery."
-              copy="The focus here is cleaner hierarchy, stronger contracts, and production-aware execution instead of decorative complexity."
+              kicker={sections.services.kicker}
+              title={sections.services.title}
+              copy={sections.services.copy}
             />
 
             <div className="card-grid card-grid-3">
@@ -477,9 +531,9 @@ export default function AppModern() {
         <section id="projects" className="section-block">
           <div className="shell">
             <SectionIntro
-              kicker="Featured projects"
-              title="Project models shaped around practical product goals."
-              copy="Each card below is driven by the portfolio content model, so the UI can present real work without relying on filler copy or generic stock positioning."
+              kicker={sections.projects.kicker}
+              title={sections.projects.title}
+              copy={sections.projects.copy}
             />
 
             <div className="project-grid">
@@ -500,22 +554,45 @@ export default function AppModern() {
                       <span>{project.year}</span>
                     </div>
                     <div className="project-mark">{toInitials(project.title)}</div>
+                    <p className="project-spotlight">{project.spotlight}</p>
                     <p className="project-visual-copy">{project.impact}</p>
                   </div>
 
                   <div className="project-body">
-                    <div className="project-title-row">
-                      <h3>{project.title}</h3>
-                    </div>
-
+                    <h3>{project.title}</h3>
                     <p className="project-summary">{project.summary}</p>
 
-                    <div className="chip-row">
-                      {project.stack.map((item) => (
-                        <span key={`${project.title}-${item}`} className="chip">
-                          {item}
-                        </span>
+                    <div className="project-stat-grid">
+                      {project.metrics.map((metric) => (
+                        <div key={`${project.title}-${metric.label}`} className="project-stat">
+                          <p className="project-stat-value">{metric.value}</p>
+                          <p className="project-stat-label">{metric.label}</p>
+                        </div>
                       ))}
+                    </div>
+
+                    <div className="project-detail-grid">
+                      <div>
+                        <p className="project-detail-label">
+                          {projectShowcase.highlightsLabel}
+                        </p>
+                        <ul className="project-highlights">
+                          {project.highlights.map((item) => (
+                            <li key={`${project.title}-${item}`}>{item}</li>
+                          ))}
+                        </ul>
+                      </div>
+
+                      <div>
+                        <p className="project-detail-label">{projectShowcase.stackLabel}</p>
+                        <div className="chip-row">
+                          {project.stack.map((item) => (
+                            <span key={`${project.title}-${item}`} className="chip">
+                              {item}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
                     </div>
 
                     <div className="project-links">
@@ -527,7 +604,7 @@ export default function AppModern() {
                           className="text-link"
                           onClick={() => handleProjectLinkClick(project.title, 'live')}
                         >
-                          Live site
+                          {projectShowcase.liveLabel}
                           <ExternalLink size={16} />
                         </a>
                       ) : null}
@@ -540,15 +617,13 @@ export default function AppModern() {
                           className="text-link"
                           onClick={() => handleProjectLinkClick(project.title, 'code')}
                         >
-                          Source
+                          {projectShowcase.sourceLabel}
                           <ExternalLink size={16} />
                         </a>
                       ) : null}
 
                       {!project.liveUrl && !project.codeUrl ? (
-                        <span className="project-note">
-                          Private build. Walkthrough available on request.
-                        </span>
+                        <span className="project-note">{projectShowcase.privateLabel}</span>
                       ) : null}
                     </div>
                   </div>
@@ -561,9 +636,9 @@ export default function AppModern() {
         <section id="process" className="section-block">
           <div className="shell">
             <SectionIntro
-              kicker="Delivery process"
-              title="A build path that keeps the frontend readable and the system maintainable."
-              copy="The process is explicit: define the model, shape the system, then ship an interface that does not collapse under growth."
+              kicker={sections.process.kicker}
+              title={sections.process.title}
+              copy={sections.process.copy}
             />
 
             <div className="workflow-grid">
@@ -616,9 +691,9 @@ export default function AppModern() {
         <section id="contact" className="section-block section-block-last">
           <div className="shell">
             <SectionIntro
-              kicker="Contact"
-              title="Need a cleaner frontend, a steadier backend, or both."
-              copy="Use the form for serious product work, redesigns, implementation support, or delivery cleanup. The request is sent through the shared API layer, not a hard-coded local endpoint."
+              kicker={sections.contact.kicker}
+              title={sections.contact.title}
+              copy={sections.contact.copy}
             />
 
             <div className="contact-grid">
@@ -630,25 +705,27 @@ export default function AppModern() {
                 viewport={{ once: true, amount: 0.2 }}
               >
                 <div>
-                  <p className="mono-label">Contact details</p>
-                  <h3>{content.profile.name}</h3>
-                  <p className="contact-copy">{content.profile.availability}</p>
+                  <p className="mono-label">{contactForm.detailsLabel}</p>
+                  <h3>{profile.name}</h3>
+                  <p className="contact-copy">{profile.availability}</p>
                 </div>
 
                 <div className="contact-meta-list">
-                  <a href={`mailto:${content.profile.email}`} className="meta-link">
+                  <a href={`mailto:${profile.email}`} className="meta-link">
                     <Mail size={16} />
-                    <span>{content.profile.email}</span>
+                    <span>{profile.email}</span>
                   </a>
-                  <a href={`tel:${content.profile.phone}`} className="meta-link">
+                  <a href={`tel:${profile.phone}`} className="meta-link">
                     <PhoneCall size={16} />
-                    <span>{content.profile.phone}</span>
+                    <span>{profile.phone}</span>
                   </a>
                   <div className="meta-link meta-link-static">
                     <MapPin size={16} />
-                    <span>{content.profile.location}</span>
+                    <span>{profile.location}</span>
                   </div>
                 </div>
+
+                <p className="contact-helper">{contactForm.helperText}</p>
 
                 <div className="contact-socials">
                   {content.socialLinks.map((link) => {
@@ -681,7 +758,7 @@ export default function AppModern() {
               >
                 <div className="field-grid two-up">
                   <label className="field-group">
-                    <span>Name</span>
+                    <span>{contactForm.fields.name.label}</span>
                     <input
                       className="input-control"
                       type="text"
@@ -692,13 +769,13 @@ export default function AppModern() {
                           name: event.target.value,
                         }))
                       }
-                      placeholder="Your name"
+                      placeholder={contactForm.fields.name.placeholder}
                       required
                     />
                   </label>
 
                   <label className="field-group">
-                    <span>Email</span>
+                    <span>{contactForm.fields.email.label}</span>
                     <input
                       className="input-control"
                       type="email"
@@ -709,7 +786,7 @@ export default function AppModern() {
                           email: event.target.value,
                         }))
                       }
-                      placeholder="you@company.com"
+                      placeholder={contactForm.fields.email.placeholder}
                       required
                     />
                   </label>
@@ -717,7 +794,7 @@ export default function AppModern() {
 
                 <div className="field-grid two-up">
                   <label className="field-group">
-                    <span>Company</span>
+                    <span>{contactForm.fields.company.label}</span>
                     <input
                       className="input-control"
                       type="text"
@@ -728,79 +805,49 @@ export default function AppModern() {
                           company: event.target.value,
                         }))
                       }
-                      placeholder="Company or team"
+                      placeholder={contactForm.fields.company.placeholder}
                       required
                     />
                   </label>
 
-                  <label className="field-group">
-                    <span>Project type</span>
-                    <select
-                      className="input-control"
-                      value={formData.projectType}
-                      onChange={(event) =>
-                        setFormData((current) => ({
-                          ...current,
-                          projectType: event.target.value,
-                        }))
-                      }
-                      required
-                    >
-                      <option value="">Select one</option>
-                      <option value="frontend-redesign">Frontend redesign</option>
-                      <option value="full-stack-build">Full-stack build</option>
-                      <option value="backend-integration">Backend integration</option>
-                      <option value="maintenance">Maintenance and cleanup</option>
-                    </select>
-                  </label>
+                  <SelectField
+                    field={contactForm.fields.projectType}
+                    value={formData.projectType}
+                    onChange={(value) =>
+                      setFormData((current) => ({
+                        ...current,
+                        projectType: value,
+                      }))
+                    }
+                  />
                 </div>
 
                 <div className="field-grid two-up">
-                  <label className="field-group">
-                    <span>Budget</span>
-                    <select
-                      className="input-control"
-                      value={formData.budget}
-                      onChange={(event) =>
-                        setFormData((current) => ({
-                          ...current,
-                          budget: event.target.value,
-                        }))
-                      }
-                      required
-                    >
-                      <option value="">Select budget</option>
-                      <option value="under-2k">Under $2k</option>
-                      <option value="2k-5k">$2k to $5k</option>
-                      <option value="5k-10k">$5k to $10k</option>
-                      <option value="10k-plus">$10k+</option>
-                    </select>
-                  </label>
+                  <SelectField
+                    field={contactForm.fields.budget}
+                    value={formData.budget}
+                    onChange={(value) =>
+                      setFormData((current) => ({
+                        ...current,
+                        budget: value,
+                      }))
+                    }
+                  />
 
-                  <label className="field-group">
-                    <span>Timeline</span>
-                    <select
-                      className="input-control"
-                      value={formData.timeline}
-                      onChange={(event) =>
-                        setFormData((current) => ({
-                          ...current,
-                          timeline: event.target.value,
-                        }))
-                      }
-                      required
-                    >
-                      <option value="">Select timeline</option>
-                      <option value="asap">As soon as possible</option>
-                      <option value="2-4-weeks">2 to 4 weeks</option>
-                      <option value="1-2-months">1 to 2 months</option>
-                      <option value="flexible">Flexible</option>
-                    </select>
-                  </label>
+                  <SelectField
+                    field={contactForm.fields.timeline}
+                    value={formData.timeline}
+                    onChange={(value) =>
+                      setFormData((current) => ({
+                        ...current,
+                        timeline: value,
+                      }))
+                    }
+                  />
                 </div>
 
                 <label className="field-group">
-                  <span>Project brief</span>
+                  <span>{contactForm.fields.message.label}</span>
                   <textarea
                     className="input-control input-textarea"
                     value={formData.message}
@@ -810,7 +857,7 @@ export default function AppModern() {
                         message: event.target.value,
                       }))
                     }
-                    placeholder="What are you building, what is broken, and what outcome do you need?"
+                    placeholder={contactForm.fields.message.placeholder}
                     rows={6}
                     required
                   />
@@ -827,7 +874,9 @@ export default function AppModern() {
                   className="button button-primary submit-button"
                   disabled={submitState === 'loading'}
                 >
-                  {submitState === 'loading' ? 'Sending...' : 'Send project brief'}
+                  {submitState === 'loading'
+                    ? contactForm.submittingLabel
+                    : contactForm.submitLabel}
                   <Send size={18} />
                 </button>
               </motion.form>
@@ -839,14 +888,12 @@ export default function AppModern() {
       <footer className="site-footer">
         <div className="shell footer-inner">
           <div>
-            <p className="mono-label">{content.profile.name}</p>
-            <p className="footer-copy">
-              Building interfaces that stay readable and systems that stay reliable.
-            </p>
+            <p className="mono-label">{profile.name}</p>
+            <p className="footer-copy">{footer.tagline}</p>
           </div>
 
           <div className="footer-links">
-            {navigation.map((item) => (
+            {siteNavigation.map((item) => (
               <a
                 key={item.id}
                 href={`#${item.id}`}
