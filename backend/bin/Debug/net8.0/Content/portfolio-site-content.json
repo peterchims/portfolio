@@ -1,0 +1,335 @@
+{
+  "loader": {
+    "title": "Loading portfolio system",
+    "subtitle": "Preparing a cleaner view of product delivery, case studies, and backend-backed content."
+  },
+  "siteNavigation": [
+    { "id": "home", "label": "Home" },
+    { "id": "services", "label": "Services" },
+    { "id": "projects", "label": "Projects" },
+    { "id": "process", "label": "Process" },
+    { "id": "contact", "label": "Contact" }
+  ],
+  "profile": {
+    "name": "Peter Ogba",
+    "role": "Full-Stack Engineer",
+    "headline": "I build product interfaces that read clearly and backend systems that hold up when the pressure is real.",
+    "summary": "Lagos-based engineer shipping React, TypeScript, Node.js, and production-minded delivery systems for teams that need sharp user experience and disciplined execution in the same product lane.",
+    "location": "Lagos, Nigeria",
+    "email": "peter4tech@gmail.com",
+    "phone": "+234 808 639 2101",
+    "availability": "Open to freelance builds, contract delivery, and product teams that care about quality.",
+    "resumeUrl": "/peter-ogba-resume.pdf"
+  },
+  "hero": {
+    "eyebrow": "Full-stack engineer · Lagos, Nigeria",
+    "panelEyebrow": "Operational snapshot",
+    "panelTitle": "Readable systems with backend discipline.",
+    "modeLabels": {
+      "api": "Live content feed",
+      "fallback": "Fallback content feed"
+    },
+    "headerCta": {
+      "label": "Start a project",
+      "href": "#contact"
+    },
+    "primaryCta": {
+      "label": "View case studies",
+      "href": "#projects"
+    },
+    "secondaryCta": {
+      "label": "Download resume",
+      "href": "/peter-ogba-resume.pdf"
+    }
+  },
+  "sections": {
+    "services": {
+      "kicker": "Capabilities",
+      "title": "Product work that stays sharp in the interface and stable in delivery.",
+      "copy": "The objective is not decorative polish. It is stronger hierarchy, better contracts, and cleaner execution so the product feels deliberate from UI to runtime behavior."
+    },
+    "projects": {
+      "kicker": "Featured projects",
+      "title": "Project models shaped around practical product outcomes.",
+      "copy": "These case studies are structured to show what the product is, where the leverage was, and which technical choices mattered instead of hiding the work behind generic portfolio language."
+    },
+    "process": {
+      "kicker": "Delivery process",
+      "title": "A build path that keeps the frontend readable and the system maintainable.",
+      "copy": "The delivery model stays explicit: clarify the brief, shape the system, then ship a cleaner interface with a runtime path that can survive handoff and growth."
+    },
+    "contact": {
+      "kicker": "Contact",
+      "title": "Need a cleaner frontend, a steadier backend, or both.",
+      "copy": "Use the form for serious product work, redesigns, implementation support, or delivery cleanup. The request goes through the backend contact endpoint rather than disappearing into a static mailto shell."
+    }
+  },
+  "projectShowcase": {
+    "highlightsLabel": "Key outcomes",
+    "metricsLabel": "Project signals",
+    "stackLabel": "Stack",
+    "liveLabel": "View live product",
+    "sourceLabel": "Review source",
+    "privateLabel": "Private build. Walkthrough available on request."
+  },
+  "contactForm": {
+    "detailsLabel": "Contact details",
+    "helperText": "Serious briefs only. Requests are stored through the backend contact endpoint with project metadata so follow-up does not depend on a static inbox experience.",
+    "submitLabel": "Send project brief",
+    "submittingLabel": "Sending...",
+    "fields": {
+      "name": {
+        "label": "Name",
+        "placeholder": "Your name"
+      },
+      "email": {
+        "label": "Email",
+        "placeholder": "you@company.com"
+      },
+      "company": {
+        "label": "Company",
+        "placeholder": "Company or team"
+      },
+      "projectType": {
+        "label": "Project type",
+        "placeholder": "Select one",
+        "options": [
+          { "value": "frontend-redesign", "label": "Frontend redesign" },
+          { "value": "design-system", "label": "Design system and UI cleanup" },
+          { "value": "backend-integration", "label": "Backend integration" },
+          { "value": "full-stack-delivery", "label": "Full-stack delivery" }
+        ]
+      },
+      "budget": {
+        "label": "Budget",
+        "placeholder": "Select budget",
+        "options": [
+          { "value": "under-2k", "label": "Under $2k" },
+          { "value": "2k-5k", "label": "$2k to $5k" },
+          { "value": "5k-10k", "label": "$5k to $10k" },
+          { "value": "10k-plus", "label": "$10k+" }
+        ]
+      },
+      "timeline": {
+        "label": "Timeline",
+        "placeholder": "Select timeline",
+        "options": [
+          { "value": "asap", "label": "As soon as possible" },
+          { "value": "2-4-weeks", "label": "2 to 4 weeks" },
+          { "value": "1-2-months", "label": "1 to 2 months" },
+          { "value": "flexible", "label": "Flexible" }
+        ]
+      },
+      "message": {
+        "label": "Project brief",
+        "placeholder": "What are you building, what feels weak right now, and what outcome do you need from the rebuild?"
+      }
+    }
+  },
+  "footer": {
+    "tagline": "Readable interfaces, stable delivery, and product systems that keep working after launch."
+  },
+  "heroMetrics": [
+    {
+      "value": "3+ yrs",
+      "label": "Production delivery",
+      "detail": "Shipping modern web and mobile-facing products with stronger execution discipline."
+    },
+    {
+      "value": "50+",
+      "label": "Project cycles",
+      "detail": "Across launches, refactors, experiments, and client work."
+    },
+    {
+      "value": "React + Node",
+      "label": "Core operating lane",
+      "detail": "Frontend precision paired with backend ownership."
+    }
+  ],
+  "socialLinks": [
+    {
+      "label": "GitHub",
+      "href": "https://github.com/peterchims",
+      "handle": "@peterchims"
+    },
+    {
+      "label": "LinkedIn",
+      "href": "https://www.linkedin.com/in/peter-ogba-970a0615b/",
+      "handle": "Peter Ogba"
+    },
+    {
+      "label": "Email",
+      "href": "mailto:peter4tech@gmail.com",
+      "handle": "peter4tech@gmail.com"
+    }
+  ],
+  "servicePillars": [
+    {
+      "title": "Frontend Systems",
+      "description": "Responsive interfaces with cleaner hierarchy, better visual pacing, and product-focused interaction design rather than cluttered components.",
+      "bullets": [
+        "Design systems and reusable UI foundations",
+        "React and TypeScript architecture",
+        "Mobile-first execution with performance discipline"
+      ]
+    },
+    {
+      "title": "Backend Delivery",
+      "description": "APIs, validation, runtime safeguards, and operational paths that turn a polished frontend into a dependable application.",
+      "bullets": [
+        "REST endpoints and contract shaping",
+        "Validation, persistence, and request tracing",
+        "Deployment-ready server workflows"
+      ]
+    },
+    {
+      "title": "Launch Discipline",
+      "description": "I do not stop at UI polish. I wire the content, deployment path, and runtime behavior needed to ship cleanly and evolve safely.",
+      "bullets": [
+        "Production build flow and environment handling",
+        "Content modeling for maintainable updates",
+        "Clear handoff documentation and cleanup"
+      ]
+    }
+  ],
+  "featuredProjects": [
+    {
+      "title": "Cashra Finance Manager",
+      "year": "2025",
+      "category": "Finance product",
+      "summary": "A finance manager focused on simple tracking, budget visibility, and decision-friendly reporting instead of feature clutter.",
+      "impact": "Structured the product around clearer flows for income, expenses, and reporting so the interface supports decision-making instead of competing with it.",
+      "spotlight": "Finance clarity for everyday decisions",
+      "highlights": [
+        "Reduced noise in budgeting and reporting flows",
+        "Organized key actions around recurring money tasks",
+        "Kept the UI focused on visibility rather than dashboard decoration"
+      ],
+      "metrics": [
+        { "label": "Focus", "value": "Budgeting" },
+        { "label": "Scope", "value": "Web product" },
+        { "label": "Priority", "value": "Usability" }
+      ],
+      "stack": [
+        "React",
+        "TypeScript",
+        "Tailwind CSS",
+        "React Query",
+        "React Router",
+        "Redux"
+      ],
+      "liveUrl": null,
+      "codeUrl": null
+    },
+    {
+      "title": "ClaudyGod Music & Ministries",
+      "year": "2024",
+      "category": "Media platform",
+      "summary": "A ministry and music experience combining streaming, event visibility, and audience engagement in a cleaner content system.",
+      "impact": "Built a clearer presentation layer for content discovery while keeping the platform accessible to a broad audience across web entry points.",
+      "spotlight": "Content discovery without visual noise",
+      "highlights": [
+        "Improved the browsing path for music, media, and updates",
+        "Balanced ministry communication with media-platform structure",
+        "Kept the experience accessible across desktop and mobile screens"
+      ],
+      "metrics": [
+        { "label": "Focus", "value": "Discovery" },
+        { "label": "Scope", "value": "Web platform" },
+        { "label": "Priority", "value": "Audience access" }
+      ],
+      "stack": [
+        "React",
+        "TypeScript",
+        "Vite",
+        "Tailwind CSS",
+        "Responsive Design",
+        "Node.js"
+      ],
+      "liveUrl": "https://claudygod.org/#/",
+      "codeUrl": "https://github.com/peterchims/claudygod"
+    },
+    {
+      "title": "ClaudyGod Music App",
+      "year": "2025",
+      "category": "Mobile product",
+      "summary": "A mobile listening experience for music, messages, playlists, and release discovery with a stronger app-first delivery path.",
+      "impact": "Extended the platform into mobile-first delivery so audiences could stay connected beyond the browser with a more focused listening experience.",
+      "spotlight": "App-first access to music and ministry content",
+      "highlights": [
+        "Carried the platform into a dedicated mobile product lane",
+        "Focused the experience on listening, playlists, and continuity",
+        "Shaped the interface for smaller screens without losing clarity"
+      ],
+      "metrics": [
+        { "label": "Focus", "value": "Streaming" },
+        { "label": "Scope", "value": "Mobile app" },
+        { "label": "Priority", "value": "Retention" }
+      ],
+      "stack": [
+        "React Native",
+        "TypeScript",
+        "MongoDB",
+        "Socket.io"
+      ],
+      "liveUrl": null,
+      "codeUrl": null
+    }
+  ],
+  "stackGroups": [
+    {
+      "title": "Interface",
+      "items": ["React", "TypeScript", "Tailwind CSS", "Vite", "Responsive UI"]
+    },
+    {
+      "title": "Backend",
+      "items": ["Node.js", "REST APIs", "Validation", "Request tracing", "Content contracts"]
+    },
+    {
+      "title": "Data and ops",
+      "items": ["MongoDB", "PostgreSQL", "Docker", "Health checks", "Runtime env control"]
+    },
+    {
+      "title": "Delivery",
+      "items": ["Git workflows", "Refactors", "Documentation", "Production cleanup", "Launch support"]
+    }
+  ],
+  "processSteps": [
+    {
+      "title": "Clarify the brief",
+      "description": "Translate vague requirements into concrete screens, contracts, and delivery priorities before writing implementation code."
+    },
+    {
+      "title": "Shape the system",
+      "description": "Define the content model, API boundaries, runtime safeguards, and component structure early so the work scales cleanly."
+    },
+    {
+      "title": "Ship with intent",
+      "description": "Build the interface, wire the backend, and remove dead weight so the result feels coherent instead of patched together."
+    },
+    {
+      "title": "Prepare for production",
+      "description": "Verify build paths, storage behavior, and deployment instructions so the work is ready to run, not just ready to demo."
+    }
+  ],
+  "systemSignals": [
+    {
+      "label": "content mode",
+      "value": "backend-served",
+      "detail": "The primary site copy, navigation, case-study structure, and form options now come from a shared backend-served content contract.",
+      "tone": "support"
+    },
+    {
+      "label": "contact flow",
+      "value": "validated + stored",
+      "detail": "Submissions move through the backend contact endpoint with richer request metadata instead of a hard-coded frontend-only mail flow.",
+      "tone": "accent"
+    },
+    {
+      "label": "ops posture",
+      "value": "production-aware",
+      "detail": "Health checks, interaction tracking, and environment-aware site responses are included in the delivery path.",
+      "tone": "accent"
+    }
+  ]
+}

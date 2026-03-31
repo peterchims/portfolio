@@ -3,9 +3,10 @@ using PortfolioAPI.DTOs;
 using PortfolioAPI.Services;
 
 var startedAtUtc = DateTime.UtcNow;
-var builder = WebApplicationBuilder.CreateBuilder(args);
+var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddCors(options =>
@@ -49,8 +50,7 @@ app.MapGet("/api/site", async (ISiteContentService siteContentService, Cancellat
     var sitePayload = await siteContentService.GetSiteContentAsync(cancellationToken);
     return Results.Ok(sitePayload);
 })
-.WithName("SiteContent")
-.WithOpenApi();
+.WithName("SiteContent");
 
 app.MapGet("/api/health", (IHostEnvironment environment) =>
 {
@@ -64,8 +64,7 @@ app.MapGet("/api/health", (IHostEnvironment environment) =>
         Environment = environment.EnvironmentName,
     });
 })
-.WithName("Health")
-.WithOpenApi();
+.WithName("Health");
 
 app.MapPost("/api/interactions", (InteractionDto dto, ILoggerFactory loggerFactory) =>
 {
@@ -78,13 +77,25 @@ app.MapPost("/api/interactions", (InteractionDto dto, ILoggerFactory loggerFacto
 
     return Results.Ok(new { ok = true });
 })
-.WithName("TrackInteraction")
-.WithOpenApi();
+.WithName("TrackInteraction");
 
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<PortfolioAPI.Data.PortfolioDbContext>();
-    dbContext.Database.Migrate();
+    var startupLogger = scope.ServiceProvider
+        .GetRequiredService<ILoggerFactory>()
+        .CreateLogger("Startup");
+
+    try
+    {
+        dbContext.Database.Migrate();
+    }
+    catch (Exception ex)
+    {
+        startupLogger.LogWarning(
+            ex,
+            "Skipping database migrations during startup because the database is unavailable.");
+    }
 }
 
 app.Run();
