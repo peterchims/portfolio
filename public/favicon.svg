@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Peter Ogba monogram">
+  <rect width="128" height="128" rx="28" fill="#102033" />
+  <path d="M30 28h34c24 0 38 12 38 31 0 18-13 31-36 32H46v18H30V28Zm16 15v33h18c15 0 22-6 22-17 0-11-7-16-22-16H46Z" fill="#fff8ef"/>
+  <path d="M73 57c17 0 30 12 30 30 0 16-13 29-31 29-14 0-26-7-31-20l14-6c3 7 9 11 17 11 9 0 15-6 15-14 0-10-8-15-19-15h-5V57h10Z" fill="#c98b2f"/>
+</svg>
