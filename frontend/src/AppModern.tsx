@@ -126,7 +126,7 @@ function SectionIntro({
   );
 }
 function UnavailableState({ error }: { error: string | null }) {
-  const healthHref = `${import.meta.env.VITE_API_BASE_URL || ''}/api/health`;
+  const healthHref = `${import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL || ''}/api/health`;
 
   return (
     <div className="portfolio-shell portfolio-shell-unavailable">

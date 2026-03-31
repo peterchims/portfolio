@@ -1,0 +1,33 @@
+$font-body: 'Manrope', sans-serif;
+$font-display: 'Sora', sans-serif;
+$font-mono: 'IBM Plex Mono', monospace;
+
+$canvas: #f6f8fc;
+$canvas-deep: #eef3f9;
+$surface: rgba(255, 255, 255, 0.78);
+$surface-strong: rgba(255, 255, 255, 0.93);
+$surface-soft: rgba(255, 255, 255, 0.68);
+$ink-strong: #0f172a;
+$ink-soft: #334155;
+$ink-muted: #64748b;
+$line-soft: rgba(15, 23, 42, 0.08);
+$line-strong: rgba(15, 23, 42, 0.14);
+$accent: #2563eb;
+$accent-strong: #1d4ed8;
+$accent-soft: rgba(37, 99, 235, 0.1);
+$support: #0f766e;
+$support-soft: rgba(15, 118, 110, 0.1);
+$danger-soft: rgba(220, 38, 38, 0.1);
+$danger-strong: #b91c1c;
+$warm-soft: rgba(249, 115, 22, 0.14);
+$shadow-soft: 0 14px 36px rgba(15, 23, 42, 0.05);
+$shadow-lg: 0 24px 68px rgba(15, 23, 42, 0.08);
+$shadow-focus: 0 0 0 4px rgba(37, 99, 235, 0.12);
+
+$radius-panel: 26px;
+$radius-card: 22px;
+$radius-pill: 999px;
+
+$bp-lg: 960px;
+$bp-md: 720px;
+$bp-sm: 540px;

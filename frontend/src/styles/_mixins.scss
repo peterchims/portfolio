@@ -1,0 +1,81 @@
+@use './tokens' as *;
+
+@mixin respond-down($breakpoint) {
+  @if $breakpoint == lg {
+    @media (max-width: $bp-lg) {
+      @content;
+    }
+  } @else if $breakpoint == md {
+    @media (max-width: $bp-md) {
+      @content;
+    }
+  } @else if $breakpoint == sm {
+    @media (max-width: $bp-sm) {
+      @content;
+    }
+  }
+}
+
+@mixin mono-label {
+  font-family: $font-mono;
+  font-size: 0.71rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+@mixin display-heading {
+  font-family: $font-display;
+  letter-spacing: -0.045em;
+  line-height: 0.98;
+}
+
+@mixin surface($padding: 1.35rem) {
+  position: relative;
+  padding: $padding;
+  border: 1px solid $line-soft;
+  border-radius: $radius-panel;
+  background: $surface;
+  backdrop-filter: blur(18px);
+  box-shadow: $shadow-soft;
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease,
+    border-color 180ms ease;
+}
+
+@mixin hover-lift($y: -3px) {
+  &:hover {
+    transform: translateY($y);
+    border-color: rgba(37, 99, 235, 0.14);
+    box-shadow: $shadow-lg;
+  }
+}
+
+@mixin button-base {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 2.9rem;
+  padding: 0.8rem 1.1rem;
+  border-radius: $radius-pill;
+  font-size: 0.88rem;
+  font-weight: 700;
+  transition:
+    transform 160ms ease,
+    box-shadow 160ms ease,
+    background-color 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease;
+
+  &:hover {
+    transform: translateY(-1px);
+  }
+}
+
+@mixin focus-ring {
+  &:focus-visible {
+    outline: none;
+    box-shadow: $shadow-focus;
+  }
+}
