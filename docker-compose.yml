@@ -1,20 +1,98 @@
 version: '3.9'
 
 services:
-  portfolio:
-    build: .
-    ports:
-      - '3000:8787'
+  # PostgreSQL Database
+  postgres:
+    image: postgres:16-alpine
+    container_name: portfolio-db
     environment:
-      NODE_ENV: production
-      PORT: 8787
-      APP_ORIGIN: http://localhost:3000
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: portfolio_db
+    ports:
+      - '5432:5432'
     volumes:
-      - ./server/storage:/app/server/storage
-    restart: unless-stopped
+      - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ['CMD', 'node', '-e', "fetch('http://127.0.0.1:8787/api/health').then((res) => process.exit(res.ok ? 0 : 1)).catch(() => process.exit(1))"]
+      test: ['CMD-SHELL', 'pg_isready -U postgres']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - portfolio-network
+    restart: unless-stopped
+
+  # .NET Core API Backend
+  api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: portfolio-api
+    environment:
+      ASPNETCORE_URLS: http://+:5000
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__DefaultConnection: "Host=postgres;Database=portfolio_db;Username=postgres;Password=postgres;Port=5432"
+    ports:
+      - '5000:5000'
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - portfolio-network
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:5000/api/health']
       interval: 30s
       timeout: 10s
       retries: 3
-      start_period: 15s
+      start_period: 10s
+    restart: unless-stopped
+
+  # React Frontend (Development)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      target: development
+    container_name: portfolio-frontend
+    environment:
+      VITE_API_URL: http://localhost:5000
+      NODE_ENV: development
+    ports:
+      - '5173:5173'
+    depends_on:
+      - api
+    volumes:
+      - ./frontend/src:/app/src
+      - ./frontend/public:/app/public
+    networks:
+      - portfolio-network
+    stdin_open: true
+    tty: true
+    restart: unless-stopped
+
+  # React Frontend (Production - optional)
+  frontend-prod:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      target: production
+    container_name: portfolio-frontend-prod
+    environment:
+      NGINX_HOST: localhost
+      NGINX_PORT: 3000
+    ports:
+      - '3000:80'
+    depends_on:
+      - api
+    networks:
+      - portfolio-network
+    restart: unless-stopped
+    profiles:
+      - production
+
+volumes:
+  postgres_data:
+
+networks:
+  portfolio-network:
+    driver: bridge

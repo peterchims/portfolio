@@ -8,13 +8,17 @@ pnpm-debug.log*
 lerna-debug.log*
 
 node_modules
-dist
-dist-ssr
+frontend/dist
 *.local
 
 # Runtime data
-server/storage/*.json
-!server/storage/.gitkeep
+backend/storage/*.json
+!backend/storage/.gitkeep
+
+# Environment files
+.env
+frontend/.env
+backend/.env
 
 # Editor directories and files
 .vscode/*
@@ -26,4 +30,5 @@ server/storage/*.json
 *.njsproj
 *.sln
 *.sw?
-.env
+
+*.tsbuildinfo

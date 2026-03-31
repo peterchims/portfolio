@@ -1,19 +1,22 @@
-FROM node:20-alpine AS deps
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci
+# This project uses a multi-service Docker Compose setup with individual Dockerfiles
+# for each service:
+#
+# - frontend/Dockerfile   - React frontend with Vite (development & Nginx production)
+# - backend/Dockerfile    - .NET 9.0 Core API
+#
+# To build and run the full stack:
+#   docker-compose up -d
+#
+# To build individual services:
+#   docker-compose build api
+#   docker-compose build frontend
+#   docker-compose build postgres
+#
+# Services will be available at:
+#   - Frontend (dev):  http://localhost:5173
+#   - Frontend (prod): http://localhost:3000
+#   - API:             http://localhost:5000
+#   - Database:        localhost:5432
+#
+# See docker-compose.yml for detailed configuration
 
-FROM deps AS build
-COPY . .
-RUN npm run build
-
-FROM node:20-alpine AS runner
-WORKDIR /app
-ENV NODE_ENV=production
-ENV PORT=8787
-COPY package*.json ./
-RUN npm ci --omit=dev
-COPY --from=build /app/dist ./dist
-COPY --from=build /app/server ./server
-EXPOSE 8787
-CMD ["node", "server/index.js"]
