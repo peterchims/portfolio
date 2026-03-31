@@ -12,6 +12,7 @@ import {
   MapPin,
   Menu,
   PhoneCall,
+  RefreshCw,
   Send,
   ShieldCheck,
   Sparkles,
@@ -121,6 +122,53 @@ function SectionIntro({
       <p className="section-kicker">{kicker}</p>
       <h2 className="section-heading">{title}</h2>
       <p className="section-copy">{copy}</p>
+    </div>
+  );
+}
+function UnavailableState({ error }: { error: string | null }) {
+  const healthHref = `${import.meta.env.VITE_API_BASE_URL || ''}/api/health`;
+
+  return (
+    <div className="portfolio-shell portfolio-shell-unavailable">
+      <div className="site-glow site-glow-left" aria-hidden="true" />
+      <div className="site-glow site-glow-right" aria-hidden="true" />
+
+      <main className="unavailable-screen">
+        <motion.section
+          className="surface unavailable-panel"
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.45, ease: 'easeOut' }}
+        >
+          <p className="section-kicker">Backend Required</p>
+          <h1 className="unavailable-title">
+            Portfolio content is temporarily unavailable.
+          </h1>
+          <p className="unavailable-copy">
+            {error ??
+              'The frontend is running, but the backend has not provided the live portfolio content yet.'}
+          </p>
+          <div className="unavailable-actions">
+            <button
+              type="button"
+              className="button button-primary"
+              onClick={() => window.location.reload()}
+            >
+              Reload page
+              <RefreshCw size={18} />
+            </button>
+            <a
+              href={healthHref}
+              className="button button-secondary"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Check API health
+              <ExternalLink size={18} />
+            </a>
+          </div>
+        </motion.section>
+      </main>
     </div>
   );
 }
@@ -262,7 +310,7 @@ function SelectField({
 }
 
 export default function AppModern() {
-  const { content, health, source, loading } = usePortfolioContent();
+  const { content, health, loading, error } = usePortfolioContent();
   const [showLoader, setShowLoader] = useState(true);
   const [formData, setFormData] = useState<ContactPayload>(initialFormState);
   const [submitState, setSubmitState] = useState<
@@ -283,7 +331,7 @@ export default function AppModern() {
     return () => {
       window.clearTimeout(timeoutId);
     };
-  }, [loading]);
+  }, [loading, content]);
 
   const handleNavigate = (id: string, label: string) => {
     void trackInteraction({
@@ -333,23 +381,48 @@ export default function AppModern() {
         section: 'contact',
         label: 'success',
       });
-    } catch (error) {
+    } catch (submitError) {
       setSubmitState('error');
       setSubmitMessage(
-        error instanceof Error
-          ? error.message
+        submitError instanceof Error
+          ? submitError.message
           : 'Unable to send your message right now.'
       );
     }
   };
 
-  const { loader, siteNavigation, profile, hero, sections, projectShowcase, contactForm, footer } =
-    content;
-  const liveState = source === 'api' ? hero.modeLabels.api : hero.modeLabels.fallback;
+  if (!content) {
+    if (loading || showLoader) {
+      return (
+        <div className="portfolio-shell">
+          <AnimatePresence mode="wait">
+            <LoaderScreen
+              name="Portfolio"
+              title="Loading portfolio"
+              subtitle="Connecting to the live content service."
+            />
+          </AnimatePresence>
+        </div>
+      );
+    }
+
+    return <UnavailableState error={error} />;
+  }
+
+  const {
+    loader,
+    siteNavigation,
+    profile,
+    hero,
+    sections,
+    projectShowcase,
+    contactForm,
+    footer,
+  } = content;
+  const liveState = hero.modeLabels.api;
   const systemState = health
     ? `${health.status} · ${formatUptime(health.uptimeSeconds)}`
     : 'Service signal pending';
-
   return (
     <div className="portfolio-shell">
       <AnimatePresence mode="wait">

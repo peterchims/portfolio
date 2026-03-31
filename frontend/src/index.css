@@ -1187,3 +1187,58 @@ section[id] {
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(15, 23, 42, 0.32);
 }
+
+.portfolio-shell-unavailable {
+  isolation: isolate;
+}
+
+.unavailable-screen {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 2rem 0;
+}
+
+.unavailable-panel {
+  width: min(760px, calc(100% - 2rem));
+  padding: 2.25rem;
+  display: grid;
+  gap: 1rem;
+}
+
+.unavailable-title {
+  font-family: 'Sora', sans-serif;
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  line-height: 1.02;
+  letter-spacing: -0.05em;
+}
+
+.unavailable-copy {
+  max-width: 62ch;
+  color: var(--ink-soft);
+  font-size: 1rem;
+}
+
+.unavailable-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+  margin-top: 0.35rem;
+}
+
+@media (max-width: 640px) {
+  .unavailable-panel {
+    padding: 1.5rem;
+    border-radius: 24px;
+  }
+
+  .unavailable-actions {
+    flex-direction: column;
+  }
+
+  .unavailable-actions .button {
+    width: 100%;
+  }
+}

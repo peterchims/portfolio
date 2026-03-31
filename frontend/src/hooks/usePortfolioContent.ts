@@ -1,40 +1,47 @@
 import { useEffect, useState } from 'react';
-import { fallbackPortfolio } from '../content/fallbackPortfolio';
 import { fetchHealth, fetchSiteContent, trackInteraction } from '../lib/api';
 import type { ApiHealth, PortfolioContent } from '../types/portfolio';
 
 interface ContentState {
-  content: PortfolioContent;
+  content: PortfolioContent | null;
   health: ApiHealth | null;
-  source: 'api' | 'fallback';
   loading: boolean;
+  error: string | null;
+}
+
+function createOfflineHealth(): ApiHealth {
+  const timestamp = new Date().toISOString();
+
+  return {
+    status: 'offline',
+    timestamp,
+    startedAt: timestamp,
+    uptimeSeconds: 0,
+    environment: 'unavailable',
+  };
 }
 
 export function usePortfolioContent(): ContentState {
   const [state, setState] = useState<ContentState>({
-    content: fallbackPortfolio,
+    content: null,
     health: null,
-    source: 'fallback',
     loading: true,
+    error: null,
   });
 
   useEffect(() => {
     let active = true;
 
-    const fallbackHealth: ApiHealth = {
-      status: 'offline',
-      timestamp: new Date().toISOString(),
-      startedAt: new Date().toISOString(),
-      uptimeSeconds: 0,
-      environment: 'unavailable',
-    };
-
     const load = async () => {
       try {
-        const [site, health] = await Promise.all([
-          fetchSiteContent(),
-          fetchHealth(),
-        ]);
+        const site = await fetchSiteContent();
+        let health: ApiHealth | null = null;
+
+        try {
+          health = await fetchHealth();
+        } catch {
+          health = createOfflineHealth();
+        }
 
         if (!active) {
           return;
@@ -43,35 +50,31 @@ export function usePortfolioContent(): ContentState {
         setState({
           content: site.data,
           health,
-          source: 'api',
           loading: false,
+          error: null,
         });
-      } catch {
+      } catch (error) {
+        let health: ApiHealth | null = null;
+
         try {
-          const health = await fetchHealth();
-
-          if (!active) {
-            return;
-          }
-
-          setState({
-            content: fallbackPortfolio,
-            health,
-            source: 'fallback',
-            loading: false,
-          });
+          health = await fetchHealth();
         } catch {
-          if (!active) {
-            return;
-          }
-
-          setState({
-            content: fallbackPortfolio,
-            health: fallbackHealth,
-            source: 'fallback',
-            loading: false,
-          });
+          health = createOfflineHealth();
         }
+
+        if (!active) {
+          return;
+        }
+
+        setState({
+          content: null,
+          health,
+          loading: false,
+          error:
+            error instanceof Error
+              ? error.message
+              : 'Portfolio content is unavailable right now.',
+        });
       }
     };
 
