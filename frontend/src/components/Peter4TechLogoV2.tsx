@@ -1,5 +1,3 @@
-import React from 'react';
-
 /**
  * Professional Peter4Tech Logo Component
  * Premium, solid design with dark theme

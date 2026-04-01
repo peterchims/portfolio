@@ -1,14 +1,20 @@
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, ExternalLink, Github, Linkedin, Mail, ArrowRight, Code2 } from 'lucide-react';
+import { Menu, X, ExternalLink, Github, Linkedin, Mail, ArrowRight } from 'lucide-react';
 import { Peter4TechLogoV2 } from './components/Peter4TechLogoV2';
-import { AboutPeter4TechSection, UpcomingProjectsSection, ProjectCatalogsSection } from './components/sections/BrandAndProjects';
+import { UpcomingProjectsSection, ProjectCatalogsSection } from './components/sections/BrandAndProjects';
 import { ChatWidget } from './components/common/ChatWidget';
 import { WhatsAppButton } from './components/WhatsAppButton';
 import { startChatConversation, sendChatMessage } from './lib/api';
-import { getFeaturedProjects, getProfile } from './services/portfolioService';
-import { useParallax, ParallaxBackground } from './hooks/useParallax';
-import type { Project, Profile } from './services/portfolioService';
+import { getFeaturedProjects } from './services/portfolioService';
+import { ParallaxBackground } from './hooks/useParallax';
+import { ServicesSection } from './components/sections/ServicesSection';
+import { ProfessionalAboutSection } from './components/sections/ProfessionalAboutSection';
+import { ProcessSection } from './components/sections/ProcessSection';
+import { MetricsSection } from './components/sections/MetricsSection';
+import { TestimonialsSection } from './components/sections/TestimonialsSection';
+import { CTASection } from './components/sections/CTASection';
+import type { Project } from './services/portfolioService';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -25,11 +31,8 @@ const itemVariants = {
 
 export default function AppModern() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [scrollY, setScrollY] = useState(0);
   const [isChatOpen, setIsChatOpen] = useState(false);
-  const [currentConversationId, setCurrentConversationId] = useState<string | null>(null);
   const [projects, setProjects] = useState<Project[]>([]);
-  const [profile, setProfile] = useState<Profile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   // Load portfolio data from API
@@ -37,12 +40,8 @@ export default function AppModern() {
     const loadPortfolioData = async () => {
       try {
         setIsLoading(true);
-        const [projectsData, profileData] = await Promise.all([
-          getFeaturedProjects(),
-          getProfile(),
-        ]);
+        const projectsData = await getFeaturedProjects();
         setProjects(projectsData);
-        setProfile(profileData);
       } catch (error) {
         console.error('Failed to load portfolio data:', error);
       } finally {
@@ -54,19 +53,22 @@ export default function AppModern() {
   }, []);
 
   useEffect(() => {
-    const handleScroll = () => setScrollY(window.scrollY);
+    const handleScroll = () => {
+      // Parallax effects are handled in ParallaxBackground component
+      return;
+    };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   const handleStartChat = async (name: string, email: string, message: string) => {
     try {
-      const response = await startChatConversation({
+      await startChatConversation({
         visitorName: name,
         visitorEmail: email,
         initialMessage: message,
       });
-      setCurrentConversationId(response.id);
+      setIsChatOpen(true);
     } catch (error) {
       console.error('Failed to start conversation:', error);
     }
@@ -165,7 +167,9 @@ export default function AppModern() {
 
       {/* Hero Section */}
       <section id="home" className="pt-32 pb-16 md:pt-40 md:pb-24 px-4 md:px-8 relative overflow-hidden">
-        <ParallaxBackground speed={0.3} className="absolute inset-0 bg-gradient-to-br from-cyan-500/20 via-purple-500/10 to-pink-500/20 pointer-events-none" />
+        <ParallaxBackground speed={0.3} className="absolute inset-0 bg-gradient-to-br from-cyan-500/20 via-purple-500/10 to-pink-500/20 pointer-events-none">
+          <div className="w-full h-full" />
+        </ParallaxBackground>
         <div className="absolute top-40 right-0 w-96 h-96 bg-cyan-500/30 rounded-full blur-3xl pointer-events-none" />
 
         <div className="max-w-6xl mx-auto relative z-10">
@@ -243,7 +247,13 @@ export default function AppModern() {
       </section>
 
       {/* About Brand Section */}
-      <AboutPeter4TechSection />
+      <ProfessionalAboutSection />
+
+      {/* Services Section */}
+      <ServicesSection />
+
+      {/* Metrics Section */}
+      <MetricsSection />
 
       {/* Featured Projects Section */}
       <section id="projects" className="py-16 md:py-24 px-4 md:px-8">
@@ -279,7 +289,7 @@ export default function AppModern() {
               viewport={{ once: true, amount: 0.2 }}
               className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
             >
-              {projects.map((project, idx) => (
+              {projects.map((project) => (
                 <motion.div
                   key={project.id}
                   variants={itemVariants}
@@ -360,6 +370,15 @@ export default function AppModern() {
 
       {/* Project Catalogs Section */}
       <ProjectCatalogsSection />
+
+      {/* Process Section */}
+      <ProcessSection />
+
+      {/* Testimonials Section */}
+      <TestimonialsSection />
+
+      {/* CTA Section */}
+      <CTASection />
 
       {/* Contact Section */}
       <section id="contact" className="py-16 md:py-24 px-4 md:px-8 bg-gradient-to-b from-black via-purple-900/20 to-black">
