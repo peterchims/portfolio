@@ -434,6 +434,14 @@ export default function AppModern() {
           </div>
         </div>
       </footer>
+
+      {/* Chat Widget */}
+      <ChatWidget
+        onStartChat={handleStartChat}
+        onSendMessage={handleSendMessage}
+        isOpen={isChatOpen}
+        onClose={() => setIsChatOpen(false)}
+      />
     </div>
   );
 }
