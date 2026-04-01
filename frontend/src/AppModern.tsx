@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import type { FormEvent } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import {
   ArrowRight,
   Briefcase,
@@ -19,11 +19,20 @@ import {
   X,
   type LucideIcon,
 } from 'lucide-react';
-import { sendContactRequest, trackInteraction } from './lib/api';
+import { ChatWidget, type ChatConversationResult, type ChatMessage } from './components/common/ChatWidget';
+import { WhatsAppButton } from './components/WhatsAppButton';
+import {
+  sendContactRequest,
+  sendChatMessage,
+  startChatConversation,
+  trackInteraction,
+  type ChatConversation,
+} from './lib/api';
 import { usePortfolioContent } from './hooks/usePortfolioContent';
 import type {
   ContactPayload,
   ContactSelectFieldContent,
+  FeaturedProject,
   NavigationItem,
 } from './types/portfolio';
 
@@ -33,6 +42,7 @@ const projectTones = [
   'project-tone-teal',
   'project-tone-amber',
 ] as const;
+const EASE_OUT = [0.22, 1, 0.36, 1] as const;
 
 const initialFormState: ContactPayload = {
   name: '',
@@ -48,6 +58,12 @@ const socialIconMap: Record<string, LucideIcon> = {
   github: Github,
   linkedin: Linkedin,
   email: Mail,
+};
+
+type RevealAxis = 'x' | 'y';
+type ProjectGalleryTile = {
+  label: string;
+  value: string;
 };
 
 function getSocialIcon(label: string): LucideIcon {
@@ -81,6 +97,106 @@ function formatUptime(seconds: number): string {
   return `${Math.max(1, Math.floor(seconds / 60))}m uptime`;
 }
 
+function getProjectGalleryTiles(project: FeaturedProject): ProjectGalleryTile[] {
+  const primaryMetric = project.metrics[0];
+  const secondaryMetric = project.metrics[1];
+  const stackPreview = project.stack.slice(0, 2).join(' • ');
+  const secondaryFallbackValue = stackPreview || project.year;
+
+  return [
+    {
+      label: primaryMetric?.label ?? 'Focus',
+      value: primaryMetric?.value ?? project.category,
+    },
+    {
+      label: 'Outcome',
+      value: project.highlights[0] ?? project.summary,
+    },
+    {
+      label: secondaryMetric?.label ?? 'Stack',
+      value: secondaryMetric?.value ?? secondaryFallbackValue,
+    },
+  ];
+}
+
+function mapConversationMessages(conversation: ChatConversation): ChatMessage[] {
+  return conversation.messages.map((message) => ({
+    id: message.id,
+    content: message.content,
+    sender: message.sender.toLowerCase() === 'visitor' ? 'visitor' : 'system',
+    timestamp: new Date(message.createdAt),
+    isAutomated: message.isAutomated,
+  }));
+}
+
+function getEnterAnimation(
+  prefersReducedMotion: boolean,
+  options: {
+    axis?: RevealAxis;
+    delay?: number;
+    distance?: number;
+    duration?: number;
+  } = {}
+) {
+  const {
+    axis = 'y',
+    delay = 0,
+    distance = 22,
+    duration = 0.58,
+  } = options;
+  const hidden = axis === 'x' ? { x: distance, y: 0 } : { y: distance, x: 0 };
+
+  if (prefersReducedMotion) {
+    return {
+      initial: false as const,
+      animate: { opacity: 1, x: 0, y: 0 },
+      transition: { duration: 0 },
+    };
+  }
+
+  return {
+    initial: { opacity: 0, ...hidden },
+    animate: { opacity: 1, x: 0, y: 0 },
+    transition: { duration, delay, ease: EASE_OUT },
+  };
+}
+
+function getInViewAnimation(
+  prefersReducedMotion: boolean,
+  options: {
+    axis?: RevealAxis;
+    delay?: number;
+    distance?: number;
+    duration?: number;
+    amount?: number;
+  } = {}
+) {
+  const {
+    axis = 'y',
+    delay = 0,
+    distance = 20,
+    duration = 0.52,
+    amount = 0.18,
+  } = options;
+  const hidden = axis === 'x' ? { x: distance, y: 0 } : { y: distance, x: 0 };
+
+  if (prefersReducedMotion) {
+    return {
+      initial: false as const,
+      whileInView: { opacity: 1, x: 0, y: 0 },
+      transition: { duration: 0 },
+      viewport: { once: true, amount: 0.01 },
+    };
+  }
+
+  return {
+    initial: { opacity: 0, ...hidden },
+    whileInView: { opacity: 1, x: 0, y: 0 },
+    transition: { duration, delay, ease: EASE_OUT },
+    viewport: { once: true, amount },
+  };
+}
+
 function LoaderScreen({
   name,
   title,
@@ -93,10 +209,12 @@ function LoaderScreen({
   return (
     <motion.div
       className="loader-screen"
+      role="status"
+      aria-live="polite"
       initial={{ opacity: 1 }}
       animate={{ opacity: 1 }}
-      exit={{ opacity: 0, y: -20 }}
-      transition={{ duration: 0.35, ease: 'easeOut' }}
+      exit={{ opacity: 0, y: -16 }}
+      transition={{ duration: 0.32, ease: 'easeOut' }}
     >
       <div className="loader-panel">
         <div className="loader-brand">{toInitials(name)}</div>
@@ -125,8 +243,11 @@ function SectionIntro({
     </div>
   );
 }
+
 function UnavailableState({ error }: { error: string | null }) {
-  const healthHref = `${import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL || ''}/api/health`;
+  const healthHref = `${
+    import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL || ''
+  }/api/health`;
 
   return (
     <div className="portfolio-shell portfolio-shell-unavailable">
@@ -138,7 +259,7 @@ function UnavailableState({ error }: { error: string | null }) {
           className="surface unavailable-panel"
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.45, ease: 'easeOut' }}
+          transition={{ duration: 0.42, ease: EASE_OUT }}
         >
           <p className="section-kicker">Backend Required</p>
           <h1 className="unavailable-title">
@@ -251,7 +372,7 @@ function SiteHeader({
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.24, ease: 'easeOut' }}
+            transition={{ duration: 0.24, ease: EASE_OUT }}
           >
             <div className="shell mobile-drawer-inner">
               {navigation.map((item) => (
@@ -311,12 +432,14 @@ function SelectField({
 
 export default function AppModern() {
   const { content, health, loading, error } = usePortfolioContent();
+  const prefersReducedMotion = useReducedMotion() ?? false;
   const [showLoader, setShowLoader] = useState(true);
   const [formData, setFormData] = useState<ContactPayload>(initialFormState);
   const [submitState, setSubmitState] = useState<
     'idle' | 'loading' | 'success' | 'error'
   >('idle');
   const [submitMessage, setSubmitMessage] = useState('');
+  const [isChatOpen, setIsChatOpen] = useState(false);
 
   useEffect(() => {
     if (loading) {
@@ -326,12 +449,12 @@ export default function AppModern() {
 
     const timeoutId = window.setTimeout(() => {
       setShowLoader(false);
-    }, 700);
+    }, prefersReducedMotion ? 0 : 640);
 
     return () => {
       window.clearTimeout(timeoutId);
     };
-  }, [loading, content]);
+  }, [loading, content, prefersReducedMotion]);
 
   const handleNavigate = (id: string, label: string) => {
     void trackInteraction({
@@ -363,6 +486,48 @@ export default function AppModern() {
       section,
       label,
     });
+  };
+
+  const handleStartChat = async (
+    name: string,
+    email: string,
+    message: string
+  ): Promise<ChatConversationResult> => {
+    const conversation = await startChatConversation({
+      visitorName: name,
+      visitorEmail: email,
+      initialMessage: message,
+    });
+
+    setIsChatOpen(true);
+    void trackInteraction({
+      event: 'chat_start',
+      section: 'contact',
+      label: 'conversation-created',
+    });
+
+    return {
+      id: conversation.id,
+      messages: mapConversationMessages(conversation),
+    };
+  };
+
+  const handleSendMessage = async (
+    conversationId: string,
+    message: string
+  ): Promise<ChatConversationResult> => {
+    const conversation = await sendChatMessage(conversationId, message);
+
+    void trackInteraction({
+      event: 'chat_message',
+      section: 'contact',
+      label: 'conversation-updated',
+    });
+
+    return {
+      id: conversation.id,
+      messages: mapConversationMessages(conversation),
+    };
   };
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -419,10 +584,22 @@ export default function AppModern() {
     contactForm,
     footer,
   } = content;
+
+  const heroCopyAnimation = getEnterAnimation(prefersReducedMotion, {
+    distance: 20,
+    duration: 0.56,
+  });
+  const heroPanelAnimation = getEnterAnimation(prefersReducedMotion, {
+    delay: 0.08,
+    distance: 24,
+    duration: 0.62,
+  });
   const liveState = hero.modeLabels.api;
   const systemState = health
     ? `${health.status} · ${formatUptime(health.uptimeSeconds)}`
     : 'Service signal pending';
+  const previewProject = content.featuredProjects[0] ?? null;
+
   return (
     <div className="portfolio-shell">
       <AnimatePresence mode="wait">
@@ -447,15 +624,10 @@ export default function AppModern() {
         onNavigate={handleNavigate}
       />
 
-      <main>
-        <section id="home" className="hero-section">
+      <main className="page-main">
+        <section id="home" className="hero-section section-block">
           <div className="shell hero-grid">
-            <motion.div
-              className="hero-copy"
-              initial={{ opacity: 0, y: 24 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.65, ease: 'easeOut' }}
-            >
+            <motion.div className="hero-copy" {...heroCopyAnimation}>
               <div className="hero-kicker-row">
                 <span className="section-kicker">{hero.eyebrow}</span>
                 <span className="status-pill">{liveState}</span>
@@ -505,22 +677,24 @@ export default function AppModern() {
               </div>
 
               <div className="metric-grid">
-                {content.heroMetrics.map((metric) => (
-                  <article key={metric.label} className="surface metric-card">
+                {content.heroMetrics.map((metric, index) => (
+                  <motion.article
+                    key={metric.label}
+                    className="surface metric-card"
+                    {...getInViewAnimation(prefersReducedMotion, {
+                      delay: index * 0.04,
+                      distance: 18,
+                    })}
+                  >
                     <p className="metric-value">{metric.value}</p>
                     <p className="metric-label">{metric.label}</p>
                     <p className="metric-detail">{metric.detail}</p>
-                  </article>
+                  </motion.article>
                 ))}
               </div>
             </motion.div>
 
-            <motion.aside
-              className="surface hero-panel"
-              initial={{ opacity: 0, y: 32 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.72, ease: 'easeOut', delay: 0.08 }}
-            >
+            <motion.aside className="surface hero-panel" {...heroPanelAnimation}>
               <div className="panel-head">
                 <p className="mono-label">{hero.panelEyebrow}</p>
                 <span className="status-pill status-pill-strong">
@@ -528,20 +702,63 @@ export default function AppModern() {
                 </span>
               </div>
 
-              <h2 className="panel-title">{hero.panelTitle}</h2>
-              <p className="panel-copy">{profile.availability}</p>
+              <div
+                className={`hero-preview-frame ${
+                  projectTones[0]
+                }`}
+              >
+                <div className="hero-preview-main">
+                  <div className="hero-preview-copy">
+                    <h2 className="panel-title">
+                      {previewProject?.title ?? hero.panelTitle}
+                    </h2>
+                    <p className="panel-copy">
+                      {previewProject?.summary ?? profile.availability}
+                    </p>
+                  </div>
 
-              <div className="signal-list">
-                {content.systemSignals.map((signal) => (
-                  <article
+                  <div className="hero-preview-badges">
+                    {(previewProject?.metrics ?? content.heroMetrics.slice(0, 2)).slice(0, 3).map(
+                      (metric) => (
+                        <span
+                          key={`${previewProject?.title ?? 'hero'}-${metric.label}`}
+                          className="hero-preview-badge"
+                        >
+                          {metric.value}
+                        </span>
+                      )
+                    )}
+                  </div>
+                </div>
+
+                <div className="hero-preview-strip">
+                  {content.featuredProjects.map((project, index) => (
+                    <article
+                      key={project.title}
+                      className={`preview-card ${projectTones[index % projectTones.length]}`}
+                    >
+                      <span>{project.category}</span>
+                      <strong>{project.title}</strong>
+                    </article>
+                  ))}
+                </div>
+              </div>
+
+              <div className="signal-grid">
+                {content.systemSignals.map((signal, index) => (
+                  <motion.article
                     key={signal.label}
                     className="system-signal"
                     data-tone={signal.tone}
+                    {...getInViewAnimation(prefersReducedMotion, {
+                      delay: index * 0.05,
+                      distance: 14,
+                    })}
                   >
                     <p className="signal-label">{signal.label}</p>
                     <h3>{signal.value}</h3>
                     <p>{signal.detail}</p>
-                  </article>
+                  </motion.article>
                 ))}
               </div>
 
@@ -579,10 +796,10 @@ export default function AppModern() {
                   <motion.article
                     key={pillar.title}
                     className="surface service-card"
-                    initial={{ opacity: 0, y: 28 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: index * 0.08 }}
-                    viewport={{ once: true, amount: 0.2 }}
+                    {...getInViewAnimation(prefersReducedMotion, {
+                      delay: index * 0.05,
+                      distance: 18,
+                    })}
                   >
                     <div className="icon-chip">
                       <Icon size={18} />
@@ -610,98 +827,129 @@ export default function AppModern() {
             />
 
             <div className="project-grid">
-              {content.featuredProjects.map((project, index) => (
-                <motion.article
-                  key={project.title}
-                  className="surface project-card"
-                  initial={{ opacity: 0, y: 36 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.55, delay: index * 0.08 }}
-                  viewport={{ once: true, amount: 0.2 }}
-                >
-                  <div
-                    className={`project-visual ${projectTones[index % projectTones.length]}`}
+              {content.featuredProjects.map((project, index) => {
+                const galleryTiles = getProjectGalleryTiles(project);
+
+                return (
+                  <motion.article
+                    key={project.title}
+                    className={`surface project-card ${
+                      index === 0 ? 'project-card-featured' : ''
+                    }`}
+                    {...getInViewAnimation(prefersReducedMotion, {
+                      delay: index * 0.06,
+                      distance: 22,
+                    })}
                   >
-                    <div className="project-visual-head">
-                      <span>{project.category}</span>
-                      <span>{project.year}</span>
-                    </div>
-                    <div className="project-mark">{toInitials(project.title)}</div>
-                    <p className="project-spotlight">{project.spotlight}</p>
-                    <p className="project-visual-copy">{project.impact}</p>
-                  </div>
+                    <div
+                      className={`project-visual ${projectTones[index % projectTones.length]}`}
+                    >
+                      <div className="project-visual-head">
+                        <span>{project.category}</span>
+                        <span>{project.year}</span>
+                      </div>
 
-                  <div className="project-body">
-                    <h3>{project.title}</h3>
-                    <p className="project-summary">{project.summary}</p>
-
-                    <div className="project-stat-grid">
-                      {project.metrics.map((metric) => (
-                        <div key={`${project.title}-${metric.label}`} className="project-stat">
-                          <p className="project-stat-value">{metric.value}</p>
-                          <p className="project-stat-label">{metric.label}</p>
+                      <div className="project-gallery-grid">
+                        <div className="project-gallery-tile project-gallery-tile-featured">
+                          <div className="project-mark">{toInitials(project.title)}</div>
+                          <p className="project-spotlight">{project.spotlight}</p>
+                          <p className="project-visual-copy">{project.summary}</p>
                         </div>
-                      ))}
+
+                        {galleryTiles.map((tile) => (
+                          <div
+                            key={`${project.title}-${tile.label}`}
+                            className="project-gallery-tile"
+                          >
+                            <span className="project-gallery-label">{tile.label}</span>
+                            <p>{tile.value}</p>
+                          </div>
+                        ))}
+                      </div>
                     </div>
 
-                    <div className="project-detail-grid">
+                    <div className="project-body">
+                      <div className="project-body-head">
+                        <div>
+                          <p className="project-category">{project.category}</p>
+                          <h3>{project.title}</h3>
+                        </div>
+                        <p className="project-impact">{project.impact}</p>
+                      </div>
+
                       <div>
                         <p className="project-detail-label">
-                          {projectShowcase.highlightsLabel}
+                          {projectShowcase.metricsLabel}
                         </p>
-                        <ul className="project-highlights">
-                          {project.highlights.map((item) => (
-                            <li key={`${project.title}-${item}`}>{item}</li>
-                          ))}
-                        </ul>
-                      </div>
-
-                      <div>
-                        <p className="project-detail-label">{projectShowcase.stackLabel}</p>
-                        <div className="chip-row">
-                          {project.stack.map((item) => (
-                            <span key={`${project.title}-${item}`} className="chip">
-                              {item}
-                            </span>
+                        <div className="project-stat-grid">
+                          {project.metrics.map((metric) => (
+                            <div key={`${project.title}-${metric.label}`} className="project-stat">
+                              <p className="project-stat-value">{metric.value}</p>
+                              <p className="project-stat-label">{metric.label}</p>
+                            </div>
                           ))}
                         </div>
                       </div>
+
+                      <div className="project-detail-grid">
+                        <div>
+                          <p className="project-detail-label">
+                            {projectShowcase.highlightsLabel}
+                          </p>
+                          <ul className="project-highlights">
+                            {project.highlights.map((item) => (
+                              <li key={`${project.title}-${item}`}>{item}</li>
+                            ))}
+                          </ul>
+                        </div>
+
+                        <div>
+                          <p className="project-detail-label">{projectShowcase.stackLabel}</p>
+                          <div className="chip-row">
+                            {project.stack.map((item) => (
+                              <span key={`${project.title}-${item}`} className="chip">
+                                {item}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="project-links">
+                        {project.liveUrl ? (
+                          <a
+                            href={project.liveUrl}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="text-link"
+                            onClick={() => handleProjectLinkClick(project.title, 'live')}
+                          >
+                            {projectShowcase.liveLabel}
+                            <ExternalLink size={16} />
+                          </a>
+                        ) : null}
+
+                        {project.codeUrl ? (
+                          <a
+                            href={project.codeUrl}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="text-link"
+                            onClick={() => handleProjectLinkClick(project.title, 'code')}
+                          >
+                            {projectShowcase.sourceLabel}
+                            <ExternalLink size={16} />
+                          </a>
+                        ) : null}
+
+                        {!project.liveUrl && !project.codeUrl ? (
+                          <span className="project-note">{projectShowcase.privateLabel}</span>
+                        ) : null}
+                      </div>
                     </div>
-
-                    <div className="project-links">
-                      {project.liveUrl ? (
-                        <a
-                          href={project.liveUrl}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="text-link"
-                          onClick={() => handleProjectLinkClick(project.title, 'live')}
-                        >
-                          {projectShowcase.liveLabel}
-                          <ExternalLink size={16} />
-                        </a>
-                      ) : null}
-
-                      {project.codeUrl ? (
-                        <a
-                          href={project.codeUrl}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="text-link"
-                          onClick={() => handleProjectLinkClick(project.title, 'code')}
-                        >
-                          {projectShowcase.sourceLabel}
-                          <ExternalLink size={16} />
-                        </a>
-                      ) : null}
-
-                      {!project.liveUrl && !project.codeUrl ? (
-                        <span className="project-note">{projectShowcase.privateLabel}</span>
-                      ) : null}
-                    </div>
-                  </div>
-                </motion.article>
-              ))}
+                  </motion.article>
+                );
+              })}
             </div>
           </div>
         </section>
@@ -717,10 +965,11 @@ export default function AppModern() {
             <div className="workflow-grid">
               <motion.article
                 className="surface process-card"
-                initial={{ opacity: 0, x: -24 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.55 }}
-                viewport={{ once: true, amount: 0.2 }}
+                {...getInViewAnimation(prefersReducedMotion, {
+                  axis: 'x',
+                  distance: -18,
+                  duration: 0.56,
+                })}
               >
                 <p className="mono-label">Workflow</p>
                 <div className="process-list">
@@ -741,10 +990,10 @@ export default function AppModern() {
                   <motion.article
                     key={group.title}
                     className="surface stack-card"
-                    initial={{ opacity: 0, y: 24 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: index * 0.06 }}
-                    viewport={{ once: true, amount: 0.2 }}
+                    {...getInViewAnimation(prefersReducedMotion, {
+                      delay: index * 0.05,
+                      distance: 18,
+                    })}
                   >
                     <h3>{group.title}</h3>
                     <div className="chip-row">
@@ -772,10 +1021,10 @@ export default function AppModern() {
             <div className="contact-grid">
               <motion.article
                 className="surface contact-card"
-                initial={{ opacity: 0, x: -24 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.55 }}
-                viewport={{ once: true, amount: 0.2 }}
+                {...getInViewAnimation(prefersReducedMotion, {
+                  axis: 'x',
+                  distance: -18,
+                })}
               >
                 <div>
                   <p className="mono-label">{contactForm.detailsLabel}</p>
@@ -824,10 +1073,10 @@ export default function AppModern() {
               <motion.form
                 className="surface contact-form"
                 onSubmit={handleSubmit}
-                initial={{ opacity: 0, x: 24 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.55 }}
-                viewport={{ once: true, amount: 0.2 }}
+                {...getInViewAnimation(prefersReducedMotion, {
+                  axis: 'x',
+                  distance: 18,
+                })}
               >
                 <div className="field-grid two-up">
                   <label className="field-group">
@@ -937,7 +1186,11 @@ export default function AppModern() {
                 </label>
 
                 {submitMessage ? (
-                  <p className={`form-message form-message-${submitState}`}>
+                  <p
+                    className={`form-message form-message-${submitState}`}
+                    role="status"
+                    aria-live="polite"
+                  >
                     {submitMessage}
                   </p>
                 ) : null}
@@ -947,10 +1200,17 @@ export default function AppModern() {
                   className="button button-primary submit-button"
                   disabled={submitState === 'loading'}
                 >
-                  {submitState === 'loading'
-                    ? contactForm.submittingLabel
-                    : contactForm.submitLabel}
-                  <Send size={18} />
+                  {submitState === 'loading' ? (
+                    <>
+                      <span className="button-spinner" aria-hidden="true" />
+                      {contactForm.submittingLabel}
+                    </>
+                  ) : (
+                    <>
+                      {contactForm.submitLabel}
+                      <Send size={18} />
+                    </>
+                  )}
                 </button>
               </motion.form>
             </div>
@@ -978,6 +1238,16 @@ export default function AppModern() {
           </div>
         </div>
       </footer>
+
+      <ChatWidget
+        brandName={profile.name}
+        onStartChat={handleStartChat}
+        onSendMessage={handleSendMessage}
+        isOpen={isChatOpen}
+        onClose={() => setIsChatOpen(false)}
+      />
+
+      <WhatsAppButton phoneNumber={profile.phone} />
     </div>
   );
 }

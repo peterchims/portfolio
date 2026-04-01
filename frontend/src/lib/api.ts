@@ -54,6 +54,26 @@ export function sendContactRequest(
   });
 }
 
+export interface ChatConversationMessage {
+  id: string;
+  conversationId: string;
+  content: string;
+  sender: string;
+  isAutomated: boolean;
+  senderName?: string | null;
+  createdAt: string;
+}
+
+export interface ChatConversation {
+  id: string;
+  visitorId: string;
+  visitorName: string;
+  visitorEmail: string;
+  messages: ChatConversationMessage[];
+  isActive: boolean;
+  createdAt: string;
+}
+
 export async function trackInteraction(
   payload: InteractionPayload
 ): Promise<void> {
@@ -66,4 +86,29 @@ export async function trackInteraction(
   } catch {
     // Ignore analytics transport failures.
   }
+}
+
+export function startChatConversation(data: {
+  visitorName: string;
+  visitorEmail: string;
+  initialMessage: string;
+}): Promise<ChatConversation> {
+  return request<ChatConversation>('/api/chat/start', {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+}
+
+export function sendChatMessage(
+  conversationId: string,
+  message: string
+): Promise<ChatConversation> {
+  return request<ChatConversation>('/api/chat/message', {
+    method: 'POST',
+    body: JSON.stringify({ conversationId, content: message }),
+  });
+}
+
+export function getConversation(conversationId: string): Promise<ChatConversation> {
+  return request<ChatConversation>(`/api/chat/${conversationId}`);
 }
