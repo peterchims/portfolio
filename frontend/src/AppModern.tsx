@@ -5,6 +5,7 @@ import { Peter4TechLogoV2 } from './components/Peter4TechLogoV2';
 import { UpcomingProjectsSection, ProjectCatalogsSection } from './components/sections/BrandAndProjects';
 import { ChatWidget } from './components/common/ChatWidget';
 import { WhatsAppButton } from './components/WhatsAppButton';
+import { PreloadPage } from './components/PreloadPage';
 import { startChatConversation, sendChatMessage } from './lib/api';
 import { getFeaturedProjects } from './services/portfolioService';
 import { ParallaxBackground } from './hooks/useParallax';
@@ -34,6 +35,7 @@ export default function AppModern() {
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [projects, setProjects] = useState<Project[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isPageReady, setIsPageReady] = useState(false);
 
   // Load portfolio data from API
   useEffect(() => {
@@ -46,6 +48,10 @@ export default function AppModern() {
         console.error('Failed to load portfolio data:', error);
       } finally {
         setIsLoading(false);
+        // Simulate preload animation delay
+        setTimeout(() => {
+          setIsPageReady(true);
+        }, 2000);
       }
     };
 
@@ -89,7 +95,9 @@ export default function AppModern() {
   ];
 
   return (
-    <div className="bg-black text-white min-h-screen">
+    <>
+      {!isPageReady && <PreloadPage />}
+      <div className="bg-black text-white min-h-screen">
       {/* Navigation Header */}
       <header className="fixed top-0 w-full z-50 bg-black/50 backdrop-blur-md border-b border-gray-800">
         <div className="max-w-7xl mx-auto px-4 md:px-8 py-4 flex items-center justify-between">
@@ -140,7 +148,7 @@ export default function AppModern() {
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
-              className="md:hidden bg-black/90 border-t border-gray-800"
+              className="md:hidden bg-gradient-to-b from-cyan-500/10 via-purple-500/10 to-black border-t border-cyan-500/30"
             >
               <div className="px-4 py-4 space-y-3">
                 {navItems.map((item) => (
@@ -167,10 +175,11 @@ export default function AppModern() {
 
       {/* Hero Section */}
       <section id="home" className="pt-32 pb-16 md:pt-40 md:pb-24 px-4 md:px-8 relative overflow-hidden">
-        <ParallaxBackground speed={0.3} className="absolute inset-0 bg-gradient-to-br from-cyan-500/20 via-purple-500/10 to-pink-500/20 pointer-events-none">
+        <ParallaxBackground speed={0.3} className="absolute inset-0 bg-gradient-to-br from-teal-500/15 via-indigo-500/10 to-slate-900/20 pointer-events-none">
           <div className="w-full h-full" />
         </ParallaxBackground>
-        <div className="absolute top-40 right-0 w-96 h-96 bg-cyan-500/30 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute top-40 right-0 w-96 h-96 bg-teal-500/20 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 left-1/4 w-80 h-80 bg-indigo-500/15 rounded-full blur-3xl pointer-events-none" />
 
         <div className="max-w-6xl mx-auto relative z-10">
           <motion.div
@@ -183,19 +192,21 @@ export default function AppModern() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.2, duration: 0.6 }}
-              className="text-cyan-400 text-sm md:text-base font-semibold uppercase tracking-widest mb-4"
+              className="text-teal-400 text-sm md:text-base font-semibold uppercase tracking-widest mb-6"
             >
-              Digital Solutions
+              Professional Developer
             </motion.p>
 
-            <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight">
-              <span className="gradient-text">Building Tomorrow</span>
+            <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold mb-6 leading-tight">
+              <span className="bg-gradient-to-r from-teal-400 via-cyan-400 to-indigo-400 bg-clip-text text-transparent">
+                Building Digital
+              </span>
               <br />
-              <span className="text-gray-100">with Code</span>
+              <span className="text-white">Excellence</span>
             </h1>
 
-            <p className="text-base md:text-lg text-gray-300 max-w-2xl mx-auto mb-8">
-              Full-stack development crafted for impact
+            <p className="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto mb-12 leading-relaxed font-light">
+              Full-stack solutions that transform ideas into scalable, production-ready applications
             </p>
 
             <motion.div
@@ -204,19 +215,23 @@ export default function AppModern() {
               transition={{ delay: 0.4, duration: 0.6 }}
               className="flex flex-col md:flex-row gap-4 justify-center items-center"
             >
-              <a
+              <motion.a
+                whileHover={{ scale: 1.05, boxShadow: '0 20px 40px rgba(20, 184, 166, 0.3)' }}
+                whileTap={{ scale: 0.95 }}
                 href="#projects"
-                className="px-8 py-3 bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-400 hover:to-purple-400 rounded-lg font-semibold flex items-center gap-2 transition-all duration-300 transform hover:scale-105"
+                className="px-10 py-4 bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-400 hover:to-cyan-400 rounded-xl font-semibold flex items-center gap-2 transition-all duration-300 text-white shadow-lg"
               >
-                View Work
-                <ArrowRight size={18} />
-              </a>
-              <a
+                View My Work
+                <ArrowRight size={20} />
+              </motion.a>
+              <motion.a
+                whileHover={{ scale: 1.05, backgroundColor: 'rgba(20, 184, 166, 0.1)' }}
+                whileTap={{ scale: 0.95 }}
                 href="#contact"
-                className="px-8 py-3 border-2 border-cyan-500 text-cyan-400 hover:bg-cyan-500/10 rounded-lg font-semibold transition-all duration-300"
+                className="px-10 py-4 border-2 border-teal-500 text-teal-400 hover:text-teal-300 rounded-xl font-semibold transition-all duration-300"
               >
-                Let's Talk
-              </a>
+                Start a Project
+              </motion.a>
             </motion.div>
           </motion.div>
 
@@ -225,7 +240,7 @@ export default function AppModern() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6, duration: 0.6 }}
-            className="flex justify-center gap-6 mt-12"
+            className="flex justify-center gap-6 mt-16"
           >
             {[
               { icon: Github, href: 'https://github.com', label: 'GitHub' },

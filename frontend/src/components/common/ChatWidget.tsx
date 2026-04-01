@@ -267,9 +267,10 @@ export function ChatWidget({
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.95 }}
           onClick={() => setIsOpen(true)}
-          className="fixed bottom-6 right-6 w-16 h-16 bg-gradient-to-br from-cyan-500 to-purple-500 hover:from-cyan-400 hover:to-purple-400 text-white rounded-full flex items-center justify-center shadow-lg z-40 cursor-pointer"
+          className="fixed bottom-32 right-6 w-14 h-14 bg-gradient-to-br from-cyan-500 to-purple-500 hover:from-cyan-400 hover:to-purple-400 text-white rounded-full flex items-center justify-center shadow-lg z-40 cursor-pointer transition-all duration-300 group"
+          title="Open chat"
         >
-          <MessageCircle size={28} />
+          <MessageCircle size={22} className="group-hover:animate-pulse" />
         </motion.button>
       )}
     </>
