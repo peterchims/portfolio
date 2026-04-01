@@ -1,10 +1,14 @@
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, ExternalLink, Github, Linkedin, Mail, ArrowRight } from 'lucide-react';
-import { Peter4TechLogo } from './components/layout/Logo';
+import { Menu, X, ExternalLink, Github, Linkedin, Mail, ArrowRight, Code2 } from 'lucide-react';
+import { Peter4TechLogoV2 } from './components/Peter4TechLogoV2';
 import { AboutPeter4TechSection, UpcomingProjectsSection, ProjectCatalogsSection } from './components/sections/BrandAndProjects';
 import { ChatWidget } from './components/common/ChatWidget';
+import { WhatsAppButton } from './components/WhatsAppButton';
 import { startChatConversation, sendChatMessage } from './lib/api';
+import { getFeaturedProjects, getProfile } from './services/portfolioService';
+import { useParallax, ParallaxBackground } from './hooks/useParallax';
+import type { Project, Profile } from './services/portfolioService';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -24,6 +28,30 @@ export default function AppModern() {
   const [scrollY, setScrollY] = useState(0);
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [currentConversationId, setCurrentConversationId] = useState<string | null>(null);
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [profile, setProfile] = useState<Profile | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Load portfolio data from API
+  useEffect(() => {
+    const loadPortfolioData = async () => {
+      try {
+        setIsLoading(true);
+        const [projectsData, profileData] = await Promise.all([
+          getFeaturedProjects(),
+          getProfile(),
+        ]);
+        setProjects(projectsData);
+        setProfile(profileData);
+      } catch (error) {
+        console.error('Failed to load portfolio data:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadPortfolioData();
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => setScrollY(window.scrollY);
@@ -53,38 +81,9 @@ export default function AppModern() {
   };
 
   const navItems = [
-    { id: 'about-brand', label: 'Brand' },
-    { id: 'projects', label: 'Featured Projects' },
-    { id: 'upcoming', label: 'Upcoming' },
-    { id: 'catalogs', label: 'Catalogs' },
+    { id: 'about-brand', label: 'About' },
+    { id: 'projects', label: 'Work' },
     { id: 'contact', label: 'Contact' },
-  ];
-
-  const featuredProjects = [
-    {
-      title: 'Enterprise SaaS Platform',
-      description: 'Full-stack cloud application for team collaboration',
-      image: 'https://images.unsplash.com/photo-1460925895917-adf4e565db6d?w=600&h=400&fit=crop',
-      tech: ['React', '.NET', 'PostgreSQL', 'Docker'],
-      liveUrl: '#',
-      sourceUrl: '#',
-    },
-    {
-      title: 'Real-time Analytics Dashboard',
-      description: 'Advanced data visualization with WebSocket integration',
-      image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&h=400&fit=crop',
-      tech: ['Next.js', 'Node.js', 'Python', 'D3.js'],
-      liveUrl: '#',
-      sourceUrl: '#',
-    },
-    {
-      title: 'Mobile-First E-Commerce',
-      description: 'Responsive shopping platform with real-time inventory',
-      image: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=600&h=400&fit=crop',
-      tech: ['React Native', 'Firebase', 'Stripe'],
-      liveUrl: '#',
-      sourceUrl: '#',
-    },
   ];
 
   return (
@@ -94,10 +93,10 @@ export default function AppModern() {
         <div className="max-w-7xl mx-auto px-4 md:px-8 py-4 flex items-center justify-between">
           {/* Logo */}
           <a href="#" className="flex items-center gap-2">
-            <Peter4TechLogo />
+            <Peter4TechLogoV2 />
             <div className="hidden md:block">
               <p className="text-sm font-bold">Peter4Tech</p>
-              <p className="text-xs text-cyan-400">Digital Solutions</p>
+              <p className="text-xs text-cyan-400">Solutions</p>
             </div>
           </a>
 
@@ -166,7 +165,7 @@ export default function AppModern() {
 
       {/* Hero Section */}
       <section id="home" className="pt-32 pb-16 md:pt-40 md:pb-24 px-4 md:px-8 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/20 via-purple-500/10 to-pink-500/20 pointer-events-none" />
+        <ParallaxBackground speed={0.3} className="absolute inset-0 bg-gradient-to-br from-cyan-500/20 via-purple-500/10 to-pink-500/20 pointer-events-none" />
         <div className="absolute top-40 right-0 w-96 h-96 bg-cyan-500/30 rounded-full blur-3xl pointer-events-none" />
 
         <div className="max-w-6xl mx-auto relative z-10">
@@ -182,17 +181,17 @@ export default function AppModern() {
               transition={{ delay: 0.2, duration: 0.6 }}
               className="text-cyan-400 text-sm md:text-base font-semibold uppercase tracking-widest mb-4"
             >
-              Welcome to Peter4Tech
+              Digital Solutions
             </motion.p>
 
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight">
-              <span className="gradient-text">Building Tomorrow's</span>
+              <span className="gradient-text">Building Tomorrow</span>
               <br />
-              <span>Digital Solutions</span>
+              <span className="text-gray-100">with Code</span>
             </h1>
 
-            <p className="text-base md:text-xl text-gray-300 max-w-2xl mx-auto mb-8">
-              Crafting innovative, scalable, and beautiful digital experiences with cutting-edge technology and strategic expertise.
+            <p className="text-base md:text-lg text-gray-300 max-w-2xl mx-auto mb-8">
+              Full-stack development crafted for impact
             </p>
 
             <motion.div
@@ -205,14 +204,14 @@ export default function AppModern() {
                 href="#projects"
                 className="px-8 py-3 bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-400 hover:to-purple-400 rounded-lg font-semibold flex items-center gap-2 transition-all duration-300 transform hover:scale-105"
               >
-                View My Work
+                View Work
                 <ArrowRight size={18} />
               </a>
               <a
                 href="#contact"
                 className="px-8 py-3 border-2 border-cyan-500 text-cyan-400 hover:bg-cyan-500/10 rounded-lg font-semibold transition-all duration-300"
               >
-                Start a Project
+                Let's Talk
               </a>
             </motion.div>
           </motion.div>
@@ -257,80 +256,102 @@ export default function AppModern() {
             className="text-center mb-12"
           >
             <p className="text-sm md:text-base font-semibold text-purple-400 uppercase tracking-wider mb-3">
-              Showcase
+              Portfolio
             </p>
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4">
-              Featured Projects
+              Featured Work
             </h2>
-            <p className="text-base md:text-lg text-gray-300 max-w-3xl mx-auto">
-              A selection of recent projects that showcase our expertise
-            </p>
           </motion.div>
 
-          <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.2 }}
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-          >
-            {featuredProjects.map((project, idx) => (
-              <motion.div
-                key={idx}
-                variants={itemVariants}
-                whileHover={{ y: -8 }}
-                className="group rounded-2xl overflow-hidden border border-gray-700 hover:border-cyan-500/50 transition-all duration-300 bg-gray-900/50 backdrop-blur"
-              >
-                {/* Project Image */}
-                <div className="relative h-48 overflow-hidden">
-                  <motion.img
-                    src={project.image}
-                    alt={project.title}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
-                </div>
-
-                {/* Project Info */}
-                <div className="p-6">
-                  <h3 className="text-lg md:text-xl font-bold text-white mb-2">
-                    {project.title}
-                  </h3>
-                  <p className="text-sm text-gray-300 mb-4">
-                    {project.description}
-                  </p>
-
-                  {/* Tech Stack */}
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    {project.tech.map((tech) => (
-                      <span
-                        key={tech}
-                        className="px-3 py-1 rounded-full bg-gray-800/50 border border-gray-700 text-xs text-gray-300"
-                      >
-                        {tech}
-                      </span>
-                    ))}
+          {isLoading ? (
+            <div className="text-center py-12">
+              <p className="text-gray-400">Loading projects...</p>
+            </div>
+          ) : projects.length === 0 ? (
+            <div className="text-center py-12">
+              <p className="text-gray-400">No featured projects yet</p>
+            </div>
+          ) : (
+            <motion.div
+              variants={containerVariants}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, amount: 0.2 }}
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+            >
+              {projects.map((project, idx) => (
+                <motion.div
+                  key={project.id}
+                  variants={itemVariants}
+                  whileHover={{ y: -8 }}
+                  className="group rounded-2xl overflow-hidden border border-gray-700 hover:border-cyan-500/50 transition-all duration-300 bg-gray-900/50 backdrop-blur"
+                >
+                  {/* Project Image */}
+                  <div className="relative h-48 overflow-hidden">
+                    <motion.img
+                      src={project.imageUrl}
+                      alt={project.title}
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
                   </div>
 
-                  {/* Links */}
-                  <div className="flex gap-3">
-                    <a
-                      href={project.liveUrl}
-                      className="flex-1 py-2 bg-cyan-500/10 border border-cyan-500/50 hover:bg-cyan-500/20 text-cyan-400 text-sm font-semibold rounded-lg transition-all duration-300 flex items-center justify-center gap-2"
-                    >
-                      <ExternalLink size={16} /> Live
-                    </a>
-                    <a
-                      href={project.sourceUrl}
-                      className="flex-1 py-2 bg-gray-700/50 border border-gray-600 hover:border-gray-500 text-gray-300 text-sm font-semibold rounded-lg transition-all duration-300 flex items-center justify-center gap-2"
-                    >
-                      <Github size={16} /> Code
-                    </a>
+                  {/* Project Info */}
+                  <div className="p-6">
+                    <h3 className="text-lg md:text-xl font-bold text-white mb-2">
+                      {project.title}
+                    </h3>
+                    <p className="text-sm text-gray-300 mb-4 line-clamp-2">
+                      {project.description}
+                    </p>
+
+                    {/* Tech Stack */}
+                    {project.technologies && project.technologies.length > 0 && (
+                      <div className="flex flex-wrap gap-2 mb-4">
+                        {project.technologies.slice(0, 3).map((tech) => (
+                          <span
+                            key={tech}
+                            className="px-3 py-1 rounded-full bg-gray-800/50 border border-gray-700 text-xs text-gray-300"
+                          >
+                            {tech}
+                          </span>
+                        ))}
+                        {project.technologies.length > 3 && (
+                          <span className="px-3 py-1 rounded-full bg-gray-800/50 border border-gray-700 text-xs text-gray-300">
+                            +{project.technologies.length - 3}more
+                          </span>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Links */}
+                    <div className="flex gap-3">
+                      {project.liveUrl && (
+                        <a
+                          href={project.liveUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex-1 py-2 bg-cyan-500/10 border border-cyan-500/50 hover:bg-cyan-500/20 text-cyan-400 text-sm font-semibold rounded-lg transition-all duration-300 flex items-center justify-center gap-2"
+                        >
+                          <ExternalLink size={16} /> Live
+                        </a>
+                      )}
+                      {project.sourceUrl && (
+                        <a
+                          href={project.sourceUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex-1 py-2 bg-gray-700/50 border border-gray-600 hover:border-gray-500 text-gray-300 text-sm font-semibold rounded-lg transition-all duration-300 flex items-center justify-center gap-2"
+                        >
+                          <Github size={16} /> Code
+                        </a>
+                      )}
+                    </div>
                   </div>
-                </div>
-              </motion.div>
-            ))}
-          </motion.div>
+                </motion.div>
+              ))}
+            </motion.div>
+          )}
         </div>
       </section>
 
@@ -351,14 +372,11 @@ export default function AppModern() {
             className="text-center mb-12"
           >
             <p className="text-sm md:text-base font-semibold text-pink-400 uppercase tracking-wider mb-3">
-              Get In Touch
+              Let's Connect
             </p>
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4">
-              Let's Build Something Amazing
+              Start Your Project
             </h2>
-            <p className="text-base md:text-lg text-gray-300">
-              Have a project in mind? I'd love to hear about it and explore how we can work together.
-            </p>
           </motion.div>
 
           <motion.form
@@ -388,8 +406,8 @@ export default function AppModern() {
             />
 
             <textarea
-              placeholder="Tell me about your project..."
-              rows={6}
+              placeholder="Project details..."
+              rows={5}
               className="w-full px-4 py-3 bg-black/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:border-cyan-500 focus:outline-none transition-colors duration-300 resize-none"
             />
 
@@ -410,8 +428,8 @@ export default function AppModern() {
         <div className="max-w-6xl mx-auto">
           <div className="flex flex-col md:flex-row items-center justify-between">
             <div className="flex items-center gap-2 mb-4 md:mb-0">
-              <Peter4TechLogo />
-              <p className="text-sm text-gray-400">© 2026 Peter4Tech. All rights reserved.</p>
+              <Peter4TechLogoV2 />
+              <p className="text-sm text-gray-400">© 2026 Peter4Tech</p>
             </div>
 
             <div className="flex gap-6">
@@ -442,6 +460,9 @@ export default function AppModern() {
         isOpen={isChatOpen}
         onClose={() => setIsChatOpen(false)}
       />
+
+      {/* WhatsApp Button */}
+      <WhatsAppButton />
     </div>
   );
 }
