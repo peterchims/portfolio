@@ -1,6 +1,13 @@
-import { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Send, X, MessageCircle, Minimize2, Maximize2 } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+import {
+  Loader2,
+  Maximize2,
+  MessageCircle,
+  Minimize2,
+  Send,
+  X,
+} from 'lucide-react';
 
 export interface ChatMessage {
   id: string;
@@ -10,14 +17,28 @@ export interface ChatMessage {
   isAutomated: boolean;
 }
 
+export interface ChatConversationResult {
+  id: string;
+  messages: ChatMessage[];
+}
+
 interface ChatWidgetProps {
-  onStartChat?: (name: string, email: string, message: string) => void;
-  onSendMessage?: (conversationId: string, message: string) => void;
+  brandName: string;
+  onStartChat?: (
+    name: string,
+    email: string,
+    message: string
+  ) => Promise<ChatConversationResult>;
+  onSendMessage?: (
+    conversationId: string,
+    message: string
+  ) => Promise<ChatConversationResult>;
   isOpen?: boolean;
   onClose?: () => void;
 }
 
 export function ChatWidget({
+  brandName,
   onStartChat,
   onSendMessage,
   isOpen: externalIsOpen,
@@ -32,6 +53,7 @@ export function ChatWidget({
   const [visitorEmail, setVisitorEmail] = useState('');
   const [conversationId, setConversationId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -40,158 +62,209 @@ export function ChatWidget({
     }
   }, [externalIsOpen]);
 
-  const scrollToBottom = () => {
+  useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages, isLoading]);
+
+  const openWidget = () => {
+    setIsOpen(true);
+    setIsMinimized(false);
   };
 
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
+  const closeWidget = () => {
+    setIsOpen(false);
+    setIsMinimized(false);
+    setStep('welcome');
+    setMessages([]);
+    setInputValue('');
+    setVisitorName('');
+    setVisitorEmail('');
+    setConversationId(null);
+    setErrorMessage('');
+    onClose?.();
+  };
 
-  const handleStartChat = () => {
-    if (!visitorName || !visitorEmail || !inputValue) {
-      alert('Please fill in all fields');
+  const handleStartChat = async () => {
+    if (!visitorName.trim() || !visitorEmail.trim() || !inputValue.trim()) {
+      setErrorMessage('Enter your name, email, and project brief.');
+      return;
+    }
+
+    if (!onStartChat) {
+      setErrorMessage('Chat is not available right now.');
       return;
     }
 
     setIsLoading(true);
-    const initialMessage: ChatMessage = {
-      id: Date.now().toString(),
-      content: inputValue,
-      sender: 'visitor',
-      timestamp: new Date(),
-      isAutomated: false,
-    };
+    setErrorMessage('');
 
-    setMessages([initialMessage]);
-    onStartChat?.(visitorName, visitorEmail, inputValue);
-    setConversationId(Date.now().toString());
-    setStep('chat');
-    setInputValue('');
-    setIsLoading(false);
+    try {
+      const result = await onStartChat(
+        visitorName.trim(),
+        visitorEmail.trim(),
+        inputValue.trim()
+      );
+
+      setConversationId(result.id);
+      setMessages(result.messages);
+      setStep('chat');
+      setInputValue('');
+    } catch (error) {
+      setErrorMessage(
+        error instanceof Error
+          ? error.message
+          : 'Unable to start the conversation right now.'
+      );
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleSendMessage = async () => {
-    if (!inputValue.trim() || !conversationId) return;
+    if (!inputValue.trim() || !conversationId) {
+      return;
+    }
 
-    const userMessage: ChatMessage = {
-      id: Date.now().toString(),
-      content: inputValue,
-      sender: 'visitor',
-      timestamp: new Date(),
-      isAutomated: false,
-    };
+    if (!onSendMessage) {
+      setErrorMessage('Chat is not available right now.');
+      return;
+    }
 
-    setMessages((prev) => [...prev, userMessage]);
-    onSendMessage?.(conversationId, inputValue);
+    const nextMessage = inputValue.trim();
     setInputValue('');
     setIsLoading(true);
+    setErrorMessage('');
 
-    // Simulate a small delay for bot response
-    setTimeout(() => {
+    try {
+      const result = await onSendMessage(conversationId, nextMessage);
+      setMessages(result.messages);
+      setConversationId(result.id);
+    } catch (error) {
+      setInputValue(nextMessage);
+      setErrorMessage(
+        error instanceof Error
+          ? error.message
+          : 'Unable to send your message right now.'
+      );
+    } finally {
       setIsLoading(false);
-    }, 500);
-  };
-
-  const handleClose = () => {
-    setIsOpen(false);
-    setStep('welcome');
-    setMessages([]);
-    setVisitorName('');
-    setVisitorEmail('');
-    setConversationId(null);
-    onClose?.();
+    }
   };
 
   return (
     <>
-      {/* Chat Widget */}
       <AnimatePresence>
-        {isOpen && (
+        {isOpen ? (
           <motion.div
-            initial={{ opacity: 0, scale: 0.8, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.8, y: 20 }}
-            transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-            className="fixed bottom-6 right-6 w-96 max-h-[600px] bg-gradient-to-br from-gray-900 to-black border border-cyan-500/30 rounded-2xl shadow-2xl flex flex-col z-50"
+            initial={{ opacity: 0, y: 20, scale: 0.92 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 20, scale: 0.94 }}
+            transition={{ duration: 0.34, ease: [0.22, 1, 0.36, 1] }}
+            className="fixed bottom-28 right-4 z-50 flex w-[min(22.5rem,calc(100vw-1.25rem))] max-h-[37rem] flex-col overflow-hidden rounded-[24px] border border-white/10 bg-[#0f1317]/96 shadow-[0_24px_80px_rgba(0,0,0,0.45)] backdrop-blur-2xl md:bottom-28 md:right-6"
           >
-            {/* Header */}
-            <div className="bg-gradient-to-r from-cyan-500 to-purple-500 text-white p-4 rounded-t-2xl flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
-                  <MessageCircle size={20} />
+            <div className="border-b border-white/8 bg-[linear-gradient(135deg,rgba(161,98,7,0.22),rgba(15,23,42,0.9)_35%,rgba(6,95,70,0.18))] px-4 py-3">
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-2xl border border-white/12 bg-white/8 text-stone-100">
+                    <MessageCircle size={18} />
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-white">{brandName}</p>
+                    <p className="text-[11px] text-slate-300/80">
+                      {step === 'welcome' ? 'Project intake chat' : 'Conversation active'}
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <p className="font-bold text-sm">Peter4Tech</p>
-                  <p className="text-xs opacity-80">
-                    {step === 'welcome' ? 'Start a conversation' : 'Chat assistant'}
-                  </p>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setIsMinimized((value) => !value)}
+                    className="rounded-xl border border-white/10 bg-white/6 p-2 text-slate-200 transition hover:border-white/20 hover:bg-white/10"
+                    aria-label={isMinimized ? 'Expand chat' : 'Minimize chat'}
+                  >
+                    {isMinimized ? <Maximize2 size={15} /> : <Minimize2 size={15} />}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={closeWidget}
+                    className="rounded-xl border border-white/10 bg-white/6 p-2 text-slate-200 transition hover:border-white/20 hover:bg-white/10"
+                    aria-label="Close chat"
+                  >
+                    <X size={15} />
+                  </button>
                 </div>
-              </div>
-              <div className="flex gap-2">
-                <button
-                  onClick={() => setIsMinimized(!isMinimized)}
-                  className="p-1 hover:bg-white/20 rounded-lg transition-colors"
-                >
-                  {isMinimized ? <Maximize2 size={16} /> : <Minimize2 size={16} />}
-                </button>
-                <button
-                  onClick={handleClose}
-                  className="p-1 hover:bg-white/20 rounded-lg transition-colors"
-                >
-                  <X size={16} />
-                </button>
               </div>
             </div>
 
-            {/* Content */}
-            {!isMinimized && (
-              <div className="flex-1 flex flex-col overflow-hidden">
+            {!isMinimized ? (
+              <div className="flex flex-1 flex-col overflow-hidden">
                 {step === 'welcome' ? (
-                  // Welcome Form
-                  <div className="flex-1 p-6 flex flex-col justify-between">
-                    <div className="space-y-4">
-                      <p className="text-sm text-gray-300">
-                        Hi! 👋 Let's start a conversation. Tell me a bit about yourself.
+                  <div className="flex flex-1 flex-col gap-4 p-4">
+                    <div className="space-y-2">
+                      <p className="text-sm text-slate-200">
+                        Share a short project brief and I will route it into the backend-backed
+                        conversation flow.
                       </p>
+                      <p className="text-xs leading-5 text-slate-400">
+                        Keep it short: what you need, what feels weak, and what outcome you want.
+                      </p>
+                    </div>
 
+                    <div className="grid gap-3">
                       <input
                         type="text"
                         placeholder="Your name"
                         value={visitorName}
-                        onChange={(e) => setVisitorName(e.target.value)}
-                        className="w-full px-4 py-2 bg-black/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:border-cyan-500 focus:outline-none text-sm"
+                        onChange={(event) => setVisitorName(event.target.value)}
+                        className="w-full rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-slate-100 placeholder:text-slate-500 focus:border-emerald-400/60 focus:outline-none"
                       />
 
                       <input
                         type="email"
                         placeholder="Your email"
                         value={visitorEmail}
-                        onChange={(e) => setVisitorEmail(e.target.value)}
-                        className="w-full px-4 py-2 bg-black/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:border-cyan-500 focus:outline-none text-sm"
+                        onChange={(event) => setVisitorEmail(event.target.value)}
+                        className="w-full rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-slate-100 placeholder:text-slate-500 focus:border-emerald-400/60 focus:outline-none"
                       />
 
                       <textarea
-                        placeholder="What's on your mind?"
+                        placeholder="Project brief"
                         value={inputValue}
-                        onChange={(e) => setInputValue(e.target.value)}
-                        rows={3}
-                        className="w-full px-4 py-2 bg-black/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:border-cyan-500 focus:outline-none text-sm resize-none"
+                        onChange={(event) => setInputValue(event.target.value)}
+                        rows={4}
+                        className="w-full resize-none rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-slate-100 placeholder:text-slate-500 focus:border-emerald-400/60 focus:outline-none"
                       />
                     </div>
 
+                    {errorMessage ? (
+                      <p className="rounded-2xl border border-red-500/20 bg-red-500/10 px-3 py-2 text-xs text-red-200">
+                        {errorMessage}
+                      </p>
+                    ) : null}
+
                     <button
+                      type="button"
                       onClick={handleStartChat}
                       disabled={isLoading}
-                      className="w-full py-2 bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-400 hover:to-purple-400 text-white font-semibold rounded-lg transition-all disabled:opacity-50"
+                      className="mt-auto inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl border border-emerald-400/20 bg-[linear-gradient(135deg,#8b5a10,#0f766e)] px-4 py-3 text-sm font-semibold text-white transition hover:translate-y-[-1px] hover:border-emerald-300/40 disabled:cursor-not-allowed disabled:opacity-70"
                     >
-                      {isLoading ? 'Starting...' : 'Start Chat'}
+                      {isLoading ? (
+                        <>
+                          <Loader2 size={16} className="animate-spin" />
+                          Starting chat
+                        </>
+                      ) : (
+                        <>
+                          Start project chat
+                          <Send size={16} />
+                        </>
+                      )}
                     </button>
                   </div>
                 ) : (
-                  // Chat Messages
                   <>
-                    <div className="flex-1 overflow-y-auto p-4 space-y-3">
+                    <div className="flex-1 space-y-3 overflow-y-auto p-4">
                       {messages.map((message) => (
                         <motion.div
                           key={message.id}
@@ -202,77 +275,95 @@ export function ChatWidget({
                           }`}
                         >
                           <div
-                            className={`max-w-xs px-4 py-2 rounded-lg text-sm ${
+                            className={`max-w-[83%] rounded-[18px] px-4 py-3 text-sm leading-6 ${
                               message.sender === 'visitor'
-                                ? 'bg-cyan-500 text-white'
-                                : 'bg-gray-800 text-gray-300 border border-gray-700'
+                                ? 'bg-[linear-gradient(135deg,#8b5a10,#0f766e)] text-white shadow-[0_16px_32px_rgba(6,78,59,0.25)]'
+                                : 'border border-white/8 bg-white/[0.04] text-slate-200'
                             }`}
                           >
                             {message.content}
                           </div>
                         </motion.div>
                       ))}
-                      {isLoading && (
+
+                      {isLoading ? (
                         <motion.div
-                          initial={{ opacity: 0, y: 10 }}
+                          initial={{ opacity: 0, y: 8 }}
                           animate={{ opacity: 1, y: 0 }}
                           className="flex justify-start"
                         >
-                          <div className="bg-gray-800 text-gray-300 border border-gray-700 px-4 py-2 rounded-lg flex gap-1">
-                            <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce" />
-                            <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }} />
-                            <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }} />
+                          <div className="flex items-center gap-2 rounded-[18px] border border-white/8 bg-white/[0.04] px-4 py-3 text-xs text-slate-300">
+                            <Loader2 size={14} className="animate-spin" />
+                            Generating reply
                           </div>
                         </motion.div>
-                      )}
+                      ) : null}
+
+                      {errorMessage ? (
+                        <p className="rounded-2xl border border-red-500/20 bg-red-500/10 px-3 py-2 text-xs text-red-200">
+                          {errorMessage}
+                        </p>
+                      ) : null}
+
                       <div ref={messagesEndRef} />
                     </div>
 
-                    {/* Input Area */}
-                    <div className="border-t border-gray-700 p-4 flex gap-2">
-                      <input
-                        type="text"
-                        placeholder="Type your message..."
-                        value={inputValue}
-                        onChange={(e) => setInputValue(e.target.value)}
-                        onKeyPress={(e) => {
-                          if (e.key === 'Enter' && !e.shiftKey) {
-                            e.preventDefault();
-                            handleSendMessage();
-                          }
-                        }}
-                        className="flex-1 px-3 py-2 bg-black/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:border-cyan-500 focus:outline-none text-sm"
-                      />
-                      <button
-                        onClick={handleSendMessage}
-                        disabled={!inputValue.trim() || isLoading}
-                        className="p-2 bg-cyan-500 hover:bg-cyan-400 text-white rounded-lg transition-colors disabled:opacity-50"
-                      >
-                        <Send size={18} />
-                      </button>
+                    <div className="border-t border-white/8 bg-black/10 p-4">
+                      <div className="flex items-end gap-2">
+                        <textarea
+                          placeholder="Type your message"
+                          value={inputValue}
+                          onChange={(event) => setInputValue(event.target.value)}
+                          onKeyDown={(event) => {
+                            if (event.key === 'Enter' && !event.shiftKey) {
+                              event.preventDefault();
+                              void handleSendMessage();
+                            }
+                          }}
+                          rows={1}
+                          className="max-h-28 min-h-12 flex-1 resize-y rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-slate-100 placeholder:text-slate-500 focus:border-emerald-400/60 focus:outline-none"
+                        />
+
+                        <button
+                          type="button"
+                          onClick={() => void handleSendMessage()}
+                          disabled={!inputValue.trim() || isLoading}
+                          className="inline-flex h-12 w-12 items-center justify-center rounded-2xl border border-emerald-400/20 bg-[linear-gradient(135deg,#8b5a10,#0f766e)] text-white transition hover:translate-y-[-1px] disabled:cursor-not-allowed disabled:opacity-60"
+                          aria-label="Send message"
+                        >
+                          <Send size={17} />
+                        </button>
+                      </div>
                     </div>
                   </>
                 )}
               </div>
-            )}
+            ) : null}
           </motion.div>
-        )}
+        ) : null}
       </AnimatePresence>
 
-      {/* Floating Button */}
-      {!isOpen && (
+      {!isOpen ? (
         <motion.button
-          initial={{ scale: 0, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.95 }}
-          onClick={() => setIsOpen(true)}
-          className="fixed bottom-32 right-6 w-14 h-14 bg-gradient-to-br from-cyan-500 to-purple-500 hover:from-cyan-400 hover:to-purple-400 text-white rounded-full flex items-center justify-center shadow-lg z-40 cursor-pointer transition-all duration-300 group"
+          initial={{ opacity: 0, y: 18 }}
+          animate={{ opacity: 1, y: 0 }}
+          whileHover={{ y: -2 }}
+          whileTap={{ scale: 0.98 }}
+          onClick={openWidget}
+          className="fixed bottom-[5.5rem] right-4 z-40 inline-flex min-h-12 items-center gap-3 rounded-[18px] border border-white/10 bg-[#12171c]/94 px-4 py-3 text-left text-slate-100 shadow-[0_18px_38px_rgba(0,0,0,0.32)] backdrop-blur-xl transition hover:border-emerald-400/30 md:right-6"
           title="Open chat"
         >
-          <MessageCircle size={22} className="group-hover:animate-pulse" />
+          <span className="flex h-9 w-9 items-center justify-center rounded-2xl bg-[linear-gradient(135deg,#8b5a10,#0f766e)] text-white">
+            <MessageCircle size={17} />
+          </span>
+          <span className="flex flex-col">
+            <span className="text-[10px] uppercase tracking-[0.22em] text-slate-400">
+              Live
+            </span>
+            <span className="text-sm font-semibold">Project chat</span>
+          </span>
         </motion.button>
-      )}
+      ) : null}
     </>
   );
 }

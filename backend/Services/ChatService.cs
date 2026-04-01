@@ -50,6 +50,7 @@ public class ChatService : IChatService
         };
 
         _context.ChatMessages.Add(userMessage);
+        conversation.Messages.Add(userMessage);
 
         // Generate automated response
         var automatedMessage = await GetAutomatedResponseAsync(dto.InitialMessage);
@@ -63,6 +64,7 @@ public class ChatService : IChatService
         };
 
         _context.ChatMessages.Add(systemMessage);
+        conversation.Messages.Add(systemMessage);
         conversation.MessageCount = 2;
         await _context.SaveChangesAsync();
 
@@ -89,6 +91,7 @@ public class ChatService : IChatService
         };
 
         _context.ChatMessages.Add(userMessage);
+        conversation.Messages.Add(userMessage);
 
         // Generate automated response
         var automatedMessage = await GetAutomatedResponseAsync(dto.Content);
@@ -102,6 +105,7 @@ public class ChatService : IChatService
         };
 
         _context.ChatMessages.Add(systemMessage);
+        conversation.Messages.Add(systemMessage);
         conversation.MessageCount += 2;
         conversation.UpdatedAt = DateTime.UtcNow;
 

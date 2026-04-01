@@ -110,7 +110,7 @@ export async function getSkills(): Promise<Skill[]> {
  */
 export async function getSkillsByCategory(): Promise<Record<string, Skill[]>> {
   try {
-    return await apiRequest('/api/skills/by-category');
+    return await apiRequest('/api/skills/grouped');
   } catch (error) {
     console.error('Failed to fetch skills by category:', error);
     return {};
@@ -134,18 +134,32 @@ export async function getTestimonials(): Promise<Testimonial[]> {
  */
 export async function getProfile(): Promise<Profile> {
   try {
-    return await apiRequest('/api/portfolio/profile');
+    const site = await apiRequest<{
+      data: {
+        profile: {
+          name: string;
+          role: string;
+          summary: string;
+          email: string;
+          phone: string;
+          location: string;
+        };
+        socialLinks: SocialLink[];
+      };
+    }>('/api/site');
+
+    return {
+      name: site.data.profile.name,
+      role: site.data.profile.role,
+      bio: site.data.profile.summary,
+      email: site.data.profile.email,
+      phoneNumber: site.data.profile.phone,
+      location: site.data.profile.location,
+      socialLinks: site.data.socialLinks,
+    };
   } catch (error) {
     console.error('Failed to fetch profile:', error);
-    return {
-      name: 'Peter4Tech',
-      role: 'Full-Stack Developer',
-      bio: 'Building digital solutions',
-      email: 'contact@peter4tech.com',
-      phoneNumber: '',
-      location: '',
-      socialLinks: [],
-    };
+    throw error;
   }
 }
 
@@ -154,25 +168,58 @@ export async function getProfile(): Promise<Profile> {
  */
 export async function getCompletePortfolioData(): Promise<PortfolioData> {
   try {
-    return await apiRequest('/api/portfolio');
+    const [site, projects, testimonials, skills] = await Promise.all([
+      apiRequest<{
+        data: {
+          profile: {
+            name: string;
+            role: string;
+            summary: string;
+            email: string;
+            phone: string;
+            location: string;
+          };
+          socialLinks: SocialLink[];
+        };
+        meta: {
+          updatedAt: string;
+        };
+      }>('/api/site'),
+      getAllProjects(),
+      getTestimonials(),
+      getSkills(),
+    ]);
+
+    const skillsByCategory = skills.reduce<Record<string, Skill[]>>((accumulator, skill) => {
+      const category = skill.category || 'General';
+
+      if (!accumulator[category]) {
+        accumulator[category] = [];
+      }
+
+      accumulator[category].push(skill);
+      return accumulator;
+    }, {});
+
+    return {
+      id: site.meta.updatedAt,
+      projects,
+      skills,
+      skillsByCategory,
+      testimonials,
+      profile: {
+        name: site.data.profile.name,
+        role: site.data.profile.role,
+        bio: site.data.profile.summary,
+        email: site.data.profile.email,
+        phoneNumber: site.data.profile.phone,
+        location: site.data.profile.location,
+        socialLinks: site.data.socialLinks,
+      },
+      lastUpdated: site.meta.updatedAt,
+    };
   } catch (error) {
     console.error('Failed to fetch portfolio data:', error);
-    return {
-      id: '',
-      projects: [],
-      skills: [],
-      skillsByCategory: {},
-      testimonials: [],
-      profile: {
-        name: 'Peter4Tech',
-        role: 'Full-Stack Developer',
-        bio: 'Building digital solutions',
-        email: 'contact@peter4tech.com',
-        phoneNumber: '',
-        location: '',
-        socialLinks: [],
-      },
-      lastUpdated: new Date().toISOString(),
-    };
+    throw error;
   }
 }
