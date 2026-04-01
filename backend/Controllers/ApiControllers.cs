@@ -316,3 +316,54 @@ public class SkillsController : ControllerBase
         return NoContent();
     }
 }
+
+[ApiController]
+[Route("api/[controller]")]
+public class ChatController : ControllerBase
+{
+    private readonly IChatService _chatService;
+    private readonly ILogger<ChatController> _logger;
+
+    public ChatController(IChatService chatService, ILogger<ChatController> logger)
+    {
+        _chatService = chatService;
+        _logger = logger;
+    }
+
+    [HttpPost("start")]
+    public async Task<ActionResult<ChatConversationDto>> StartConversation(StartConversationDto dto)
+    {
+        var conversation = await _chatService.StartConversationAsync(dto);
+        return CreatedAtAction(nameof(GetConversation), new { id = conversation.Id }, conversation);
+    }
+
+    [HttpPost("message")]
+    public async Task<ActionResult<ChatConversationDto>> SendMessage(SendMessageDto dto)
+    {
+        var conversation = await _chatService.SendMessageAsync(dto);
+        return Ok(conversation);
+    }
+
+    [HttpGet("{id}")]
+    public async Task<ActionResult<ChatConversationDto>> GetConversation(Guid id)
+    {
+        var conversation = await _chatService.GetConversationAsync(id);
+        if (conversation == null)
+            return NotFound();
+        return Ok(conversation);
+    }
+
+    [HttpGet]
+    public async Task<ActionResult<List<ChatConversationDto>>> GetAll()
+    {
+        var conversations = await _chatService.GetAllConversationsAsync();
+        return Ok(conversations);
+    }
+
+    [HttpPost("response")]
+    public async Task<ActionResult<ChatMessageDto>> GetAutomatedResponse([FromBody] string message)
+    {
+        var response = await _chatService.GetAutomatedResponseAsync(message);
+        return Ok(response);
+    }
+}

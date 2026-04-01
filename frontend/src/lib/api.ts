@@ -67,3 +67,25 @@ export async function trackInteraction(
     // Ignore analytics transport failures.
   }
 }
+
+export function startChatConversation(data: {
+  visitorName: string;
+  visitorEmail: string;
+  initialMessage: string;
+}): Promise<{ id: string }> {
+  return request<{ id: string }>('/api/chat/start', {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+}
+
+export function sendChatMessage(conversationId: string, message: string): Promise<{ id: string }> {
+  return request<{ id: string }>('/api/chat/message', {
+    method: 'POST',
+    body: JSON.stringify({ conversationId, content: message }),
+  });
+}
+
+export function getConversation(conversationId: string): Promise<{ messages: Array<{ content: string; sender: string }> }> {
+  return request<{ messages: Array<{ content: string; sender: string }> }>(`/api/chat/${conversationId}`);
+}

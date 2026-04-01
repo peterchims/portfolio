@@ -31,6 +31,7 @@ builder.Services.AddScoped<IContactService, ContactService>();
 builder.Services.AddScoped<ITestimonialService, TestimonialService>();
 builder.Services.AddScoped<ISkillService, SkillService>();
 builder.Services.AddScoped<ISiteContentService, SiteContentService>();
+builder.Services.AddScoped<IChatService, ChatService>();
 
 var app = builder.Build();
 

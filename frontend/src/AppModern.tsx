@@ -3,6 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, ExternalLink, Github, Linkedin, Mail, ArrowRight } from 'lucide-react';
 import { Peter4TechLogo } from './components/layout/Logo';
 import { AboutPeter4TechSection, UpcomingProjectsSection, ProjectCatalogsSection } from './components/sections/BrandAndProjects';
+import { ChatWidget } from './components/common/ChatWidget';
+import { startChatConversation, sendChatMessage } from './lib/api';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -20,12 +22,35 @@ const itemVariants = {
 export default function AppModern() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrollY, setScrollY] = useState(0);
+  const [isChatOpen, setIsChatOpen] = useState(false);
+  const [currentConversationId, setCurrentConversationId] = useState<string | null>(null);
 
   useEffect(() => {
     const handleScroll = () => setScrollY(window.scrollY);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  const handleStartChat = async (name: string, email: string, message: string) => {
+    try {
+      const response = await startChatConversation({
+        visitorName: name,
+        visitorEmail: email,
+        initialMessage: message,
+      });
+      setCurrentConversationId(response.id);
+    } catch (error) {
+      console.error('Failed to start conversation:', error);
+    }
+  };
+
+  const handleSendMessage = async (conversationId: string, message: string) => {
+    try {
+      await sendChatMessage(conversationId, message);
+    } catch (error) {
+      console.error('Failed to send message:', error);
+    }
+  };
 
   const navItems = [
     { id: 'about-brand', label: 'Brand' },
