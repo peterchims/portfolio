@@ -109,12 +109,17 @@ export interface SystemSignal {
 }
 
 export interface ProjectShowcaseContent {
+  recentLabel: string;
+  upcomingLabel: string;
   highlightsLabel: string;
   metricsLabel: string;
   stackLabel: string;
   liveLabel: string;
   sourceLabel: string;
   privateLabel: string;
+  shareLabel: string;
+  shareSuccessLabel: string;
+  shareErrorLabel: string;
 }
 
 export interface SelectOption {
@@ -166,6 +171,7 @@ export interface PortfolioContent {
   socialLinks: SocialLink[];
   servicePillars: ServicePillar[];
   featuredProjects: FeaturedProject[];
+  upcomingProjects: FeaturedProject[];
   stackGroups: StackGroup[];
   processSteps: ProcessStep[];
   systemSignals: SystemSignal[];

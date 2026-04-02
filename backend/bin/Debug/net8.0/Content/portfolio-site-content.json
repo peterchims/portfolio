@@ -49,9 +49,9 @@
       "copy": "The objective is not decorative polish. It is stronger hierarchy, better contracts, and cleaner execution so the product feels deliberate from UI to runtime behavior."
     },
     "projects": {
-      "kicker": "Featured projects",
-      "title": "A project gallery built around product feel, clear outcomes, and visual context.",
-      "copy": "Switch through the featured work to see the product category, the key outcome, the stack, and the core experience without reading through long walls of copy."
+      "kicker": "Project gallery",
+      "title": "Recent launches, active delivery, and the next builds already in motion.",
+      "copy": "Use the gallery switcher to move between recent work and upcoming builds. Each slide keeps the story compact, visual, and easier to scan on any screen."
     },
     "process": {
       "kicker": "Delivery process",
@@ -65,12 +65,17 @@
     }
   },
   "projectShowcase": {
-    "highlightsLabel": "Key outcomes",
-    "metricsLabel": "Project signals",
-    "stackLabel": "Stack",
-    "liveLabel": "View live product",
-    "sourceLabel": "Review source",
-    "privateLabel": "Private build. Walkthrough available on request."
+    "recentLabel": "Recent project gallery",
+    "upcomingLabel": "Upcoming projects",
+    "highlightsLabel": "What was improved",
+    "metricsLabel": "Project snapshot",
+    "stackLabel": "Build lanes",
+    "liveLabel": "Open live site",
+    "sourceLabel": "Open source",
+    "privateLabel": "Private build. Walkthrough available on request.",
+    "shareLabel": "Share project",
+    "shareSuccessLabel": "Project link copied",
+    "shareErrorLabel": "Unable to share this project right now."
   },
   "contactForm": {
     "detailsLabel": "Contact details",
@@ -194,6 +199,32 @@
   ],
   "featuredProjects": [
     {
+      "title": "Wisdom Church HQ",
+      "year": "2026",
+      "category": "Church website",
+      "summary": "A church website designed to help first-time visitors find service times, sermons, events, and contact details without friction.",
+      "impact": "The experience gives the ministry a clearer digital front door: service times are easy to find, sermon discovery feels guided, and the site reads cleanly across devices.",
+      "spotlight": "A calmer church website built around service times, sermons, and community entry points",
+      "highlights": [
+        "Placed Sunday and midweek service times into a clearer first-visit flow",
+        "Organized About, Events, Sermons, Store, and Contact into one simpler navigation path",
+        "Structured sermon access around weekly video and audio teaching with a stronger mobile read"
+      ],
+      "metrics": [
+        { "label": "Service rhythm", "value": "Sun 9:00 AM · Thu 6:00 PM" },
+        { "label": "Location", "value": "Lekki-Epe, Lagos" },
+        { "label": "Focus", "value": "First-visit clarity" }
+      ],
+      "stack": [
+        "Responsive design",
+        "Content structure",
+        "Sermon discovery",
+        "Visitor journey"
+      ],
+      "liveUrl": "https://wisdomchurchhq.org/",
+      "codeUrl": null
+    },
+    {
       "title": "Cashra Finance Manager",
       "year": "2025",
       "category": "Finance product",
@@ -248,29 +279,57 @@
       ],
       "liveUrl": "https://claudygod.org/#/",
       "codeUrl": "https://github.com/peterchims/claudygod"
-    },
+    }
+  ],
+  "upcomingProjects": [
     {
       "title": "ClaudyGod Music App",
-      "year": "2025",
-      "category": "Mobile product",
-      "summary": "A mobile listening experience built around music, playlists, messages, and release discovery for smaller screens.",
-      "impact": "The mobile product extends the platform beyond the browser with a more focused listening flow and better continuity for returning users.",
-      "spotlight": "Mobile-first access to streaming and playlists",
+      "year": "2026",
+      "category": "Upcoming mobile release",
+      "summary": "A mobile listening experience in active delivery, centered on streaming, playlists, and release discovery for smaller screens.",
+      "impact": "Planned to carry the music platform beyond the browser with a tighter listening flow and better continuity for repeat listeners.",
+      "spotlight": "Streaming, playlists, and mobile-first continuity",
       "highlights": [
-        "Carried the platform into a dedicated mobile product lane",
-        "Focused the experience on listening, playlists, and continuity",
-        "Shaped the interface for smaller screens without losing clarity"
+        "Extends the platform into a dedicated mobile product lane",
+        "Focuses the experience on listening sessions and saved playlists",
+        "Designed to keep the interface readable on smaller screens"
       ],
       "metrics": [
-        { "label": "Focus", "value": "Streaming" },
-        { "label": "Scope", "value": "Mobile app" },
-        { "label": "Priority", "value": "Retention" }
+        { "label": "Stage", "value": "In build" },
+        { "label": "Platform", "value": "Mobile app" },
+        { "label": "Goal", "value": "Release continuity" }
       ],
       "stack": [
-        "React Native",
-        "TypeScript",
-        "MongoDB",
-        "Socket.io"
+        "Mobile UX",
+        "Streaming flow",
+        "Playlist states",
+        "Release rollout"
+      ],
+      "liveUrl": null,
+      "codeUrl": null
+    },
+    {
+      "title": "Content Admin Studio",
+      "year": "2026",
+      "category": "Upcoming admin platform",
+      "summary": "A protected content workspace designed to manage site sections, project stories, and publish-ready updates without touching code.",
+      "impact": "Planned as the operational layer behind content-led products so teams can keep pages fresh without rebuilding layouts.",
+      "spotlight": "Protected editing for site content and media updates",
+      "highlights": [
+        "Brings page content, gallery updates, and project copy into one editing flow",
+        "Reduces the need for manual code edits during normal content updates",
+        "Creates a steadier publishing path for growing product sites"
+      ],
+      "metrics": [
+        { "label": "Stage", "value": "Planning" },
+        { "label": "Scope", "value": "Admin dashboard" },
+        { "label": "Goal", "value": "Faster publishing" }
+      ],
+      "stack": [
+        "Content modeling",
+        "Publishing workflow",
+        "Role-based editing",
+        "Change control"
       ],
       "liveUrl": null,
       "codeUrl": null

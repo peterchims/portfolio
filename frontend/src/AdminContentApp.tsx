@@ -30,6 +30,7 @@ import type {
 const STORAGE_KEY = 'portfolio-admin-token';
 const tabs = ['overview', 'sections', 'projects', 'contact'] as const;
 type AdminTab = (typeof tabs)[number];
+type ProjectCollectionKey = 'featuredProjects' | 'upcomingProjects';
 
 function splitLines(value: string): string[] {
   return value
@@ -262,6 +263,7 @@ export default function AdminContentApp() {
   }, [token]);
 
   const featuredProjects = content?.featuredProjects ?? [];
+  const upcomingProjects = content?.upcomingProjects ?? [];
 
   const updateContent = (updater: (current: PortfolioContent) => PortfolioContent) => {
     setContent((current) => (current ? updater(current) : current));
@@ -322,25 +324,39 @@ export default function AdminContentApp() {
     }
   };
 
-  const updateProjectAt = (
-    index: number,
-    updater: (project: FeaturedProject) => FeaturedProject
+  const updateProjectCollection = (
+    collectionKey: ProjectCollectionKey,
+    updater: (projects: FeaturedProject[]) => FeaturedProject[]
   ) => {
     updateContent((current) => ({
       ...current,
-      featuredProjects: current.featuredProjects.map((project, projectIndex) =>
-        projectIndex === index ? updater(project) : project
-      ),
-    }));
+      [collectionKey]: updater(current[collectionKey]),
+    }) as PortfolioContent);
   };
 
-  const moveProject = (index: number, direction: -1 | 1) => {
-    updateContent((current) => {
-      const nextProjects = [...current.featuredProjects];
+  const updateProjectAt = (
+    collectionKey: ProjectCollectionKey,
+    index: number,
+    updater: (project: FeaturedProject) => FeaturedProject
+  ) => {
+    updateProjectCollection(collectionKey, (projects) =>
+      projects.map((project, projectIndex) =>
+        projectIndex === index ? updater(project) : project
+      )
+    );
+  };
+
+  const moveProject = (
+    collectionKey: ProjectCollectionKey,
+    index: number,
+    direction: -1 | 1
+  ) => {
+    updateProjectCollection(collectionKey, (projects) => {
+      const nextProjects = [...projects];
       const targetIndex = index + direction;
 
       if (targetIndex < 0 || targetIndex >= nextProjects.length) {
-        return current;
+        return projects;
       }
 
       [nextProjects[index], nextProjects[targetIndex]] = [
@@ -348,27 +364,101 @@ export default function AdminContentApp() {
         nextProjects[index],
       ];
 
-      return {
-        ...current,
-        featuredProjects: nextProjects,
-      };
+      return nextProjects;
     });
   };
 
-  const removeProject = (index: number) => {
-    updateContent((current) => ({
-      ...current,
-      featuredProjects: current.featuredProjects.filter((_, projectIndex) => projectIndex !== index),
-    }));
+  const removeProject = (collectionKey: ProjectCollectionKey, index: number) => {
+    updateProjectCollection(collectionKey, (projects) =>
+      projects.filter((_, projectIndex) => projectIndex !== index)
+    );
   };
 
-  const addProject = () => {
-    updateContent((current) => ({
-      ...current,
-      featuredProjects: [...current.featuredProjects, createEmptyProject()],
-    }));
+  const addProject = (collectionKey: ProjectCollectionKey) => {
+    updateProjectCollection(collectionKey, (projects) => [
+      ...projects,
+      createEmptyProject(),
+    ]);
     setActiveTab('projects');
   };
+
+  const renderProjectCollection = (
+    title: string,
+    description: string,
+    collectionKey: ProjectCollectionKey,
+    projects: FeaturedProject[]
+  ) => (
+    <section className="grid gap-4 rounded-[28px] border border-white/10 bg-[#0f151c] p-5">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h2 className="text-lg font-semibold text-white">{title}</h2>
+          <p className="mt-1 text-sm text-slate-400">{description}</p>
+        </div>
+
+        <button
+          type="button"
+          onClick={() => addProject(collectionKey)}
+          className="inline-flex min-h-11 items-center gap-2 rounded-2xl border border-amber-300/20 bg-[#b7791f] px-4 py-3 text-sm font-semibold text-white transition hover:translate-y-[-1px]"
+        >
+          <Plus size={16} />
+          Add project
+        </button>
+      </div>
+
+      {projects.map((project, index) => (
+        <article key={`${collectionKey}-${project.title}-${index}`} className="grid gap-4 rounded-[28px] border border-white/10 bg-[#12171c] p-5">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-amber-200/70">
+                Project {index + 1}
+              </p>
+              <h3 className="mt-1 text-lg font-semibold text-white">
+                {project.title || 'Untitled project'}
+              </h3>
+            </div>
+
+            <div className="flex flex-wrap gap-2">
+              <button type="button" onClick={() => moveProject(collectionKey, index, -1)} className="rounded-xl border border-white/10 bg-[#0f151c] p-2 text-slate-300 hover:border-white/20">
+                <ArrowUp size={16} />
+              </button>
+              <button type="button" onClick={() => moveProject(collectionKey, index, 1)} className="rounded-xl border border-white/10 bg-[#0f151c] p-2 text-slate-300 hover:border-white/20">
+                <ArrowDown size={16} />
+              </button>
+              <button type="button" onClick={() => removeProject(collectionKey, index)} className="rounded-xl border border-red-500/20 bg-red-500/10 p-2 text-red-200 hover:border-red-400/30">
+                <Trash2 size={16} />
+              </button>
+            </div>
+          </div>
+
+          <div className="grid gap-4 lg:grid-cols-2">
+            <Field label="Title" value={project.title} onChange={(value) => updateProjectAt(collectionKey, index, (current) => ({ ...current, title: value }))} />
+            <Field label="Category" value={project.category} onChange={(value) => updateProjectAt(collectionKey, index, (current) => ({ ...current, category: value }))} />
+            <Field label="Year" value={project.year} onChange={(value) => updateProjectAt(collectionKey, index, (current) => ({ ...current, year: value }))} />
+            <Field label="Image URL" value={project.imageUrl ?? ''} onChange={(value) => updateProjectAt(collectionKey, index, (current) => ({ ...current, imageUrl: value }))} placeholder="/images/projects/project-cover.jpg" />
+          </div>
+
+          <div className="grid gap-4 lg:grid-cols-2">
+            <Field label="Spotlight" value={project.spotlight} onChange={(value) => updateProjectAt(collectionKey, index, (current) => ({ ...current, spotlight: value }))} multiline />
+            <Field label="Summary" value={project.summary} onChange={(value) => updateProjectAt(collectionKey, index, (current) => ({ ...current, summary: value }))} multiline />
+          </div>
+
+          <Field label="Impact" value={project.impact} onChange={(value) => updateProjectAt(collectionKey, index, (current) => ({ ...current, impact: value }))} multiline />
+
+          <div className="grid gap-4 lg:grid-cols-2">
+            <Field label="Highlights" value={joinLines(project.highlights)} onChange={(value) => updateProjectAt(collectionKey, index, (current) => ({ ...current, highlights: splitLines(value) }))} multiline placeholder="One highlight per line" />
+            <Field label="Build lanes" value={joinLines(project.stack)} onChange={(value) => updateProjectAt(collectionKey, index, (current) => ({ ...current, stack: splitLines(value) }))} multiline placeholder="One lane per line" />
+          </div>
+
+          <Field label="Metrics" value={metricsToText(project.metrics)} onChange={(value) => updateProjectAt(collectionKey, index, (current) => ({ ...current, metrics: textToMetrics(value) }))} multiline placeholder="Focus: Budgeting" />
+
+          <div className="grid gap-4 lg:grid-cols-2">
+            <Field label="Live URL" value={project.liveUrl ?? ''} onChange={(value) => updateProjectAt(collectionKey, index, (current) => ({ ...current, liveUrl: value || null }))} />
+            <Field label="Code URL" value={project.codeUrl ?? ''} onChange={(value) => updateProjectAt(collectionKey, index, (current) => ({ ...current, codeUrl: value || null }))} />
+          </div>
+        </article>
+      ))}
+    </section>
+  );
 
   if (!token) {
     return (
@@ -883,82 +973,41 @@ export default function AdminContentApp() {
           <section className="grid gap-5">
             <div className="flex flex-wrap items-center justify-between gap-3 rounded-[28px] border border-white/10 bg-[#0f151c] p-5">
               <div>
-                <h2 className="text-lg font-semibold text-white">Featured projects</h2>
+                <h2 className="text-lg font-semibold text-white">Project galleries</h2>
                 <p className="mt-1 text-sm text-slate-400">
-                  Add image URLs, simplify copy, and control the mobile cinematic project switcher.
+                  Manage the recent-work slider, the upcoming-project slider, and the share labels used on the live site.
                 </p>
               </div>
-
-              <button
-                type="button"
-                onClick={addProject}
-                className="inline-flex min-h-11 items-center gap-2 rounded-2xl border border-amber-300/20 bg-[#b7791f] px-4 py-3 text-sm font-semibold text-white transition hover:translate-y-[-1px]"
-              >
-                <Plus size={16} />
-                Add project
-              </button>
             </div>
 
             <div className="grid gap-4 rounded-[28px] border border-white/10 bg-[#0f151c] p-5 lg:grid-cols-2">
               <h2 className="text-lg font-semibold text-white lg:col-span-2">Project showcase labels</h2>
+              <Field label="Recent gallery label" value={content.projectShowcase.recentLabel} onChange={(value) => updateContent((current) => ({ ...current, projectShowcase: { ...current.projectShowcase, recentLabel: value } }))} />
+              <Field label="Upcoming gallery label" value={content.projectShowcase.upcomingLabel} onChange={(value) => updateContent((current) => ({ ...current, projectShowcase: { ...current.projectShowcase, upcomingLabel: value } }))} />
               <Field label="Highlights label" value={content.projectShowcase.highlightsLabel} onChange={(value) => updateContent((current) => ({ ...current, projectShowcase: { ...current.projectShowcase, highlightsLabel: value } }))} />
               <Field label="Metrics label" value={content.projectShowcase.metricsLabel} onChange={(value) => updateContent((current) => ({ ...current, projectShowcase: { ...current.projectShowcase, metricsLabel: value } }))} />
               <Field label="Stack label" value={content.projectShowcase.stackLabel} onChange={(value) => updateContent((current) => ({ ...current, projectShowcase: { ...current.projectShowcase, stackLabel: value } }))} />
               <Field label="Live label" value={content.projectShowcase.liveLabel} onChange={(value) => updateContent((current) => ({ ...current, projectShowcase: { ...current.projectShowcase, liveLabel: value } }))} />
               <Field label="Source label" value={content.projectShowcase.sourceLabel} onChange={(value) => updateContent((current) => ({ ...current, projectShowcase: { ...current.projectShowcase, sourceLabel: value } }))} />
               <Field label="Private project note" value={content.projectShowcase.privateLabel} onChange={(value) => updateContent((current) => ({ ...current, projectShowcase: { ...current.projectShowcase, privateLabel: value } }))} multiline />
+              <Field label="Share label" value={content.projectShowcase.shareLabel} onChange={(value) => updateContent((current) => ({ ...current, projectShowcase: { ...current.projectShowcase, shareLabel: value } }))} />
+              <Field label="Share success label" value={content.projectShowcase.shareSuccessLabel} onChange={(value) => updateContent((current) => ({ ...current, projectShowcase: { ...current.projectShowcase, shareSuccessLabel: value } }))} />
+              <Field label="Share error label" value={content.projectShowcase.shareErrorLabel} onChange={(value) => updateContent((current) => ({ ...current, projectShowcase: { ...current.projectShowcase, shareErrorLabel: value } }))} multiline />
             </div>
 
-            {featuredProjects.map((project, index) => (
-              <article key={`${project.title}-${index}`} className="grid gap-4 rounded-[28px] border border-white/10 bg-[#0f151c] p-5">
-                <div className="flex flex-wrap items-center justify-between gap-3">
-                  <div>
-                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-amber-200/70">
-                      Project {index + 1}
-                    </p>
-                    <h3 className="mt-1 text-lg font-semibold text-white">{project.title || 'Untitled project'}</h3>
-                  </div>
+            {renderProjectCollection(
+              'Recent project gallery',
+              'These projects power the hero preview and the recent-work slider.',
+              'featuredProjects',
+              featuredProjects
+            )}
 
-                  <div className="flex flex-wrap gap-2">
-                    <button type="button" onClick={() => moveProject(index, -1)} className="rounded-xl border border-white/10 bg-[#12171c] p-2 text-slate-300 hover:border-white/20">
-                      <ArrowUp size={16} />
-                    </button>
-                    <button type="button" onClick={() => moveProject(index, 1)} className="rounded-xl border border-white/10 bg-[#12171c] p-2 text-slate-300 hover:border-white/20">
-                      <ArrowDown size={16} />
-                    </button>
-                    <button type="button" onClick={() => removeProject(index)} className="rounded-xl border border-red-500/20 bg-red-500/10 p-2 text-red-200 hover:border-red-400/30">
-                      <Trash2 size={16} />
-                    </button>
-                  </div>
-                </div>
-
-                <div className="grid gap-4 lg:grid-cols-2">
-                  <Field label="Title" value={project.title} onChange={(value) => updateProjectAt(index, (current) => ({ ...current, title: value }))} />
-                  <Field label="Category" value={project.category} onChange={(value) => updateProjectAt(index, (current) => ({ ...current, category: value }))} />
-                  <Field label="Year" value={project.year} onChange={(value) => updateProjectAt(index, (current) => ({ ...current, year: value }))} />
-                  <Field label="Image URL" value={project.imageUrl ?? ''} onChange={(value) => updateProjectAt(index, (current) => ({ ...current, imageUrl: value }))} placeholder="/images/projects/project-cover.jpg" />
-                </div>
-
-                <div className="grid gap-4 lg:grid-cols-2">
-                  <Field label="Spotlight" value={project.spotlight} onChange={(value) => updateProjectAt(index, (current) => ({ ...current, spotlight: value }))} multiline />
-                  <Field label="Summary" value={project.summary} onChange={(value) => updateProjectAt(index, (current) => ({ ...current, summary: value }))} multiline />
-                </div>
-
-                <Field label="Impact" value={project.impact} onChange={(value) => updateProjectAt(index, (current) => ({ ...current, impact: value }))} multiline />
-
-                <div className="grid gap-4 lg:grid-cols-2">
-                  <Field label="Highlights" value={joinLines(project.highlights)} onChange={(value) => updateProjectAt(index, (current) => ({ ...current, highlights: splitLines(value) }))} multiline placeholder="One highlight per line" />
-                  <Field label="Stack" value={joinLines(project.stack)} onChange={(value) => updateProjectAt(index, (current) => ({ ...current, stack: splitLines(value) }))} multiline placeholder="One stack item per line" />
-                </div>
-
-                <Field label="Metrics" value={metricsToText(project.metrics)} onChange={(value) => updateProjectAt(index, (current) => ({ ...current, metrics: textToMetrics(value) }))} multiline placeholder="Focus: Budgeting" />
-
-                <div className="grid gap-4 lg:grid-cols-2">
-                  <Field label="Live URL" value={project.liveUrl ?? ''} onChange={(value) => updateProjectAt(index, (current) => ({ ...current, liveUrl: value || null }))} />
-                  <Field label="Code URL" value={project.codeUrl ?? ''} onChange={(value) => updateProjectAt(index, (current) => ({ ...current, codeUrl: value || null }))} />
-                </div>
-              </article>
-            ))}
+            {renderProjectCollection(
+              'Upcoming projects',
+              'These slides appear when visitors switch from recent work to the upcoming gallery.',
+              'upcomingProjects',
+              upcomingProjects
+            )}
           </section>
         ) : null}
 

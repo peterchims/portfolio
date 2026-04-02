@@ -20,6 +20,7 @@ import {
   PhoneCall,
   RefreshCw,
   Send,
+  Share2,
   ShieldCheck,
   Sparkles,
   X,
@@ -71,6 +72,7 @@ type ProjectGalleryTile = {
   label: string;
   value: string;
 };
+type ProjectCollectionKey = 'recent' | 'upcoming';
 
 function getSocialIcon(label: string): LucideIcon {
   return socialIconMap[label.toLowerCase()] ?? ExternalLink;
@@ -468,7 +470,12 @@ export default function AppModern() {
   const { content, health, loading, error } = usePortfolioContent();
   const prefersReducedMotion = useReducedMotion() ?? false;
   const [showLoader, setShowLoader] = useState(true);
-  const [activeProjectIndex, setActiveProjectIndex] = useState(0);
+  const [activeProjectCollection, setActiveProjectCollection] =
+    useState<ProjectCollectionKey>('recent');
+  const [activeRecentProjectIndex, setActiveRecentProjectIndex] = useState(0);
+  const [activeUpcomingProjectIndex, setActiveUpcomingProjectIndex] = useState(0);
+  const [projectSlideDirection, setProjectSlideDirection] = useState(1);
+  const [projectShareMessage, setProjectShareMessage] = useState('');
   const [formData, setFormData] = useState<ContactPayload>(initialFormState);
   const [submitState, setSubmitState] = useState<
     'idle' | 'loading' | 'success' | 'error'
@@ -492,14 +499,30 @@ export default function AppModern() {
   }, [loading, content, prefersReducedMotion]);
 
   useEffect(() => {
-    if (!content?.featuredProjects.length) {
+    if (!content) {
       return;
     }
 
-    setActiveProjectIndex((currentIndex) =>
-      Math.min(currentIndex, content.featuredProjects.length - 1)
-    );
-  }, [content]);
+    if (!content.upcomingProjects.length && activeProjectCollection === 'upcoming') {
+      setActiveProjectCollection('recent');
+    }
+
+    if (content.featuredProjects.length) {
+      setActiveRecentProjectIndex((currentIndex) =>
+        Math.min(currentIndex, content.featuredProjects.length - 1)
+      );
+    }
+
+    if (content.upcomingProjects.length) {
+      setActiveUpcomingProjectIndex((currentIndex) =>
+        Math.min(currentIndex, content.upcomingProjects.length - 1)
+      );
+    }
+  }, [activeProjectCollection, content]);
+
+  useEffect(() => {
+    setProjectShareMessage('');
+  }, [activeProjectCollection, activeRecentProjectIndex, activeUpcomingProjectIndex]);
 
   const handleNavigate = (id: string, label: string) => {
     void trackInteraction({
@@ -643,28 +666,131 @@ export default function AppModern() {
   const systemState = health
     ? `${health.status} · ${formatUptime(health.uptimeSeconds)}`
     : 'Service signal pending';
-  const activeProject = content.featuredProjects[activeProjectIndex]
-    ?? content.featuredProjects[0]
+  const recentProjects = content.featuredProjects;
+  const upcomingProjects = content.upcomingProjects;
+  const activeRecentProject = recentProjects[activeRecentProjectIndex]
+    ?? recentProjects[0]
     ?? null;
+  const activeProjectList = activeProjectCollection === 'recent'
+    ? recentProjects
+    : upcomingProjects;
+  const activeProjectIndex = activeProjectCollection === 'recent'
+    ? activeRecentProjectIndex
+    : activeUpcomingProjectIndex;
+  const activeProject = activeProjectList[activeProjectIndex]
+    ?? activeProjectList[0]
+    ?? activeRecentProject
+    ?? null;
+  const heroPreviewProject = activeRecentProject ?? activeProject;
+  const heroPreviewTone = projectTones[activeRecentProjectIndex % projectTones.length];
   const activeProjectTone = projectTones[activeProjectIndex % projectTones.length];
   const projectGalleryTiles = activeProject ? getProjectGalleryTiles(activeProject) : [];
   const activeProjectPanelId = activeProject
-    ? `project-showcase-panel-${activeProjectIndex}`
+    ? `project-showcase-panel-${activeProjectCollection}-${activeProjectIndex}`
     : undefined;
 
-  const handleProjectSelect = (index: number) => {
-    const project = content.featuredProjects[index];
+  const handleHomeProjectSelect = (index: number) => {
+    const project = recentProjects[index];
 
     if (!project) {
       return;
     }
 
-    setActiveProjectIndex(index);
+    setProjectSlideDirection(index >= activeRecentProjectIndex ? 1 : -1);
+    setActiveRecentProjectIndex(index);
+    if (activeProjectCollection === 'recent') {
+      setActiveProjectCollection('recent');
+    }
+
+    void trackInteraction({
+      event: 'project_preview',
+      section: 'home',
+      label: project.title,
+    });
+  };
+
+  const handleProjectCollectionChange = (nextCollection: ProjectCollectionKey) => {
+    if (nextCollection === activeProjectCollection) {
+      return;
+    }
+
+    if (nextCollection === 'upcoming' && !upcomingProjects.length) {
+      return;
+    }
+
+    setProjectSlideDirection(nextCollection === 'upcoming' ? 1 : -1);
+    setActiveProjectCollection(nextCollection);
+    void trackInteraction({
+      event: 'project_collection',
+      section: 'projects',
+      label: nextCollection,
+    });
+  };
+
+  const handleProjectSelect = (index: number) => {
+    const project = activeProjectList[index];
+
+    if (!project) {
+      return;
+    }
+
+    const currentIndex = activeProjectCollection === 'recent'
+      ? activeRecentProjectIndex
+      : activeUpcomingProjectIndex;
+
+    setProjectSlideDirection(index >= currentIndex ? 1 : -1);
+
+    if (activeProjectCollection === 'recent') {
+      setActiveRecentProjectIndex(index);
+    } else {
+      setActiveUpcomingProjectIndex(index);
+    }
+
     void trackInteraction({
       event: 'project_preview',
       section: 'projects',
-      label: project.title,
+      label: `${activeProjectCollection}-${project.title}`,
     });
+  };
+
+  const handleShareProject = async () => {
+    if (!activeProject) {
+      return;
+    }
+
+    const shareUrl = activeProject.liveUrl
+      ?? `${window.location.origin}${window.location.pathname}#projects`;
+    const shareData = {
+      title: `${activeProject.title} | ${profile.name}`,
+      text: activeProject.spotlight,
+      url: shareUrl,
+    };
+
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData);
+        setProjectShareMessage(projectShowcase.shareSuccessLabel);
+      } else if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(
+          [shareData.title, shareData.text, shareData.url].join('\n')
+        );
+        setProjectShareMessage(projectShowcase.shareSuccessLabel);
+      } else {
+        window.prompt(projectShowcase.shareLabel, shareUrl);
+      }
+
+      void trackInteraction({
+        event: 'project_share',
+        section: 'projects',
+        label: activeProject.title,
+      });
+    } catch (shareError) {
+      if (shareError instanceof Error && shareError.name === 'AbortError') {
+        return;
+      }
+
+      setProjectShareMessage(projectShowcase.shareErrorLabel);
+    }
   };
 
   return (
@@ -772,29 +898,29 @@ export default function AppModern() {
                   </span>
                 </div>
 
-                <div className={`hero-preview-frame ${activeProjectTone}`}>
-                  {activeProject?.imageUrl ? (
+                <div className={`hero-preview-frame ${heroPreviewTone}`}>
+                  {heroPreviewProject?.imageUrl ? (
                     <div className="hero-preview-image">
-                      <img src={activeProject.imageUrl} alt={activeProject.title} />
+                      <img src={heroPreviewProject.imageUrl} alt={heroPreviewProject.title} />
                     </div>
                   ) : null}
 
                   <div className="hero-preview-main">
                     <div className="hero-preview-copy">
                       <h2 className="panel-title">
-                        {activeProject?.title ?? hero.panelTitle}
+                        {heroPreviewProject?.title ?? hero.panelTitle}
                       </h2>
                       <p className="panel-copy">
-                        {activeProject?.summary ?? profile.availability}
+                        {heroPreviewProject?.summary ?? profile.availability}
                       </p>
                     </div>
 
                     <div className="hero-preview-badges">
-                      {(activeProject?.metrics ?? content.heroMetrics.slice(0, 2))
+                      {(heroPreviewProject?.metrics ?? content.heroMetrics.slice(0, 2))
                         .slice(0, 3)
                         .map((metric) => (
                           <span
-                            key={`${activeProject?.title ?? 'hero'}-${metric.label}`}
+                            key={`${heroPreviewProject?.title ?? 'hero'}-${metric.label}`}
                             className="hero-preview-badge"
                           >
                             {metric.value}
@@ -804,13 +930,13 @@ export default function AppModern() {
                   </div>
 
                   <div className="hero-preview-strip">
-                    {content.featuredProjects.map((project, index) => (
+                    {recentProjects.map((project, index) => (
                       <button
                         key={project.title}
                         type="button"
                         className={`preview-card ${projectTones[index % projectTones.length]}`}
-                        data-active={index === activeProjectIndex}
-                        onClick={() => handleProjectSelect(index)}
+                        data-active={index === activeRecentProjectIndex}
+                        onClick={() => handleHomeProjectSelect(index)}
                       >
                         <span>{project.category}</span>
                         <strong>{project.title}</strong>
@@ -906,15 +1032,47 @@ export default function AppModern() {
 
             <ParallaxSection distance={-20}>
               <div className="project-showcase-shell">
-                <div className="project-selector-row" role="tablist" aria-label="Featured projects">
-                  {content.featuredProjects.map((project, index) => (
+                <div className="project-collection-switch" role="tablist" aria-label="Project collections">
+                  <button
+                    type="button"
+                    role="tab"
+                    aria-selected={activeProjectCollection === 'recent'}
+                    className="project-collection-pill"
+                    data-active={activeProjectCollection === 'recent'}
+                    onClick={() => handleProjectCollectionChange('recent')}
+                  >
+                    {projectShowcase.recentLabel}
+                  </button>
+                  <button
+                    type="button"
+                    role="tab"
+                    aria-selected={activeProjectCollection === 'upcoming'}
+                    className="project-collection-pill"
+                    data-active={activeProjectCollection === 'upcoming'}
+                    onClick={() => handleProjectCollectionChange('upcoming')}
+                    disabled={!upcomingProjects.length}
+                  >
+                    {projectShowcase.upcomingLabel}
+                  </button>
+                </div>
+
+                <div className="project-gallery-stage">
+                  <p className="project-detail-label">
+                    {activeProjectCollection === 'recent'
+                      ? projectShowcase.recentLabel
+                      : projectShowcase.upcomingLabel}
+                  </p>
+                </div>
+
+                <div className="project-selector-row" role="tablist" aria-label="Project gallery">
+                  {activeProjectList.map((project, index) => (
                     <button
-                      key={project.title}
-                      id={`project-tab-${index}`}
+                      key={`${activeProjectCollection}-${project.title}`}
+                      id={`project-tab-${activeProjectCollection}-${index}`}
                       type="button"
                       role="tab"
                       aria-selected={index === activeProjectIndex}
-                      aria-controls={`project-showcase-panel-${index}`}
+                      aria-controls={`project-showcase-panel-${activeProjectCollection}-${index}`}
                       className="project-selector-card"
                       data-active={index === activeProjectIndex}
                       onClick={() => handleProjectSelect(index)}
@@ -931,14 +1089,22 @@ export default function AppModern() {
                 {activeProject ? (
                   <AnimatePresence mode="wait">
                     <motion.article
-                      key={`${activeProject.title}-${activeProjectIndex}`}
+                      key={`${activeProjectCollection}-${activeProject.title}-${activeProjectIndex}`}
                       id={activeProjectPanelId}
                       role="tabpanel"
-                      aria-labelledby={`project-tab-${activeProjectIndex}`}
+                      aria-labelledby={`project-tab-${activeProjectCollection}-${activeProjectIndex}`}
                       className="surface project-showcase-card"
-                      initial={prefersReducedMotion ? false : { opacity: 0, y: 18 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={prefersReducedMotion ? undefined : { opacity: 0, y: -14 }}
+                      initial={
+                        prefersReducedMotion
+                          ? false
+                          : { opacity: 0, x: projectSlideDirection > 0 ? 72 : -72, scale: 0.985 }
+                      }
+                      animate={{ opacity: 1, x: 0, scale: 1 }}
+                      exit={
+                        prefersReducedMotion
+                          ? undefined
+                          : { opacity: 0, x: projectSlideDirection > 0 ? -72 : 72, scale: 0.985 }
+                      }
                       transition={{ duration: prefersReducedMotion ? 0 : 0.48, ease: EASE_OUT }}
                     >
                       <div className={`project-showcase-media ${activeProjectTone}`}>
@@ -1068,7 +1234,20 @@ export default function AppModern() {
                           {!activeProject.liveUrl && !activeProject.codeUrl ? (
                             <span className="project-note">{projectShowcase.privateLabel}</span>
                           ) : null}
+
+                          <button
+                            type="button"
+                            className="text-link project-share-button"
+                            onClick={() => void handleShareProject()}
+                          >
+                            {projectShowcase.shareLabel}
+                            <Share2 size={16} />
+                          </button>
                         </div>
+
+                        {projectShareMessage ? (
+                          <p className="project-share-feedback">{projectShareMessage}</p>
+                        ) : null}
                       </div>
                     </motion.article>
                   </AnimatePresence>

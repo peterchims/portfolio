@@ -26,6 +26,7 @@ public class PortfolioSiteContentDto
     public List<SocialLinkDto> SocialLinks { get; set; } = new();
     public List<ServicePillarDto> ServicePillars { get; set; } = new();
     public List<FeaturedProjectContentDto> FeaturedProjects { get; set; } = new();
+    public List<FeaturedProjectContentDto> UpcomingProjects { get; set; } = new();
     public List<StackGroupDto> StackGroups { get; set; } = new();
     public List<ProcessStepDto> ProcessSteps { get; set; } = new();
     public List<SystemSignalDto> SystemSignals { get; set; } = new();
@@ -96,12 +97,17 @@ public class SectionContentDto
 
 public class ProjectShowcaseDto
 {
+    public string RecentLabel { get; set; } = string.Empty;
+    public string UpcomingLabel { get; set; } = string.Empty;
     public string HighlightsLabel { get; set; } = string.Empty;
     public string MetricsLabel { get; set; } = string.Empty;
     public string StackLabel { get; set; } = string.Empty;
     public string LiveLabel { get; set; } = string.Empty;
     public string SourceLabel { get; set; } = string.Empty;
     public string PrivateLabel { get; set; } = string.Empty;
+    public string ShareLabel { get; set; } = string.Empty;
+    public string ShareSuccessLabel { get; set; } = string.Empty;
+    public string ShareErrorLabel { get; set; } = string.Empty;
 }
 
 public class ContactFormDto
