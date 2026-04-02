@@ -1,6 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using PortfolioAPI.DTOs;
+using PortfolioAPI.Configuration;
 using PortfolioAPI.Services;
+
+DotEnvLoader.Load();
 
 var startedAtUtc = DateTime.UtcNow;
 var builder = WebApplication.CreateBuilder(args);
