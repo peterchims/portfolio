@@ -1,7 +1,7 @@
 {
   "loader": {
-    "title": "Loading portfolio system",
-    "subtitle": "Preparing a cleaner view of product delivery, case studies, and backend-backed content."
+    "title": "Loading portfolio",
+    "subtitle": "Preparing featured work, delivery highlights, and contact details."
   },
   "siteNavigation": [
     { "id": "home", "label": "Home" },
@@ -23,8 +23,8 @@
   },
   "hero": {
     "eyebrow": "Full-stack engineer · Lagos, Nigeria",
-    "panelEyebrow": "Operational snapshot",
-    "panelTitle": "Clear case studies, stronger product visuals, and backend-backed content.",
+    "panelEyebrow": "Featured work",
+    "panelTitle": "Selected product work shaped for clarity, motion, and dependable delivery.",
     "modeLabels": {
       "api": "Live content feed",
       "fallback": "Fallback content feed"
@@ -50,8 +50,8 @@
     },
     "projects": {
       "kicker": "Featured projects",
-      "title": "Selected projects with clear product context and delivery signals.",
-      "copy": "Each project card is meant to show the product type, the problem space, the technical lane, and the result instead of relying on vague portfolio language."
+      "title": "A project gallery built around product feel, clear outcomes, and visual context.",
+      "copy": "Switch through the featured work to see the product category, the key outcome, the stack, and the core experience without reading through long walls of copy."
     },
     "process": {
       "kicker": "Delivery process",
@@ -74,7 +74,7 @@
   },
   "contactForm": {
     "detailsLabel": "Contact details",
-    "helperText": "Serious briefs only. Requests are stored through the backend contact endpoint with project metadata so follow-up does not depend on a static inbox experience.",
+    "helperText": "Use this form for serious product work, redesign support, or a new build. Messages go straight into the project workflow so follow-up stays organized.",
     "submitLabel": "Send project brief",
     "submittingLabel": "Sending...",
     "fields": {
@@ -314,21 +314,21 @@
   ],
   "systemSignals": [
     {
-      "label": "content mode",
-      "value": "backend-served",
-      "detail": "The primary site copy, navigation, case-study structure, and form options now come from a shared backend-served content contract.",
+      "label": "content updates",
+      "value": "live content model",
+      "detail": "The site content, project gallery, navigation, and form options are all being served from one editable backend content source.",
       "tone": "support"
     },
     {
       "label": "contact flow",
-      "value": "validated + stored",
-      "detail": "Submissions move through the backend contact endpoint with richer request metadata instead of a hard-coded frontend-only mail flow.",
+      "value": "organized replies",
+      "detail": "Enquiries move through the backend contact workflow so new briefs are stored with context instead of relying on a static mail link.",
       "tone": "accent"
     },
     {
-      "label": "ops posture",
-      "value": "production-aware",
-      "detail": "Health checks, interaction tracking, and environment-aware site responses are included in the delivery path.",
+      "label": "delivery mode",
+      "value": "ready to scale",
+      "detail": "The frontend experience, service health, and project content now follow a cleaner delivery path that can evolve without a redesign every time.",
       "tone": "accent"
     }
   ]

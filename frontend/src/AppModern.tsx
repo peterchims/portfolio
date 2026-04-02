@@ -468,6 +468,7 @@ export default function AppModern() {
   const { content, health, loading, error } = usePortfolioContent();
   const prefersReducedMotion = useReducedMotion() ?? false;
   const [showLoader, setShowLoader] = useState(true);
+  const [activeProjectIndex, setActiveProjectIndex] = useState(0);
   const [formData, setFormData] = useState<ContactPayload>(initialFormState);
   const [submitState, setSubmitState] = useState<
     'idle' | 'loading' | 'success' | 'error'
@@ -489,6 +490,16 @@ export default function AppModern() {
       window.clearTimeout(timeoutId);
     };
   }, [loading, content, prefersReducedMotion]);
+
+  useEffect(() => {
+    if (!content?.featuredProjects.length) {
+      return;
+    }
+
+    setActiveProjectIndex((currentIndex) =>
+      Math.min(currentIndex, content.featuredProjects.length - 1)
+    );
+  }, [content]);
 
   const handleNavigate = (id: string, label: string) => {
     void trackInteraction({
@@ -632,7 +643,29 @@ export default function AppModern() {
   const systemState = health
     ? `${health.status} · ${formatUptime(health.uptimeSeconds)}`
     : 'Service signal pending';
-  const previewProject = content.featuredProjects[0] ?? null;
+  const activeProject = content.featuredProjects[activeProjectIndex]
+    ?? content.featuredProjects[0]
+    ?? null;
+  const activeProjectTone = projectTones[activeProjectIndex % projectTones.length];
+  const projectGalleryTiles = activeProject ? getProjectGalleryTiles(activeProject) : [];
+  const activeProjectPanelId = activeProject
+    ? `project-showcase-panel-${activeProjectIndex}`
+    : undefined;
+
+  const handleProjectSelect = (index: number) => {
+    const project = content.featuredProjects[index];
+
+    if (!project) {
+      return;
+    }
+
+    setActiveProjectIndex(index);
+    void trackInteraction({
+      event: 'project_preview',
+      section: 'projects',
+      label: project.title,
+    });
+  };
 
   return (
     <div className="portfolio-shell">
@@ -739,29 +772,29 @@ export default function AppModern() {
                   </span>
                 </div>
 
-                <div className={`hero-preview-frame ${projectTones[0]}`}>
-                  {previewProject?.imageUrl ? (
+                <div className={`hero-preview-frame ${activeProjectTone}`}>
+                  {activeProject?.imageUrl ? (
                     <div className="hero-preview-image">
-                      <img src={previewProject.imageUrl} alt={previewProject.title} />
+                      <img src={activeProject.imageUrl} alt={activeProject.title} />
                     </div>
                   ) : null}
 
                   <div className="hero-preview-main">
                     <div className="hero-preview-copy">
                       <h2 className="panel-title">
-                        {previewProject?.title ?? hero.panelTitle}
+                        {activeProject?.title ?? hero.panelTitle}
                       </h2>
                       <p className="panel-copy">
-                        {previewProject?.summary ?? profile.availability}
+                        {activeProject?.summary ?? profile.availability}
                       </p>
                     </div>
 
                     <div className="hero-preview-badges">
-                      {(previewProject?.metrics ?? content.heroMetrics.slice(0, 2))
+                      {(activeProject?.metrics ?? content.heroMetrics.slice(0, 2))
                         .slice(0, 3)
                         .map((metric) => (
                           <span
-                            key={`${previewProject?.title ?? 'hero'}-${metric.label}`}
+                            key={`${activeProject?.title ?? 'hero'}-${metric.label}`}
                             className="hero-preview-badge"
                           >
                             {metric.value}
@@ -772,13 +805,16 @@ export default function AppModern() {
 
                   <div className="hero-preview-strip">
                     {content.featuredProjects.map((project, index) => (
-                      <article
+                      <button
                         key={project.title}
+                        type="button"
                         className={`preview-card ${projectTones[index % projectTones.length]}`}
+                        data-active={index === activeProjectIndex}
+                        onClick={() => handleProjectSelect(index)}
                       >
                         <span>{project.category}</span>
                         <strong>{project.title}</strong>
-                      </article>
+                      </button>
                     ))}
                   </div>
                 </div>
@@ -869,136 +905,174 @@ export default function AppModern() {
             />
 
             <ParallaxSection distance={-20}>
-              <div className="project-grid">
-              {content.featuredProjects.map((project, index) => {
-                const galleryTiles = getProjectGalleryTiles(project);
-
-                return (
-                  <motion.article
-                    key={project.title}
-                    className={`surface project-card ${
-                      index === 0 ? 'project-card-featured' : ''
-                    }`}
-                    {...getInViewAnimation(prefersReducedMotion, {
-                      delay: index * 0.06,
-                      distance: 22,
-                    })}
-                  >
-                    <div
-                      className={`project-visual ${projectTones[index % projectTones.length]}`}
+              <div className="project-showcase-shell">
+                <div className="project-selector-row" role="tablist" aria-label="Featured projects">
+                  {content.featuredProjects.map((project, index) => (
+                    <button
+                      key={project.title}
+                      id={`project-tab-${index}`}
+                      type="button"
+                      role="tab"
+                      aria-selected={index === activeProjectIndex}
+                      aria-controls={`project-showcase-panel-${index}`}
+                      className="project-selector-card"
+                      data-active={index === activeProjectIndex}
+                      onClick={() => handleProjectSelect(index)}
                     >
-                      <div className="project-visual-head">
-                        <span>{project.category}</span>
-                        <span>{project.year}</span>
-                      </div>
+                      <span className="project-selector-meta">
+                        {project.category} · {project.year}
+                      </span>
+                      <strong>{project.title}</strong>
+                      <small>{project.spotlight}</small>
+                    </button>
+                  ))}
+                </div>
 
-                      {project.imageUrl ? (
-                        <div className="project-visual-image">
-                          <img src={project.imageUrl} alt={project.title} />
+                {activeProject ? (
+                  <AnimatePresence mode="wait">
+                    <motion.article
+                      key={`${activeProject.title}-${activeProjectIndex}`}
+                      id={activeProjectPanelId}
+                      role="tabpanel"
+                      aria-labelledby={`project-tab-${activeProjectIndex}`}
+                      className="surface project-showcase-card"
+                      initial={prefersReducedMotion ? false : { opacity: 0, y: 18 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={prefersReducedMotion ? undefined : { opacity: 0, y: -14 }}
+                      transition={{ duration: prefersReducedMotion ? 0 : 0.48, ease: EASE_OUT }}
+                    >
+                      <div className={`project-showcase-media ${activeProjectTone}`}>
+                        <div className="project-showcase-media-head">
+                          <span>{activeProject.category}</span>
+                          <span>{activeProject.year}</span>
                         </div>
-                      ) : null}
 
-                      <div className="project-gallery-grid">
-                        <div className="project-gallery-tile project-gallery-tile-featured">
-                          <div className="project-mark">{toInitials(project.title)}</div>
-                          <p className="project-spotlight">{project.spotlight}</p>
-                          <p className="project-visual-copy">{project.summary}</p>
-                        </div>
-
-                        {galleryTiles.map((tile) => (
-                          <div
-                            key={`${project.title}-${tile.label}`}
-                            className="project-gallery-tile"
-                          >
-                            <span className="project-gallery-label">{tile.label}</span>
-                            <p>{tile.value}</p>
+                        {activeProject.imageUrl ? (
+                          <div className="project-showcase-image">
+                            <img src={activeProject.imageUrl} alt={activeProject.title} />
                           </div>
-                        ))}
-                      </div>
-                    </div>
+                        ) : (
+                          <div className="project-showcase-placeholder" aria-hidden="true">
+                            <div className="project-placeholder-mark">
+                              {toInitials(activeProject.title)}
+                            </div>
+                            <div className="project-placeholder-panels">
+                              {projectGalleryTiles.map((tile) => (
+                                <div
+                                  key={`${activeProject.title}-${tile.label}-placeholder`}
+                                  className="project-placeholder-panel"
+                                >
+                                  <span>{tile.label}</span>
+                                  <strong>{tile.value}</strong>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
 
-                    <div className="project-body">
-                      <div className="project-body-head">
-                        <div>
-                          <p className="project-category">{project.category}</p>
-                          <h3>{project.title}</h3>
-                        </div>
-                        <p className="project-impact">{project.impact}</p>
-                      </div>
+                        <div className="project-showcase-gallery">
+                          <div className="project-gallery-focus">
+                            <p className="project-gallery-label">{activeProject.category}</p>
+                            <h3>{activeProject.title}</h3>
+                            <p>{activeProject.spotlight}</p>
+                          </div>
 
-                      <div>
-                        <p className="project-detail-label">
-                          {projectShowcase.metricsLabel}
-                        </p>
-                        <div className="project-stat-grid">
-                          {project.metrics.map((metric) => (
-                            <div key={`${project.title}-${metric.label}`} className="project-stat">
-                              <p className="project-stat-value">{metric.value}</p>
-                              <p className="project-stat-label">{metric.label}</p>
+                          {projectGalleryTiles.map((tile) => (
+                            <div
+                              key={`${activeProject.title}-${tile.label}`}
+                              className="project-gallery-card"
+                            >
+                              <span className="project-gallery-label">{tile.label}</span>
+                              <p>{tile.value}</p>
                             </div>
                           ))}
                         </div>
                       </div>
 
-                      <div className="project-detail-grid">
-                        <div>
-                          <p className="project-detail-label">
-                            {projectShowcase.highlightsLabel}
-                          </p>
-                          <ul className="project-highlights">
-                            {project.highlights.map((item) => (
-                              <li key={`${project.title}-${item}`}>{item}</li>
-                            ))}
-                          </ul>
+                      <div className="project-showcase-body">
+                        <div className="project-showcase-copy">
+                          <p className="project-category">{activeProject.category}</p>
+                          <h3>{activeProject.title}</h3>
+                          <p className="project-summary">{activeProject.summary}</p>
+                          <p className="project-impact">{activeProject.impact}</p>
                         </div>
 
                         <div>
-                          <p className="project-detail-label">{projectShowcase.stackLabel}</p>
-                          <div className="chip-row">
-                            {project.stack.map((item) => (
-                              <span key={`${project.title}-${item}`} className="chip">
-                                {item}
-                              </span>
+                          <p className="project-detail-label">
+                            {projectShowcase.metricsLabel}
+                          </p>
+                          <div className="project-stat-grid">
+                            {activeProject.metrics.map((metric) => (
+                              <div
+                                key={`${activeProject.title}-${metric.label}`}
+                                className="project-stat"
+                              >
+                                <p className="project-stat-value">{metric.value}</p>
+                                <p className="project-stat-label">{metric.label}</p>
+                              </div>
                             ))}
                           </div>
                         </div>
+
+                        <div className="project-showcase-details">
+                          <div>
+                            <p className="project-detail-label">
+                              {projectShowcase.highlightsLabel}
+                            </p>
+                            <ul className="project-highlights">
+                              {activeProject.highlights.slice(0, 3).map((item) => (
+                                <li key={`${activeProject.title}-${item}`}>{item}</li>
+                              ))}
+                            </ul>
+                          </div>
+
+                          <div>
+                            <p className="project-detail-label">{projectShowcase.stackLabel}</p>
+                            <div className="chip-row">
+                              {activeProject.stack.slice(0, 6).map((item) => (
+                                <span key={`${activeProject.title}-${item}`} className="chip">
+                                  {item}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="project-links">
+                          {activeProject.liveUrl ? (
+                            <a
+                              href={activeProject.liveUrl}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="text-link"
+                              onClick={() => handleProjectLinkClick(activeProject.title, 'live')}
+                            >
+                              {projectShowcase.liveLabel}
+                              <ExternalLink size={16} />
+                            </a>
+                          ) : null}
+
+                          {activeProject.codeUrl ? (
+                            <a
+                              href={activeProject.codeUrl}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="text-link"
+                              onClick={() => handleProjectLinkClick(activeProject.title, 'code')}
+                            >
+                              {projectShowcase.sourceLabel}
+                              <ExternalLink size={16} />
+                            </a>
+                          ) : null}
+
+                          {!activeProject.liveUrl && !activeProject.codeUrl ? (
+                            <span className="project-note">{projectShowcase.privateLabel}</span>
+                          ) : null}
+                        </div>
                       </div>
-
-                      <div className="project-links">
-                        {project.liveUrl ? (
-                          <a
-                            href={project.liveUrl}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="text-link"
-                            onClick={() => handleProjectLinkClick(project.title, 'live')}
-                          >
-                            {projectShowcase.liveLabel}
-                            <ExternalLink size={16} />
-                          </a>
-                        ) : null}
-
-                        {project.codeUrl ? (
-                          <a
-                            href={project.codeUrl}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="text-link"
-                            onClick={() => handleProjectLinkClick(project.title, 'code')}
-                          >
-                            {projectShowcase.sourceLabel}
-                            <ExternalLink size={16} />
-                          </a>
-                        ) : null}
-
-                        {!project.liveUrl && !project.codeUrl ? (
-                          <span className="project-note">{projectShowcase.privateLabel}</span>
-                        ) : null}
-                      </div>
-                    </div>
-                  </motion.article>
-                );
-              })}
+                    </motion.article>
+                  </AnimatePresence>
+                ) : null}
               </div>
             </ParallaxSection>
           </div>

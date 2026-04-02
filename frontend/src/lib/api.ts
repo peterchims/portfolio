@@ -3,6 +3,7 @@ import type {
   ContactPayload,
   ContactResponse,
   InteractionPayload,
+  PortfolioContent,
   SitePayload,
 } from '../types/portfolio';
 
@@ -111,4 +112,34 @@ export function sendChatMessage(
 
 export function getConversation(conversationId: string): Promise<ChatConversation> {
   return request<ChatConversation>(`/api/chat/${conversationId}`);
+}
+
+function createAdminHeaders(token: string): HeadersInit {
+  return {
+    Authorization: `Bearer ${token}`,
+  };
+}
+
+export function validateAdminSession(token: string): Promise<{ ok: boolean; message: string }> {
+  return request<{ ok: boolean; message: string }>('/api/admin/session', {
+    method: 'POST',
+    body: JSON.stringify({ token }),
+  });
+}
+
+export function fetchAdminSiteContent(token: string): Promise<PortfolioContent> {
+  return request<PortfolioContent>('/api/admin/site-content', {
+    headers: createAdminHeaders(token),
+  });
+}
+
+export function updateAdminSiteContent(
+  token: string,
+  content: PortfolioContent
+): Promise<SitePayload> {
+  return request<SitePayload>('/api/admin/site-content', {
+    method: 'PUT',
+    headers: createAdminHeaders(token),
+    body: JSON.stringify(content),
+  });
 }

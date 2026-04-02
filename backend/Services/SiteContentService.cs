@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using PortfolioAPI.DTOs;
 
 namespace PortfolioAPI.Services;
@@ -6,6 +7,10 @@ namespace PortfolioAPI.Services;
 public interface ISiteContentService
 {
     Task<SitePayloadDto> GetSiteContentAsync(CancellationToken cancellationToken = default);
+    Task<PortfolioSiteContentDto> GetEditableContentAsync(CancellationToken cancellationToken = default);
+    Task<SitePayloadDto> UpdateSiteContentAsync(
+        PortfolioSiteContentDto content,
+        CancellationToken cancellationToken = default);
 }
 
 public class SiteContentService : ISiteContentService
@@ -17,6 +22,11 @@ public class SiteContentService : ISiteContentService
     {
         PropertyNameCaseInsensitive = true,
     };
+    private readonly JsonSerializerOptions _writeSerializerOptions = new(JsonSerializerDefaults.Web)
+    {
+        WriteIndented = true,
+        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+    };
 
     public SiteContentService(IWebHostEnvironment environment)
     {
@@ -26,7 +36,48 @@ public class SiteContentService : ISiteContentService
     public async Task<SitePayloadDto> GetSiteContentAsync(CancellationToken cancellationToken = default)
     {
         var contentPath = ResolveContentPath();
+        var content = await ReadContentAsync(contentPath, cancellationToken);
 
+        return new SitePayloadDto
+        {
+            Data = content,
+            Meta = new SiteMetaDto
+            {
+                UpdatedAt = File.GetLastWriteTimeUtc(contentPath).ToString("O"),
+                Source = "shared-json",
+            },
+        };
+    }
+
+    public async Task<PortfolioSiteContentDto> GetEditableContentAsync(
+        CancellationToken cancellationToken = default)
+    {
+        var contentPath = ResolveContentPath();
+        return await ReadContentAsync(contentPath, cancellationToken);
+    }
+
+    public async Task<SitePayloadDto> UpdateSiteContentAsync(
+        PortfolioSiteContentDto content,
+        CancellationToken cancellationToken = default)
+    {
+        var contentPath = ResolveContentPath();
+        var directoryPath = Path.GetDirectoryName(contentPath);
+
+        if (!string.IsNullOrWhiteSpace(directoryPath))
+        {
+            Directory.CreateDirectory(directoryPath);
+        }
+
+        var serialized = JsonSerializer.Serialize(content, _writeSerializerOptions);
+        await File.WriteAllTextAsync(contentPath, serialized + Environment.NewLine, cancellationToken);
+
+        return await GetSiteContentAsync(cancellationToken);
+    }
+
+    private async Task<PortfolioSiteContentDto> ReadContentAsync(
+        string contentPath,
+        CancellationToken cancellationToken)
+    {
         await using var stream = File.OpenRead(contentPath);
         var content = await JsonSerializer.DeserializeAsync<PortfolioSiteContentDto>(
             stream,
@@ -38,15 +89,7 @@ public class SiteContentService : ISiteContentService
             throw new InvalidOperationException("Shared portfolio content could not be loaded.");
         }
 
-        return new SitePayloadDto
-        {
-            Data = content,
-            Meta = new SiteMetaDto
-            {
-                UpdatedAt = File.GetLastWriteTimeUtc(contentPath).ToString("O"),
-                Source = "shared-json",
-            },
-        };
+        return content;
     }
 
     private string ResolveContentPath()

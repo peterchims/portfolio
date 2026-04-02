@@ -367,3 +367,126 @@ public class ChatController : ControllerBase
         return Ok(response);
     }
 }
+
+[ApiController]
+[Route("api/admin")]
+public class AdminContentController : ControllerBase
+{
+    private readonly IAdminAccessService _adminAccessService;
+    private readonly ISiteContentService _siteContentService;
+
+    public AdminContentController(
+        IAdminAccessService adminAccessService,
+        ISiteContentService siteContentService)
+    {
+        _adminAccessService = adminAccessService;
+        _siteContentService = siteContentService;
+    }
+
+    [HttpPost("session")]
+    public ActionResult<AdminSessionResponseDto> CreateSession(AdminSessionRequestDto dto)
+    {
+        if (!_adminAccessService.IsConfigured)
+        {
+            return StatusCode(StatusCodes.Status503ServiceUnavailable, new AdminSessionResponseDto
+            {
+                Ok = false,
+                Message = "Admin editor token is not configured on the backend.",
+            });
+        }
+
+        if (!_adminAccessService.IsAuthorized(dto.Token))
+        {
+            return Unauthorized(new AdminSessionResponseDto
+            {
+                Ok = false,
+                Message = "Invalid admin token.",
+            });
+        }
+
+        return Ok(new AdminSessionResponseDto
+        {
+            Ok = true,
+            Message = "Admin session validated.",
+        });
+    }
+
+    [HttpGet("site-content")]
+    public async Task<ActionResult<PortfolioSiteContentDto>> GetSiteContent(
+        CancellationToken cancellationToken)
+    {
+        var authorizationResult = EnsureAuthorized();
+        if (authorizationResult is not null)
+        {
+            return authorizationResult;
+        }
+
+        var content = await _siteContentService.GetEditableContentAsync(cancellationToken);
+        return Ok(content);
+    }
+
+    [HttpPut("site-content")]
+    public async Task<ActionResult<SitePayloadDto>> UpdateSiteContent(
+        PortfolioSiteContentDto dto,
+        CancellationToken cancellationToken)
+    {
+        var authorizationResult = EnsureAuthorized();
+        if (authorizationResult is not null)
+        {
+            return authorizationResult;
+        }
+
+        if (string.IsNullOrWhiteSpace(dto.Profile.Name))
+        {
+            return BadRequest(new { message = "Profile name is required." });
+        }
+
+        if (dto.FeaturedProjects.Count == 0)
+        {
+            return BadRequest(new { message = "At least one featured project is required." });
+        }
+
+        var payload = await _siteContentService.UpdateSiteContentAsync(dto, cancellationToken);
+        return Ok(payload);
+    }
+
+    private ActionResult? EnsureAuthorized()
+    {
+        if (!_adminAccessService.IsConfigured)
+        {
+            return StatusCode(StatusCodes.Status503ServiceUnavailable, new
+            {
+                message = "Admin editor token is not configured on the backend.",
+            });
+        }
+
+        var token = ExtractBearerToken();
+
+        if (!_adminAccessService.IsAuthorized(token))
+        {
+            return Unauthorized(new
+            {
+                message = "Invalid admin token.",
+            });
+        }
+
+        return null;
+    }
+
+    private string? ExtractBearerToken()
+    {
+        var authorizationHeader = Request.Headers.Authorization.ToString();
+
+        if (authorizationHeader.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
+        {
+            return authorizationHeader["Bearer ".Length..].Trim();
+        }
+
+        if (Request.Headers.TryGetValue("X-Admin-Token", out var headerValues))
+        {
+            return headerValues.FirstOrDefault();
+        }
+
+        return null;
+    }
+}

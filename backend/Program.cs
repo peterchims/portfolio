@@ -32,6 +32,7 @@ builder.Services.AddScoped<ITestimonialService, TestimonialService>();
 builder.Services.AddScoped<ISkillService, SkillService>();
 builder.Services.AddScoped<ISiteContentService, SiteContentService>();
 builder.Services.AddScoped<IChatService, ChatService>();
+builder.Services.AddSingleton<IAdminAccessService, AdminAccessService>();
 
 var app = builder.Build();
 
