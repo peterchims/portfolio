@@ -80,6 +80,7 @@ export interface FeaturedProject {
   title: string;
   year: string;
   category: string;
+  imageUrl?: string | null;
   summary: string;
   impact: string;
   spotlight: string;

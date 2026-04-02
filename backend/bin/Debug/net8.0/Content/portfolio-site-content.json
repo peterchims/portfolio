@@ -24,7 +24,7 @@
   "hero": {
     "eyebrow": "Full-stack engineer · Lagos, Nigeria",
     "panelEyebrow": "Operational snapshot",
-    "panelTitle": "Readable systems with backend discipline.",
+    "panelTitle": "Clear case studies, stronger product visuals, and backend-backed content.",
     "modeLabels": {
       "api": "Live content feed",
       "fallback": "Fallback content feed"
@@ -50,8 +50,8 @@
     },
     "projects": {
       "kicker": "Featured projects",
-      "title": "Project models shaped around practical product outcomes.",
-      "copy": "These case studies are structured to show what the product is, where the leverage was, and which technical choices mattered instead of hiding the work behind generic portfolio language."
+      "title": "Selected projects with clear product context and delivery signals.",
+      "copy": "Each project card is meant to show the product type, the problem space, the technical lane, and the result instead of relying on vague portfolio language."
     },
     "process": {
       "kicker": "Delivery process",
@@ -197,9 +197,9 @@
       "title": "Cashra Finance Manager",
       "year": "2025",
       "category": "Finance product",
-      "summary": "A finance manager focused on simple tracking, budget visibility, and decision-friendly reporting instead of feature clutter.",
-      "impact": "Structured the product around clearer flows for income, expenses, and reporting so the interface supports decision-making instead of competing with it.",
-      "spotlight": "Finance clarity for everyday decisions",
+      "summary": "A finance manager designed around budget visibility, transaction clarity, and reporting that helps users act quickly.",
+      "impact": "The product flow was simplified around the actions people repeat most, so the dashboard reads faster and the reporting layer feels more useful.",
+      "spotlight": "Budget visibility and cleaner reporting",
       "highlights": [
         "Reduced noise in budgeting and reporting flows",
         "Organized key actions around recurring money tasks",
@@ -225,9 +225,9 @@
       "title": "ClaudyGod Music & Ministries",
       "year": "2024",
       "category": "Media platform",
-      "summary": "A ministry and music experience combining streaming, event visibility, and audience engagement in a cleaner content system.",
-      "impact": "Built a clearer presentation layer for content discovery while keeping the platform accessible to a broad audience across web entry points.",
-      "spotlight": "Content discovery without visual noise",
+      "summary": "A ministry and music platform that brings streaming, event visibility, and audience updates into one clearer discovery flow.",
+      "impact": "The browsing structure was cleaned up so users can move through music, media, and ministry content without visual overload.",
+      "spotlight": "Media discovery with a cleaner browsing path",
       "highlights": [
         "Improved the browsing path for music, media, and updates",
         "Balanced ministry communication with media-platform structure",
@@ -253,9 +253,9 @@
       "title": "ClaudyGod Music App",
       "year": "2025",
       "category": "Mobile product",
-      "summary": "A mobile listening experience for music, messages, playlists, and release discovery with a stronger app-first delivery path.",
-      "impact": "Extended the platform into mobile-first delivery so audiences could stay connected beyond the browser with a more focused listening experience.",
-      "spotlight": "App-first access to music and ministry content",
+      "summary": "A mobile listening experience built around music, playlists, messages, and release discovery for smaller screens.",
+      "impact": "The mobile product extends the platform beyond the browser with a more focused listening flow and better continuity for returning users.",
+      "spotlight": "Mobile-first access to streaming and playlists",
       "highlights": [
         "Carried the platform into a dedicated mobile product lane",
         "Focused the experience on listening, playlists, and continuity",

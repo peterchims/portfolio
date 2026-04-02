@@ -1,6 +1,12 @@
-import { useEffect, useState } from 'react';
-import type { FormEvent } from 'react';
-import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+import { useEffect, useRef, useState } from 'react';
+import type { FormEvent, ReactNode } from 'react';
+import {
+  AnimatePresence,
+  motion,
+  useReducedMotion,
+  useScroll,
+  useTransform,
+} from 'framer-motion';
 import {
   ArrowRight,
   Briefcase,
@@ -430,6 +436,34 @@ function SelectField({
   );
 }
 
+function ParallaxSection({
+  children,
+  distance,
+  className,
+}: {
+  children: ReactNode;
+  distance: number;
+  className?: string;
+}) {
+  const prefersReducedMotion = useReducedMotion() ?? false;
+  const ref = useRef<HTMLDivElement | null>(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ['start end', 'end start'],
+  });
+  const y = useTransform(
+    scrollYProgress,
+    [0, 0.5, 1],
+    [distance, 0, distance * -1]
+  );
+
+  return (
+    <motion.div ref={ref} style={prefersReducedMotion ? undefined : { y }} className={className}>
+      {children}
+    </motion.div>
+  );
+}
+
 export default function AppModern() {
   const { content, health, loading, error } = usePortfolioContent();
   const prefersReducedMotion = useReducedMotion() ?? false;
@@ -627,156 +661,162 @@ export default function AppModern() {
       <main className="page-main">
         <section id="home" className="hero-section section-block">
           <div className="shell hero-grid">
-            <motion.div className="hero-copy" {...heroCopyAnimation}>
-              <div className="hero-kicker-row">
-                <span className="section-kicker">{hero.eyebrow}</span>
-                <span className="status-pill">{liveState}</span>
-              </div>
-
-              <h1 className="hero-title">{profile.headline}</h1>
-              <p className="hero-lead">{profile.summary}</p>
-
-              <div className="hero-actions">
-                <a
-                  href={hero.primaryCta.href}
-                  className="button button-primary"
-                  onClick={() => handleActionClick('hero', hero.primaryCta.label)}
-                >
-                  {hero.primaryCta.label}
-                  <ArrowRight size={18} />
-                </a>
-
-                <a
-                  href={hero.secondaryCta.href}
-                  className="button button-secondary"
-                  onClick={() => handleActionClick('hero', hero.secondaryCta.label)}
-                >
-                  {hero.secondaryCta.label}
-                  <Download size={18} />
-                </a>
-              </div>
-
-              <div className="social-row">
-                {content.socialLinks.map((link) => {
-                  const Icon = getSocialIcon(link.label);
-
-                  return (
-                    <a
-                      key={link.label}
-                      href={link.href}
-                      className="social-link"
-                      target="_blank"
-                      rel="noreferrer"
-                      onClick={() => handleSocialClick(link.label)}
-                    >
-                      <Icon size={16} />
-                      <span>{link.handle}</span>
-                    </a>
-                  );
-                })}
-              </div>
-
-              <div className="metric-grid">
-                {content.heroMetrics.map((metric, index) => (
-                  <motion.article
-                    key={metric.label}
-                    className="surface metric-card"
-                    {...getInViewAnimation(prefersReducedMotion, {
-                      delay: index * 0.04,
-                      distance: 18,
-                    })}
-                  >
-                    <p className="metric-value">{metric.value}</p>
-                    <p className="metric-label">{metric.label}</p>
-                    <p className="metric-detail">{metric.detail}</p>
-                  </motion.article>
-                ))}
-              </div>
-            </motion.div>
-
-            <motion.aside className="surface hero-panel" {...heroPanelAnimation}>
-              <div className="panel-head">
-                <p className="mono-label">{hero.panelEyebrow}</p>
-                <span className="status-pill status-pill-strong">
-                  {health?.environment ?? 'portfolio'}
-                </span>
-              </div>
-
-              <div
-                className={`hero-preview-frame ${
-                  projectTones[0]
-                }`}
-              >
-                <div className="hero-preview-main">
-                  <div className="hero-preview-copy">
-                    <h2 className="panel-title">
-                      {previewProject?.title ?? hero.panelTitle}
-                    </h2>
-                    <p className="panel-copy">
-                      {previewProject?.summary ?? profile.availability}
-                    </p>
-                  </div>
-
-                  <div className="hero-preview-badges">
-                    {(previewProject?.metrics ?? content.heroMetrics.slice(0, 2)).slice(0, 3).map(
-                      (metric) => (
-                        <span
-                          key={`${previewProject?.title ?? 'hero'}-${metric.label}`}
-                          className="hero-preview-badge"
-                        >
-                          {metric.value}
-                        </span>
-                      )
-                    )}
-                  </div>
+            <ParallaxSection distance={28}>
+              <motion.div className="hero-copy" {...heroCopyAnimation}>
+                <div className="hero-kicker-row">
+                  <span className="section-kicker">{hero.eyebrow}</span>
+                  <span className="status-pill">{liveState}</span>
                 </div>
 
-                <div className="hero-preview-strip">
-                  {content.featuredProjects.map((project, index) => (
-                    <article
-                      key={project.title}
-                      className={`preview-card ${projectTones[index % projectTones.length]}`}
+                <h1 className="hero-title">{profile.headline}</h1>
+                <p className="hero-lead">{profile.summary}</p>
+
+                <div className="hero-actions">
+                  <a
+                    href={hero.primaryCta.href}
+                    className="button button-primary"
+                    onClick={() => handleActionClick('hero', hero.primaryCta.label)}
+                  >
+                    {hero.primaryCta.label}
+                    <ArrowRight size={18} />
+                  </a>
+
+                  <a
+                    href={hero.secondaryCta.href}
+                    className="button button-secondary"
+                    onClick={() => handleActionClick('hero', hero.secondaryCta.label)}
+                  >
+                    {hero.secondaryCta.label}
+                    <Download size={18} />
+                  </a>
+                </div>
+
+                <div className="social-row">
+                  {content.socialLinks.map((link) => {
+                    const Icon = getSocialIcon(link.label);
+
+                    return (
+                      <a
+                        key={link.label}
+                        href={link.href}
+                        className="social-link"
+                        target="_blank"
+                        rel="noreferrer"
+                        onClick={() => handleSocialClick(link.label)}
+                      >
+                        <Icon size={16} />
+                        <span>{link.handle}</span>
+                      </a>
+                    );
+                  })}
+                </div>
+
+                <div className="metric-grid">
+                  {content.heroMetrics.map((metric, index) => (
+                    <motion.article
+                      key={metric.label}
+                      className="surface metric-card"
+                      {...getInViewAnimation(prefersReducedMotion, {
+                        delay: index * 0.04,
+                        distance: 18,
+                      })}
                     >
-                      <span>{project.category}</span>
-                      <strong>{project.title}</strong>
-                    </article>
+                      <p className="metric-value">{metric.value}</p>
+                      <p className="metric-label">{metric.label}</p>
+                      <p className="metric-detail">{metric.detail}</p>
+                    </motion.article>
                   ))}
                 </div>
-              </div>
+              </motion.div>
+            </ParallaxSection>
 
-              <div className="signal-grid">
-                {content.systemSignals.map((signal, index) => (
-                  <motion.article
-                    key={signal.label}
-                    className="system-signal"
-                    data-tone={signal.tone}
-                    {...getInViewAnimation(prefersReducedMotion, {
-                      delay: index * 0.05,
-                      distance: 14,
-                    })}
-                  >
-                    <p className="signal-label">{signal.label}</p>
-                    <h3>{signal.value}</h3>
-                    <p>{signal.detail}</p>
-                  </motion.article>
-                ))}
-              </div>
+            <ParallaxSection distance={-24}>
+              <motion.aside className="surface hero-panel" {...heroPanelAnimation}>
+                <div className="panel-head">
+                  <p className="mono-label">{hero.panelEyebrow}</p>
+                  <span className="status-pill status-pill-strong">
+                    {health?.environment ?? 'portfolio'}
+                  </span>
+                </div>
 
-              <div className="profile-meta">
-                <div>
-                  <MapPin size={16} />
-                  <span>{profile.location}</span>
+                <div className={`hero-preview-frame ${projectTones[0]}`}>
+                  {previewProject?.imageUrl ? (
+                    <div className="hero-preview-image">
+                      <img src={previewProject.imageUrl} alt={previewProject.title} />
+                    </div>
+                  ) : null}
+
+                  <div className="hero-preview-main">
+                    <div className="hero-preview-copy">
+                      <h2 className="panel-title">
+                        {previewProject?.title ?? hero.panelTitle}
+                      </h2>
+                      <p className="panel-copy">
+                        {previewProject?.summary ?? profile.availability}
+                      </p>
+                    </div>
+
+                    <div className="hero-preview-badges">
+                      {(previewProject?.metrics ?? content.heroMetrics.slice(0, 2))
+                        .slice(0, 3)
+                        .map((metric) => (
+                          <span
+                            key={`${previewProject?.title ?? 'hero'}-${metric.label}`}
+                            className="hero-preview-badge"
+                          >
+                            {metric.value}
+                          </span>
+                        ))}
+                    </div>
+                  </div>
+
+                  <div className="hero-preview-strip">
+                    {content.featuredProjects.map((project, index) => (
+                      <article
+                        key={project.title}
+                        className={`preview-card ${projectTones[index % projectTones.length]}`}
+                      >
+                        <span>{project.category}</span>
+                        <strong>{project.title}</strong>
+                      </article>
+                    ))}
+                  </div>
                 </div>
-                <div>
-                  <ShieldCheck size={16} />
-                  <span>{systemState}</span>
+
+                <div className="signal-grid">
+                  {content.systemSignals.map((signal, index) => (
+                    <motion.article
+                      key={signal.label}
+                      className="system-signal"
+                      data-tone={signal.tone}
+                      {...getInViewAnimation(prefersReducedMotion, {
+                        delay: index * 0.05,
+                        distance: 14,
+                      })}
+                    >
+                      <p className="signal-label">{signal.label}</p>
+                      <h3>{signal.value}</h3>
+                      <p>{signal.detail}</p>
+                    </motion.article>
+                  ))}
                 </div>
-                <div>
-                  <Mail size={16} />
-                  <a href={`mailto:${profile.email}`}>{profile.email}</a>
+
+                <div className="profile-meta">
+                  <div>
+                    <MapPin size={16} />
+                    <span>{profile.location}</span>
+                  </div>
+                  <div>
+                    <ShieldCheck size={16} />
+                    <span>{systemState}</span>
+                  </div>
+                  <div>
+                    <Mail size={16} />
+                    <a href={`mailto:${profile.email}`}>{profile.email}</a>
+                  </div>
                 </div>
-              </div>
-            </motion.aside>
+              </motion.aside>
+            </ParallaxSection>
           </div>
         </section>
 
@@ -788,7 +828,8 @@ export default function AppModern() {
               copy={sections.services.copy}
             />
 
-            <div className="card-grid card-grid-3">
+            <ParallaxSection distance={18}>
+              <div className="card-grid card-grid-3">
               {content.servicePillars.map((pillar, index) => {
                 const Icon = serviceIcons[index % serviceIcons.length];
 
@@ -814,7 +855,8 @@ export default function AppModern() {
                   </motion.article>
                 );
               })}
-            </div>
+              </div>
+            </ParallaxSection>
           </div>
         </section>
 
@@ -826,7 +868,8 @@ export default function AppModern() {
               copy={sections.projects.copy}
             />
 
-            <div className="project-grid">
+            <ParallaxSection distance={-20}>
+              <div className="project-grid">
               {content.featuredProjects.map((project, index) => {
                 const galleryTiles = getProjectGalleryTiles(project);
 
@@ -848,6 +891,12 @@ export default function AppModern() {
                         <span>{project.category}</span>
                         <span>{project.year}</span>
                       </div>
+
+                      {project.imageUrl ? (
+                        <div className="project-visual-image">
+                          <img src={project.imageUrl} alt={project.title} />
+                        </div>
+                      ) : null}
 
                       <div className="project-gallery-grid">
                         <div className="project-gallery-tile project-gallery-tile-featured">
@@ -950,7 +999,8 @@ export default function AppModern() {
                   </motion.article>
                 );
               })}
-            </div>
+              </div>
+            </ParallaxSection>
           </div>
         </section>
 
@@ -962,7 +1012,8 @@ export default function AppModern() {
               copy={sections.process.copy}
             />
 
-            <div className="workflow-grid">
+            <ParallaxSection distance={16}>
+              <div className="workflow-grid">
               <motion.article
                 className="surface process-card"
                 {...getInViewAnimation(prefersReducedMotion, {
@@ -1006,7 +1057,8 @@ export default function AppModern() {
                   </motion.article>
                 ))}
               </div>
-            </div>
+              </div>
+            </ParallaxSection>
           </div>
         </section>
 
@@ -1018,7 +1070,8 @@ export default function AppModern() {
               copy={sections.contact.copy}
             />
 
-            <div className="contact-grid">
+            <ParallaxSection distance={-18}>
+              <div className="contact-grid">
               <motion.article
                 className="surface contact-card"
                 {...getInViewAnimation(prefersReducedMotion, {
@@ -1213,7 +1266,8 @@ export default function AppModern() {
                   )}
                 </button>
               </motion.form>
-            </div>
+              </div>
+            </ParallaxSection>
           </div>
         </section>
       </main>

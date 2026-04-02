@@ -162,7 +162,7 @@ export function ChatWidget({
             transition={{ duration: 0.34, ease: [0.22, 1, 0.36, 1] }}
             className="fixed bottom-28 right-4 z-50 flex w-[min(22.5rem,calc(100vw-1.25rem))] max-h-[37rem] flex-col overflow-hidden rounded-[24px] border border-white/10 bg-[#0f1317]/96 shadow-[0_24px_80px_rgba(0,0,0,0.45)] backdrop-blur-2xl md:bottom-28 md:right-6"
           >
-            <div className="border-b border-white/8 bg-[linear-gradient(135deg,rgba(161,98,7,0.22),rgba(15,23,42,0.9)_35%,rgba(6,95,70,0.18))] px-4 py-3">
+            <div className="border-b border-white/8 bg-[#17120c] px-4 py-3">
               <div className="flex items-center justify-between gap-3">
                 <div className="flex items-center gap-3">
                   <div className="flex h-10 w-10 items-center justify-center rounded-2xl border border-white/12 bg-white/8 text-stone-100">
@@ -217,7 +217,7 @@ export function ChatWidget({
                         placeholder="Your name"
                         value={visitorName}
                         onChange={(event) => setVisitorName(event.target.value)}
-                        className="w-full rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-slate-100 placeholder:text-slate-500 focus:border-emerald-400/60 focus:outline-none"
+                        className="w-full rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-slate-100 placeholder:text-slate-500 focus:border-amber-300/60 focus:outline-none"
                       />
 
                       <input
@@ -225,7 +225,7 @@ export function ChatWidget({
                         placeholder="Your email"
                         value={visitorEmail}
                         onChange={(event) => setVisitorEmail(event.target.value)}
-                        className="w-full rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-slate-100 placeholder:text-slate-500 focus:border-emerald-400/60 focus:outline-none"
+                        className="w-full rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-slate-100 placeholder:text-slate-500 focus:border-amber-300/60 focus:outline-none"
                       />
 
                       <textarea
@@ -233,7 +233,7 @@ export function ChatWidget({
                         value={inputValue}
                         onChange={(event) => setInputValue(event.target.value)}
                         rows={4}
-                        className="w-full resize-none rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-slate-100 placeholder:text-slate-500 focus:border-emerald-400/60 focus:outline-none"
+                        className="w-full resize-none rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-slate-100 placeholder:text-slate-500 focus:border-amber-300/60 focus:outline-none"
                       />
                     </div>
 
@@ -247,7 +247,7 @@ export function ChatWidget({
                       type="button"
                       onClick={handleStartChat}
                       disabled={isLoading}
-                      className="mt-auto inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl border border-emerald-400/20 bg-[linear-gradient(135deg,#8b5a10,#0f766e)] px-4 py-3 text-sm font-semibold text-white transition hover:translate-y-[-1px] hover:border-emerald-300/40 disabled:cursor-not-allowed disabled:opacity-70"
+                      className="mt-auto inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl border border-amber-300/20 bg-[#b7791f] px-4 py-3 text-sm font-semibold text-white transition hover:translate-y-[-1px] hover:border-amber-200/40 disabled:cursor-not-allowed disabled:opacity-70"
                     >
                       {isLoading ? (
                         <>
@@ -277,7 +277,7 @@ export function ChatWidget({
                           <div
                             className={`max-w-[83%] rounded-[18px] px-4 py-3 text-sm leading-6 ${
                               message.sender === 'visitor'
-                                ? 'bg-[linear-gradient(135deg,#8b5a10,#0f766e)] text-white shadow-[0_16px_32px_rgba(6,78,59,0.25)]'
+                                ? 'bg-[#b7791f] text-white shadow-[0_16px_32px_rgba(120,53,15,0.25)]'
                                 : 'border border-white/8 bg-white/[0.04] text-slate-200'
                             }`}
                           >
@@ -321,14 +321,14 @@ export function ChatWidget({
                             }
                           }}
                           rows={1}
-                          className="max-h-28 min-h-12 flex-1 resize-y rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-slate-100 placeholder:text-slate-500 focus:border-emerald-400/60 focus:outline-none"
+                          className="max-h-28 min-h-12 flex-1 resize-y rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-slate-100 placeholder:text-slate-500 focus:border-amber-300/60 focus:outline-none"
                         />
 
                         <button
                           type="button"
                           onClick={() => void handleSendMessage()}
                           disabled={!inputValue.trim() || isLoading}
-                          className="inline-flex h-12 w-12 items-center justify-center rounded-2xl border border-emerald-400/20 bg-[linear-gradient(135deg,#8b5a10,#0f766e)] text-white transition hover:translate-y-[-1px] disabled:cursor-not-allowed disabled:opacity-60"
+                          className="inline-flex h-12 w-12 items-center justify-center rounded-2xl border border-amber-300/20 bg-[#b7791f] text-white transition hover:translate-y-[-1px] disabled:cursor-not-allowed disabled:opacity-60"
                           aria-label="Send message"
                         >
                           <Send size={17} />
@@ -350,10 +350,10 @@ export function ChatWidget({
           whileHover={{ y: -2 }}
           whileTap={{ scale: 0.98 }}
           onClick={openWidget}
-          className="fixed bottom-[5.5rem] right-4 z-40 inline-flex min-h-12 items-center gap-3 rounded-[18px] border border-white/10 bg-[#12171c]/94 px-4 py-3 text-left text-slate-100 shadow-[0_18px_38px_rgba(0,0,0,0.32)] backdrop-blur-xl transition hover:border-emerald-400/30 md:right-6"
+          className="fixed bottom-[5.5rem] right-4 z-40 inline-flex min-h-12 items-center gap-3 rounded-[18px] border border-white/10 bg-[#12171c]/94 px-4 py-3 text-left text-slate-100 shadow-[0_18px_38px_rgba(0,0,0,0.32)] backdrop-blur-xl transition hover:border-amber-300/30 md:right-6"
           title="Open chat"
         >
-          <span className="flex h-9 w-9 items-center justify-center rounded-2xl bg-[linear-gradient(135deg,#8b5a10,#0f766e)] text-white">
+          <span className="flex h-9 w-9 items-center justify-center rounded-2xl bg-[#b7791f] text-white">
             <MessageCircle size={17} />
           </span>
           <span className="flex flex-col">

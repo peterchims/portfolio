@@ -172,6 +172,7 @@ public class FeaturedProjectContentDto
     public string Title { get; set; } = string.Empty;
     public string Year { get; set; } = string.Empty;
     public string Category { get; set; } = string.Empty;
+    public string? ImageUrl { get; set; }
     public string Summary { get; set; } = string.Empty;
     public string Impact { get; set; } = string.Empty;
     public string Spotlight { get; set; } = string.Empty;
