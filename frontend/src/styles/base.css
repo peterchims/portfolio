@@ -181,6 +181,12 @@ body::before {
     transform: translate3d(6vw, -8vw, 0) scale(1.2);
   }
 }
+@keyframes marquee {
+  to {
+    transform: translateX(-100%);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .aurora-blob {
     animation: none !important;

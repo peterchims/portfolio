@@ -36,19 +36,21 @@ export function WorkDetailPage() {
           All work
         </Link>
 
-        <header className="mt-8 border-b border-border pb-10">
-          <p className="font-mono text-xs uppercase tracking-[0.2em] text-accent">
+        <header className="mt-8 border-b border-border pb-9">
+          <p className="font-mono text-kicker uppercase text-accent">
             {project.category} · {project.year}
           </p>
-          <h1 className="mt-4 text-display-md font-semibold">{project.title}</h1>
-          <p className="mt-4 max-w-prose text-lg text-text-muted">{project.summary}</p>
+          <h1 className="mt-3.5 text-display-md font-semibold">{project.title}</h1>
+          <p className="mt-3.5 max-w-prose text-sm leading-relaxed text-text-muted">
+            {project.summary}
+          </p>
         </header>
 
         <ProjectCover
           project={project}
           preferImage
           variant="hero"
-          className="mt-10 aspect-[16/9] rounded-2xl border border-border shadow-lg sm:aspect-[2/1]"
+          className="mt-9 aspect-[16/9] rounded-2xl border border-border shadow-lg sm:aspect-[5/2]"
         />
 
         <div className="mt-12 grid gap-12 lg:grid-cols-[1fr_18rem]">

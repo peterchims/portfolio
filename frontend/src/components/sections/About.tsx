@@ -58,7 +58,7 @@ export function About() {
         </Reveal>
 
         <div>
-          <Reveal className="max-w-prose space-y-4 text-[1.05rem] leading-[1.75] text-text-muted">
+          <Reveal className="max-w-prose space-y-4 text-[0.95rem] leading-[1.72] text-text-muted">
             {about.paragraphs.map((paragraph) => (
               <p key={paragraph.slice(0, 24)}>{paragraph}</p>
             ))}

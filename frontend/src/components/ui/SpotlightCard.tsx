@@ -4,7 +4,7 @@ import { cn } from '../../lib/cn';
 interface SpotlightCardProps {
   children: ReactNode;
   className?: string;
-  /** Accent hue for the spotlight glow + hover edge. */
+  /** Accent hue for the spotlight glow. */
   hue?: number;
   as?: 'div' | 'article' | 'li';
 }
@@ -12,6 +12,7 @@ interface SpotlightCardProps {
 /**
  * A card that lifts on hover and carries a cursor-following glow.
  * One pointer listener, no re-renders — position is pushed to CSS variables.
+ * Direct children are auto-raised above the glow layer.
  */
 export function SpotlightCard({
   children,
@@ -41,10 +42,11 @@ export function SpotlightCard({
         'motion-reduce:transition-none motion-reduce:hover:translate-y-0',
         'before:pointer-events-none before:absolute before:inset-0 before:z-0 before:opacity-0 before:transition-opacity before:duration-300 group-hover/spot:before:opacity-100',
         'before:bg-[radial-gradient(circle_260px_at_var(--mx,50%)_var(--my,50%),var(--spot),transparent_65%)]',
+        '[&>*]:relative [&>*]:z-[1]',
         className,
       )}
     >
-      <div className="relative z-[1] flex h-full flex-col">{children}</div>
+      {children}
     </Tag>
   );
 }
