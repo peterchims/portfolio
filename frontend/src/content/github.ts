@@ -20,15 +20,3 @@ export const github = {
     'Advanced TypeScript — generics, discriminated unions, branded types',
   ],
 };
-
-/** Stat-card image URLs, tuned for a transparent background in both themes. */
-const streakColors =
-  'background=00000000&hide_border=true&ring=4F6BF5&fire=4F6BF5&currStreakNum=9A9A96&sideNums=9A9A96&currStreakLabel=4F6BF5&sideLabels=75756F&dates=75756F&stroke=8888881f&excludeDaysLabel=75756F';
-const statsColors =
-  'bg_color=00000000&hide_border=true&title_color=4F6BF5&text_color=9A9A96&icon_color=4F6BF5';
-
-export const githubImages = {
-  streak: `https://streak-stats.demolab.com/?user=${github.user}&${streakColors}`,
-  stats: `https://github-readme-stats.vercel.app/api?username=${github.user}&${statsColors}&show_icons=true&hide=issues`,
-  langs: `https://github-readme-stats.vercel.app/api/top-langs/?username=${github.user}&${statsColors}&layout=compact&langs_count=8`,
-};
