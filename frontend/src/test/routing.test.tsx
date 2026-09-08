@@ -25,7 +25,7 @@ describe('routing', () => {
   it('renders the home page hero', () => {
     renderAt('/');
     expect(
-      screen.getByRole('heading', { level: 1, name: /product interfaces/i }),
+      screen.getByRole('heading', { level: 1, name: /ship the whole system/i }),
     ).toBeInTheDocument();
   });
 

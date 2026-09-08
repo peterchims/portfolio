@@ -4,6 +4,7 @@ import { sectionIntros } from '../../content/site';
 import { cn } from '../../lib/cn';
 import { Reveal } from '../ui/Reveal';
 import { Section, SectionHeader } from '../ui/Section';
+import { GithubPanel } from './GithubPanel';
 
 function initials(name: string) {
   return name
@@ -87,6 +88,8 @@ export function About() {
           </Reveal>
         </div>
       </div>
+
+      <GithubPanel />
     </Section>
   );
 }
