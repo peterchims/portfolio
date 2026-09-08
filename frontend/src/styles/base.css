@@ -129,6 +129,64 @@ body::before {
   z-index: 1;
 }
 
+/* Aurora — drifting ambient colour blobs for the hero. */
+.aurora-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(90px);
+  opacity: 0.5;
+  will-change: transform;
+}
+:root[data-theme='dark'] .aurora-blob,
+:root:not([data-theme='light']) .aurora-blob {
+  opacity: 0.38;
+  filter: blur(110px);
+}
+.aurora-blob--1 {
+  width: 42vw;
+  height: 42vw;
+  top: -14vw;
+  left: -8vw;
+  background: radial-gradient(circle, var(--accent), transparent 68%);
+  animation: aurora-1 22s ease-in-out infinite alternate;
+}
+.aurora-blob--2 {
+  width: 34vw;
+  height: 34vw;
+  top: -6vw;
+  right: -6vw;
+  background: radial-gradient(circle, hsl(268 80% 62%), transparent 66%);
+  animation: aurora-2 28s ease-in-out infinite alternate;
+}
+.aurora-blob--3 {
+  width: 30vw;
+  height: 30vw;
+  bottom: -16vw;
+  left: 34vw;
+  background: radial-gradient(circle, hsl(180 70% 52%), transparent 66%);
+  animation: aurora-3 25s ease-in-out infinite alternate;
+}
+@keyframes aurora-1 {
+  to {
+    transform: translate3d(8vw, 6vw, 0) scale(1.15);
+  }
+}
+@keyframes aurora-2 {
+  to {
+    transform: translate3d(-7vw, 9vw, 0) scale(1.1);
+  }
+}
+@keyframes aurora-3 {
+  to {
+    transform: translate3d(6vw, -8vw, 0) scale(1.2);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .aurora-blob {
+    animation: none !important;
+  }
+}
+
 /* Dotted grid — apply to a positioned decorative layer. */
 .bg-grid {
   background-image: radial-gradient(var(--border) 1px, transparent 1px);
