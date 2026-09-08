@@ -1,98 +1,89 @@
 # Style Guide
 
-## Brand Direction
+## Brand direction
 
-This portfolio should feel like a serious product engineering studio, not a generic template.
-The tone is controlled, precise, and direct.
-Visual language should communicate systems thinking, polish, and delivery discipline.
+This portfolio should read like a serious product-engineering practice — not a
+template. The tone is controlled, precise, and direct. The visual language
+communicates systems thinking and delivery discipline through restraint:
+generous whitespace, strong hierarchy, one confident accent, no decoration that
+competes with reading.
+
+Reference points: Linear, Vercel, Stripe — calm, high-contrast, editorial.
 
 ## Audience
 
-- Hiring managers reviewing senior frontend or full-stack capability
+- Hiring managers assessing senior frontend / full-stack capability
 - Founders looking for a reliable product engineer
-- Clients who need both interface quality and backend execution
+- Clients who need interface quality and backend execution in one person
 
-## Core Principles
+## Theme architecture
 
-- Lead with clarity before decoration
-- Show technical depth without clutter
-- Keep copy concise and high-signal
-- Use motion to reinforce hierarchy, not to entertain
-- Make backend capability visible, not implied
+Three tiers, all in CSS custom properties (`src/styles/theme.css`):
 
-## Color System
+1. **Primitives** — raw scales (`--grey-0 … --grey-1000`, `--accent-300 … 700`).
+   Never used directly in components.
+2. **Semantic tokens** — what components consume: `--bg`, `--bg-subtle`,
+   `--surface`, `--surface-raised`, `--border`, `--border-strong`, `--text`,
+   `--text-muted`, `--text-faint`, `--accent`, `--accent-contrast`,
+   `--accent-surface`, `--focus-ring`, `--shadow-sm/md/lg`.
+   Defined on `:root` for **light**; re-mapped for **dark** under both
+   `@media (prefers-color-scheme: dark)` (guarded by `:not([data-theme="light"])`)
+   and `:root[data-theme="dark"]`. A colour is never defined only in a media query.
+3. **Tailwind** — `tailwind.config.js` maps utility colours to the semantic
+   tokens, so every utility is theme-aware. `darkMode: ['selector', '[data-theme="dark"]']`.
 
-- `--bg-canvas`: `#f3ecdf`
-- `--bg-surface`: `rgba(255, 248, 238, 0.74)`
-- `--bg-panel`: `#fff8ef`
-- `--ink-strong`: `#102033`
-- `--ink-soft`: `#42516a`
-- `--ink-muted`: `#6b7288`
-- `--line-soft`: `rgba(16, 32, 51, 0.1)`
-- `--accent-copper`: `#a74e33`
-- `--accent-gold`: `#c98b2f`
-- `--accent-teal`: `#195f67`
-- `--accent-sand`: `#e2c38f`
+Theme is chosen with a `light / dark / system` toggle, stored in `localStorage`,
+applied to `<html data-theme>` by an inline boot script before first paint.
 
-Use the warm canvas and paper layers as the dominant surface.
-Use copper and gold for calls to action.
-Use teal to signal backend, infrastructure, and system health.
+## Colour
+
+Light and dark are equals. Both are near-monochrome neutrals plus **one** accent
+(`--accent`, a measured blue). Accent is for primary actions, links, active
+states, and the mono kicker labels — nothing else. No gradients on text, no
+glows, no second accent hue.
 
 ## Typography
 
-- Heading font: `Syne`
-- Body font: `Manrope`
-- Technical accent font: `IBM Plex Mono`
+- Display / headings — **Sora**, weight 600, tight tracking (`-0.02em`)
+- Body / UI — **Inter**
+- Micro-labels (kickers, metadata, "at a glance") — **IBM Plex Mono**, uppercase,
+  `0.2em` tracking
 
-Rules:
-
-- Headlines should be short and assertive
-- Avoid long multi-line paragraphs above the fold
-- Use mono labels for system indicators, metadata, and stack chips
+Rules: headlines short and assertive; no long paragraphs above the fold; one
+`<h1>` per route; ordered heading levels.
 
 ## Layout
 
-- Use a strong left-aligned reading rhythm on desktop
-- Keep section spacing generous: `96px` desktop, `72px` tablet, `56px` mobile
-- Prefer asymmetric grids over centered template blocks
-- Make major sections feel editorial, not dashboard-only
+- Content column: `max-w-content` (68rem); reading column: `max-w-prose` (42rem)
+- Section vertical rhythm: `py-20` mobile → `py-28` desktop, hairline border between
+- Alternate `bg` / `bg-subtle` on consecutive sections for rhythm
+- Left-aligned reading rhythm; asymmetric grids over centred template blocks
+- Case studies: prose left, sticky "At a glance" rail right
 
 ## Components
 
-### Header
-
-- Sticky with translucent paper background
-- Minimal navigation and one primary CTA
-- Keep branding as a monogram or short name lockup
-
-### Hero
-
-- Large statement with a clear engineering proposition
-- Show contact availability and API health in the first viewport
-- Include one dense systems card to prove backend capability visually
-
-### Project Cards
-
-- Present role, impact, stack, and links clearly
-- Avoid fake metrics or generic case study copy
-- Use tags and metadata instead of oversized screenshots
-
-### Contact Form
-
-- Keep form fields operational and business-focused
-- Include project type, budget, and timeline to increase lead quality
-- Submission state should show confirmation with a real backend reference id
+- **Header** — sticky, transparent until scrolled then `bg/80` + blur; brand
+  lockup, minimal nav with scroll-spy `aria-current`, theme toggle, one CTA
+- **Hero** — one engineering statement, short lead, two CTAs, a faint accent
+  radial for depth, three restrained proof points (no fake uptime / metrics)
+- **Cards** — `rounded-2xl`, `border-border`, `bg-surface`, `shadow-sm`; on hover
+  lift `-0.5` + `border-strong` + `shadow-md`. Nothing heavier.
+- **Contact form** — operational fields (type / budget / timeline) for lead
+  quality; inline success with a real reference id; inline errors — the page
+  never fails wholesale
 
 ## Motion
 
-- Page load: subtle upward reveal
-- Hover: light lift and shadow shift only
-- Avoid loops that compete with reading
+- Entrance: subtle upward reveal (`Reveal`), staggered, `once`
+- Hover: small lift + shadow shift only
+- Everything behind `prefers-reduced-motion` — `Reveal` renders static
 
-## Content Voice
+## Accessibility
 
-- Direct
-- Professional
-- No filler claims
-- No exaggerated self-praise
-- Prefer proof over adjectives
+Skip link; visible `--focus-ring` on every control; focus-trapped, Esc-closable
+mobile nav; AA contrast in both themes; semantic landmarks.
+
+## Content voice
+
+Direct. Professional. Proof over adjectives. No filler claims, no exaggerated
+self-praise, no fake metrics.

@@ -9,7 +9,9 @@ import { SkipLink } from '../components/ui/SkipLink';
 export function App() {
   return (
     <ThemeProvider>
-      <BrowserRouter>
+      <BrowserRouter
+        future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
+      >
         <ScrollToTop />
         <SkipLink />
         <Header />

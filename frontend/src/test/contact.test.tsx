@@ -7,7 +7,7 @@ import * as api from '../lib/api';
 
 function renderContact() {
   return render(
-    <MemoryRouter>
+    <MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <Contact />
     </MemoryRouter>,
   );

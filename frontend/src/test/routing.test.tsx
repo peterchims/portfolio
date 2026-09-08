@@ -10,7 +10,7 @@ import { projects } from '../content/projects';
 function renderAt(path: string) {
   return render(
     <ThemeProvider>
-      <MemoryRouter initialEntries={[path]}>
+      <MemoryRouter initialEntries={[path]} future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/work/:slug" element={<WorkDetailPage />} />
