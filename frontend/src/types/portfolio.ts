@@ -14,6 +14,8 @@ export interface Profile {
   phone: string;
   availability: string;
   resumeUrl: string;
+  /** Portrait for the About section. Drop a file in /public/images and point here. */
+  photoUrl: string | null;
   socials: SocialLink[];
 }
 
@@ -45,6 +47,13 @@ export interface CaseStudy {
   outcome: string;
 }
 
+export interface ProjectFigure {
+  /** Path under /public/images, or null to render a captioned placeholder. */
+  src: string | null;
+  alt: string;
+  caption: string;
+}
+
 export interface Project {
   slug: string;
   title: string;
@@ -57,7 +66,13 @@ export interface Project {
   liveUrl: string | null;
   codeUrl: string | null;
   featured: boolean;
+  /** Optional real screenshot for the card / case-study hero. */
+  image: string | null;
+  /** Hue (0-360) for the generated cover when there is no image. */
+  hue: number;
   caseStudy: CaseStudy;
+  /** In-body figures for the case study. */
+  figures: ProjectFigure[];
 }
 
 export interface AboutContent {

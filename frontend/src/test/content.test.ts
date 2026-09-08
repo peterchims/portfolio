@@ -16,6 +16,13 @@ describe('content integrity', () => {
       expect(project.caseStudy.decisions.length).toBeGreaterThan(0);
       expect(project.caseStudy.outcome.length).toBeGreaterThan(20);
       expect(project.stack.length).toBeGreaterThan(0);
+
+      expect(project.hue).toBeGreaterThanOrEqual(0);
+      expect(project.hue).toBeLessThan(360);
+      for (const figure of project.figures) {
+        expect(figure.alt.length).toBeGreaterThan(0);
+        expect(figure.caption.length).toBeGreaterThan(0);
+      }
     }
   });
 

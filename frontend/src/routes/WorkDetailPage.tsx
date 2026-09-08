@@ -5,6 +5,8 @@ import { siteMeta } from '../content/site';
 import { Seo } from '../lib/seo';
 import { Chip } from '../components/ui/Chip';
 import { Container } from '../components/ui/Container';
+import { Figure } from '../components/ui/Figure';
+import { ProjectCover } from '../components/ui/ProjectCover';
 import { Prose } from '../components/ui/Prose';
 
 export function WorkDetailPage() {
@@ -42,6 +44,13 @@ export function WorkDetailPage() {
           <p className="mt-4 max-w-prose text-lg text-text-muted">{project.summary}</p>
         </header>
 
+        <ProjectCover
+          project={project}
+          preferImage
+          variant="hero"
+          className="mt-10 aspect-[16/9] rounded-2xl border border-border shadow-lg sm:aspect-[2/1]"
+        />
+
         <div className="mt-12 grid gap-12 lg:grid-cols-[1fr_18rem]">
           <div>
             <Prose>
@@ -49,6 +58,7 @@ export function WorkDetailPage() {
               <p>{project.caseStudy.problem}</p>
               <h3>Approach</h3>
               <p>{project.caseStudy.approach}</p>
+              {project.figures[0] && <Figure figure={project.figures[0]} hue={project.hue} />}
               <h3>Key decisions</h3>
               <ul>
                 {project.caseStudy.decisions.map((decision) => (
@@ -57,6 +67,7 @@ export function WorkDetailPage() {
               </ul>
               <h3>Outcome</h3>
               <p>{project.caseStudy.outcome}</p>
+              {project.figures[1] && <Figure figure={project.figures[1]} hue={project.hue} />}
               <h3>Highlights</h3>
               <ul>
                 {project.highlights.map((highlight) => (

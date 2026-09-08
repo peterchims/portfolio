@@ -60,6 +60,26 @@ Rules: headlines short and assertive; no long paragraphs above the fold; one
 - Left-aligned reading rhythm; asymmetric grids over centred template blocks
 - Case studies: prose left, sticky "At a glance" rail right
 
+## Imagery
+
+The portfolio is bespoke-visual, not stock-photo.
+
+- **`ProjectCover`** — a deterministic SVG cover per project, keyed off a `hue`
+  (0–360) in the content: jewel-toned gradient field, concentric arcs, ghosted
+  monogram. Used on Work cards, the hero window frame, and case-study banners.
+- **Real screenshots** — a project may set `image` (a file in
+  `/public/images`); `ProjectCover` renders it instead of the generated cover
+  when `preferImage` is set.
+- **`Figure`** — case-study in-body figure. Renders a screenshot when `src` is
+  set, otherwise a designed wireframe placeholder tinted with the project hue —
+  the page reads as finished before assets land.
+- **Portrait** — the About section uses `profile.photoUrl` when set, else a
+  monogram-on-grid panel.
+- **Texture** — a fixed film-grain overlay (`body::before`, opacity ~0.04) and a
+  `.bg-grid` dotted-grid helper for hero / portrait backdrops. Both theme-aware.
+- **`og.png`** — 1200×630 social card, regenerable from
+  `scratchpad`-style HTML → Chromium screenshot.
+
 ## Components
 
 - **Header** — sticky, transparent until scrolled then `bg/80` + blur; brand
