@@ -1,24 +1,33 @@
 import { processSteps, stackGroups } from '../../content/process';
 import { sectionIntros } from '../../content/site';
 import { Chip } from '../ui/Chip';
+import { Marquee } from '../ui/Marquee';
 import { Reveal } from '../ui/Reveal';
 import { Section, SectionHeader } from '../ui/Section';
+
+const allTech = Array.from(new Set(stackGroups.flatMap((group) => group.items)));
 
 export function Process() {
   return (
     <Section id="process">
       <SectionHeader {...sectionIntros.process} />
 
-      <div className="mt-12 grid gap-12 lg:grid-cols-[1.1fr_0.9fr]">
-        <ol className="space-y-8">
+      <div className="mt-10 grid gap-12 lg:grid-cols-[1.05fr_0.95fr]">
+        <ol className="relative">
+          <span
+            aria-hidden
+            className="absolute bottom-2 left-[0.6rem] top-2 w-px bg-border"
+          />
           {processSteps.map((step, index) => (
-            <Reveal as="li" key={step.title} delay={index} className="flex gap-5">
-              <span className="mt-0.5 font-mono text-sm text-text-faint">
-                {String(index + 1).padStart(2, '0')}
+            <Reveal as="li" key={step.title} delay={index} className="relative flex gap-5 pb-8 last:pb-0">
+              <span className="relative z-[1] mt-0.5 flex h-[1.2rem] w-[1.2rem] shrink-0 items-center justify-center rounded-full border border-border-strong bg-bg text-[0.6rem] font-semibold text-text-faint">
+                {index + 1}
               </span>
               <div>
                 <h3 className="text-base font-semibold text-text">{step.title}</h3>
-                <p className="mt-2 text-sm text-text-muted">{step.description}</p>
+                <p className="mt-1.5 text-sm leading-relaxed text-text-muted">
+                  {step.description}
+                </p>
               </div>
             </Reveal>
           ))}
@@ -40,6 +49,13 @@ export function Process() {
             </Reveal>
           ))}
         </div>
+      </div>
+
+      <div className="mt-12 border-t border-border pt-8">
+        <p className="mb-4 text-center font-mono text-xs uppercase tracking-[0.16em] text-text-faint">
+          Tools in rotation
+        </p>
+        <Marquee items={allTech.map((tech) => <span key={tech}>{tech}</span>)} />
       </div>
     </Section>
   );
