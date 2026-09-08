@@ -1,3 +1,5 @@
+import type { LucideIcon } from 'lucide-react';
+
 export interface SocialLink {
   label: string;
   href: string;
@@ -24,6 +26,8 @@ export interface Profile {
 export interface NavItem {
   id: string;
   label: string;
+  /** Lucide icon component, shown beside the label in the nav. */
+  Icon: LucideIcon;
 }
 
 export interface Service {

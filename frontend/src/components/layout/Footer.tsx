@@ -86,9 +86,9 @@ export function Footer() {
         </div>
 
         {/* Wordmark */}
-        <div className="border-t border-border pt-10">
-          <p className="select-none bg-gradient-to-b from-text/20 to-text/[0.04] bg-clip-text font-display text-[clamp(2.5rem,11vw,7rem)] font-bold leading-none tracking-tight text-transparent">
-            Peter Ogba
+        <div className="border-t border-border pt-8">
+          <p className="select-none font-display text-[clamp(2.75rem,13vw,8.5rem)] font-bold leading-[0.85] tracking-[-0.03em] text-text/[0.07]">
+            Peter&nbsp;Ogba
           </p>
           <div className="mt-6 flex flex-col gap-2 text-xs text-text-faint sm:flex-row sm:items-center sm:justify-between">
             <span>
