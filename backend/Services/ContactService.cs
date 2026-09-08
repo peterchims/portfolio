@@ -1,131 +1,138 @@
-using Microsoft.EntityFrameworkCore;
-using PortfolioAPI.Data;
+using System.Text;
+using System.Text.Json;
+using MailKit.Net.Smtp;
+using MailKit.Security;
+using MimeKit;
 using PortfolioAPI.DTOs;
-using PortfolioAPI.Models;
 
 namespace PortfolioAPI.Services;
 
 public interface IContactService
 {
-    Task<ContactDto> SubmitContactAsync(CreateContactDto dto, string? ipAddress = null);
-    Task<List<ContactDto>> GetAllContactsAsync();
-    Task<ContactDto?> GetContactByIdAsync(Guid id);
-    Task UpdateContactStatusAsync(Guid id, string status);
-    Task DeleteContactAsync(Guid id);
+    Task<string> SubmitAsync(CreateContactDto dto, string? ipAddress, CancellationToken ct = default);
 }
 
-public class ContactService : IContactService
+public sealed class ContactService : IContactService
 {
-    private readonly PortfolioDbContext _context;
+    private readonly IWebHostEnvironment _environment;
+    private readonly IConfiguration _configuration;
+    private readonly ILogger<ContactService> _logger;
+    private static readonly SemaphoreSlim FileLock = new(1, 1);
+    private static readonly JsonSerializerOptions JsonOptions = new() { WriteIndented = true };
 
-    public ContactService(PortfolioDbContext context)
+    public ContactService(
+        IWebHostEnvironment environment,
+        IConfiguration configuration,
+        ILogger<ContactService> logger)
     {
-        _context = context;
+        _environment = environment;
+        _configuration = configuration;
+        _logger = logger;
     }
 
-    public async Task<ContactDto> SubmitContactAsync(CreateContactDto dto, string? ipAddress = null)
+    public async Task<string> SubmitAsync(
+        CreateContactDto dto,
+        string? ipAddress,
+        CancellationToken ct = default)
     {
-        var subject = BuildSubject(dto);
-        var message = BuildMessage(dto);
-
-        var contact = new Contact
+        var submission = new
         {
-            Name = dto.Name,
-            Email = dto.Email,
-            Subject = subject,
-            Message = message,
-            IpAddress = ipAddress,
+            id = Guid.NewGuid().ToString("N"),
+            receivedAt = DateTimeOffset.UtcNow,
+            ipAddress,
+            dto.Name,
+            dto.Email,
+            dto.Company,
+            dto.ProjectType,
+            dto.Budget,
+            dto.Timeline,
+            dto.Message,
         };
 
-        _context.Contacts.Add(contact);
-        await _context.SaveChangesAsync();
-        return MapToDto(contact);
+        await PersistAsync(submission, ct);
+        await TrySendEmailAsync(dto, submission.id, ct);
+
+        _logger.LogInformation("Contact submission {Id} stored from {Email}", submission.id, dto.Email);
+        return submission.id;
     }
 
-    public async Task<List<ContactDto>> GetAllContactsAsync()
+    private async Task PersistAsync(object submission, CancellationToken ct)
     {
-        return await _context.Contacts
-            .OrderByDescending(c => c.CreatedAt)
-            .Select(c => MapToDto(c))
-            .ToListAsync();
-    }
+        var storageDir = Path.Combine(_environment.ContentRootPath, "storage");
+        Directory.CreateDirectory(storageDir);
+        var path = Path.Combine(storageDir, "contact-submissions.json");
 
-    public async Task<ContactDto?> GetContactByIdAsync(Guid id)
-    {
-        var contact = await _context.Contacts.FindAsync(id);
-        return contact != null ? MapToDto(contact) : null;
-    }
-
-    public async Task UpdateContactStatusAsync(Guid id, string status)
-    {
-        var contact = await _context.Contacts.FindAsync(id)
-            ?? throw new KeyNotFoundException($"Contact {id} not found");
-
-        if (Enum.TryParse<ContactStatus>(status, true, out var contactStatus))
+        await FileLock.WaitAsync(ct);
+        try
         {
-            contact.Status = contactStatus;
-            contact.UpdatedAt = DateTime.UtcNow;
-            await _context.SaveChangesAsync();
+            var list = new List<JsonElement>();
+            if (File.Exists(path))
+            {
+                await using var readStream = File.OpenRead(path);
+                var existing = await JsonSerializer.DeserializeAsync<List<JsonElement>>(readStream, cancellationToken: ct);
+                if (existing is not null) list = existing;
+            }
+
+            var serialized = JsonSerializer.SerializeToElement(submission, JsonOptions);
+            list.Add(serialized);
+
+            await using var writeStream = File.Create(path);
+            await JsonSerializer.SerializeAsync(writeStream, list, JsonOptions, ct);
+        }
+        finally
+        {
+            FileLock.Release();
         }
     }
 
-    public async Task DeleteContactAsync(Guid id)
+    private async Task TrySendEmailAsync(CreateContactDto dto, string id, CancellationToken ct)
     {
-        var contact = await _context.Contacts.FindAsync(id)
-            ?? throw new KeyNotFoundException($"Contact {id} not found");
-
-        _context.Contacts.Remove(contact);
-        await _context.SaveChangesAsync();
-    }
-
-    private static string BuildSubject(CreateContactDto dto)
-    {
-        if (!string.IsNullOrWhiteSpace(dto.Subject))
+        var smtp = _configuration.GetSection("Smtp");
+        var host = smtp["Host"];
+        if (string.IsNullOrWhiteSpace(host))
         {
-            return dto.Subject.Trim();
+            _logger.LogInformation("SMTP not configured — skipping notification email for {Id}.", id);
+            return;
         }
 
-        var parts = new[]
+        try
         {
-            dto.ProjectType?.Trim(),
-            dto.Company?.Trim(),
+            var message = new MimeMessage();
+            message.From.Add(MailboxAddress.Parse(smtp["From"] ?? "no-reply@peterogba.dev"));
+            message.To.Add(MailboxAddress.Parse(smtp["To"] ?? "peter4tech@gmail.com"));
+            message.ReplyTo.Add(MailboxAddress.Parse(dto.Email));
+            message.Subject = $"New project brief — {dto.Name} ({dto.ProjectType})";
+
+            var body = new StringBuilder()
+                .AppendLine($"Reference: {id}")
+                .AppendLine($"Name:      {dto.Name}")
+                .AppendLine($"Email:     {dto.Email}")
+                .AppendLine($"Company:   {Coalesce(dto.Company)}")
+                .AppendLine($"Type:      {Coalesce(dto.ProjectType)}")
+                .AppendLine($"Budget:    {Coalesce(dto.Budget)}")
+                .AppendLine($"Timeline:  {Coalesce(dto.Timeline)}")
+                .AppendLine()
+                .AppendLine(dto.Message.Trim())
+                .ToString();
+            message.Body = new TextPart("plain") { Text = body };
+
+            using var client = new SmtpClient();
+            var port = int.TryParse(smtp["Port"], out var p) ? p : 587;
+            await client.ConnectAsync(host, port, SecureSocketOptions.StartTlsWhenAvailable, ct);
+            if (!string.IsNullOrWhiteSpace(smtp["Username"]))
+            {
+                await client.AuthenticateAsync(smtp["Username"], smtp["Password"], ct);
+            }
+            await client.SendAsync(message, ct);
+            await client.DisconnectAsync(true, ct);
         }
-        .Where(part => !string.IsNullOrWhiteSpace(part))
-        .ToArray();
-
-        return parts.Length > 0 ? string.Join(" · ", parts) : "Portfolio enquiry";
-    }
-
-    private static string BuildMessage(CreateContactDto dto)
-    {
-        var detailLines = new List<string>
+        catch (Exception ex)
         {
-            $"Company: {FormatDetail(dto.Company)}",
-            $"Project Type: {FormatDetail(dto.ProjectType)}",
-            $"Budget: {FormatDetail(dto.Budget)}",
-            $"Timeline: {FormatDetail(dto.Timeline)}",
-            string.Empty,
-            dto.Message.Trim(),
-        };
-
-        return string.Join(Environment.NewLine, detailLines);
+            // A failed email must not fail the request — the submission is already stored.
+            _logger.LogWarning(ex, "Failed to send notification email for contact {Id}.", id);
+        }
     }
 
-    private static string FormatDetail(string? value)
-    {
-        return string.IsNullOrWhiteSpace(value) ? "Not provided" : value.Trim();
-    }
-
-    private static ContactDto MapToDto(Contact contact)
-    {
-        return new ContactDto
-        {
-            Id = contact.Id,
-            Name = contact.Name,
-            Email = contact.Email,
-            Subject = contact.Subject,
-            Message = contact.Message,
-            Status = contact.Status.ToString(),
-        };
-    }
+    private static string Coalesce(string? value) =>
+        string.IsNullOrWhiteSpace(value) ? "—" : value.Trim();
 }

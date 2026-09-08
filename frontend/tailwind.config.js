@@ -1,45 +1,63 @@
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
+  darkMode: ['selector', '[data-theme="dark"]'],
   theme: {
     extend: {
+      colors: {
+        bg: 'var(--bg)',
+        'bg-subtle': 'var(--bg-subtle)',
+        surface: 'var(--surface)',
+        'surface-raised': 'var(--surface-raised)',
+        'surface-sunken': 'var(--surface-sunken)',
+        border: 'var(--border)',
+        'border-strong': 'var(--border-strong)',
+        text: 'var(--text)',
+        'text-muted': 'var(--text-muted)',
+        'text-faint': 'var(--text-faint)',
+        accent: 'var(--accent)',
+        'accent-hover': 'var(--accent-hover)',
+        'accent-contrast': 'var(--accent-contrast)',
+        'accent-surface': 'var(--accent-surface)',
+        'accent-border': 'var(--accent-border)',
+        positive: 'var(--positive)',
+        negative: 'var(--negative)',
+      },
       fontFamily: {
-        display: ['Syne', 'sans-serif'],
-        sans: ['Manrope', 'sans-serif'],
-        mono: ['IBM Plex Mono', 'monospace'],
+        sans: ['Inter', 'system-ui', 'sans-serif'],
+        display: ['Sora', 'Inter', 'sans-serif'],
+        mono: ['"IBM Plex Mono"', 'ui-monospace', 'monospace'],
       },
       fontSize: {
-        'xs': ['0.75rem', { lineHeight: '1rem' }],
-        'sm': ['0.875rem', { lineHeight: '1.25rem' }],
-        'base': ['1rem', { lineHeight: '1.5rem' }],
-        'lg': ['1.125rem', { lineHeight: '1.75rem' }],
-        'xl': ['1.25rem', { lineHeight: '1.75rem' }],
-        '2xl': ['1.5rem', { lineHeight: '2rem' }],
-        '3xl': ['1.875rem', { lineHeight: '2.25rem' }],
-        '4xl': ['2.25rem', { lineHeight: '2.5rem' }],
-        '5xl': ['3rem', { lineHeight: '1' }],
-        '6xl': ['3.75rem', { lineHeight: '1' }],
+        'display-lg': ['clamp(1.95rem, 3.4vw, 2.9rem)', { lineHeight: '1.1', letterSpacing: '-0.02em' }],
+        'display-md': ['clamp(1.55rem, 2.6vw, 2.15rem)', { lineHeight: '1.15', letterSpacing: '-0.018em' }],
+        'display-sm': ['clamp(1.3rem, 1.9vw, 1.6rem)', { lineHeight: '1.22', letterSpacing: '-0.012em' }],
+        'kicker': ['0.7rem', { lineHeight: '1', letterSpacing: '0.18em' }],
+      },
+      maxWidth: {
+        content: '68rem',
+        prose: '42rem',
       },
       boxShadow: {
-        paper: '0 24px 60px rgba(16, 32, 51, 0.08)',
-        hover: '0 28px 72px rgba(16, 32, 51, 0.14)',
-        glow: '0 0 20px rgba(0, 217, 255, 0.5)',
-        'glow-lg': '0 0 40px rgba(123, 44, 191, 0.4)',
+        sm: 'var(--shadow-sm)',
+        md: 'var(--shadow-md)',
+        lg: 'var(--shadow-lg)',
       },
-      animation: {
-        'float': 'float 6s ease-in-out infinite',
-        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-        'shimmer': 'shimmer 2.5s linear infinite',
+      borderRadius: {
+        xl: '0.875rem',
+        '2xl': '1.25rem',
+      },
+      transitionTimingFunction: {
+        'out-expo': 'cubic-bezier(0.16, 1, 0.3, 1)',
       },
       keyframes: {
-        float: {
-          '0%, 100%': { transform: 'translateY(0px)' },
-          '50%': { transform: 'translateY(-20px)' },
+        'fade-up': {
+          from: { opacity: '0', transform: 'translateY(12px)' },
+          to: { opacity: '1', transform: 'translateY(0)' },
         },
-        shimmer: {
-          '0%': { backgroundPosition: '-1000px 0' },
-          '100%': { backgroundPosition: '1000px 0' },
-        },
+      },
+      animation: {
+        'fade-up': 'fade-up 0.5s cubic-bezier(0.16, 1, 0.3, 1) both',
       },
     },
   },

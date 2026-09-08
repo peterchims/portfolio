@@ -3,13 +3,51 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Peter Ogba — Full-Stack Engineer</title>
     <meta
       name="description"
-      content="Peter Ogba is a Lagos-based full-stack engineer building polished product interfaces and resilient backend systems."
+      content="Peter Ogba is a Lagos-based full-stack engineer building clear product interfaces and dependable backend systems."
     />
-    <meta name="theme-color" content="#102033" />
+    <link rel="canonical" href="https://peterogba.dev/" />
+    <meta name="theme-color" content="#fbfbfa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d0d0c" media="(prefers-color-scheme: dark)" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <title>Peter Ogba | Full-Stack Engineer</title>
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Peter Ogba — Full-Stack Engineer" />
+    <meta
+      property="og:description"
+      content="Clear product interfaces and dependable backend systems, built with delivery discipline."
+    />
+    <meta property="og:url" content="https://peterogba.dev/" />
+    <meta property="og:image" content="https://peterogba.dev/og.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
+    />
+
+    <script>
+      // Anti-FOUC: resolve the theme before first paint.
+      (function () {
+        try {
+          var stored = localStorage.getItem('theme');
+          var theme =
+            stored === 'light' || stored === 'dark'
+              ? stored
+              : window.matchMedia('(prefers-color-scheme: dark)').matches
+                ? 'dark'
+                : 'light';
+          document.documentElement.setAttribute('data-theme', theme);
+        } catch (e) {
+          document.documentElement.setAttribute('data-theme', 'light');
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

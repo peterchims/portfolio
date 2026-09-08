@@ -11,6 +11,12 @@ node_modules
 frontend/dist
 *.local
 
+# .NET build output
+backend/bin
+backend/obj
+[Bb]in/
+[Oo]bj/
+
 # Runtime data
 backend/storage/*.json
 !backend/storage/.gitkeep

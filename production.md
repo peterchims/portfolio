@@ -1,54 +1,55 @@
 # Production Guide
 
-## Runtime Model
+## Runtime model
 
-Production runs through `backend/index.js`.
-The backend serves API routes and serves the built frontend from `frontend/dist/`.
+Two independent pieces:
 
-## Directory Layout
+1. **Static frontend** — `npm run build` emits `frontend/dist/` (plain static
+   files). Serve from any static host / CDN, or the bundled nginx image.
+2. **Contact API** — a small ASP.NET Core 8 service. Only the contact form
+   depends on it; the rest of the site is static and always renders.
 
-- `frontend/`: Vite application and public assets
-- `backend/`: HTTP server, validation, storage, and API contracts
+They only need to share an origin so the SPA can call `/api/*`. The nginx image
+in `frontend/Dockerfile` does this by proxying `/api/` to the `api` container.
 
-## Environment Variables
+## Environment
 
-### Backend
+### Backend (`backend/appsettings.json` or env vars)
 
-- `PORT`: HTTP port, default `8787`
-- `APP_ORIGIN`: allowed origin for CORS responses
-- `CONTACT_RATE_LIMIT_WINDOW_MS`: contact rate-limit window in milliseconds
-- `CONTACT_RATE_LIMIT_MAX`: max contact requests allowed per window
-- `INTERACTION_RATE_LIMIT_WINDOW_MS`: analytics rate-limit window in milliseconds
-- `INTERACTION_RATE_LIMIT_MAX`: max interaction requests allowed per window
-- `FRONTEND_DIST_DIR`: optional absolute path override for built frontend assets
+- `ASPNETCORE_URLS` — bind address, e.g. `http://+:5000`
+- `Cors__AllowedOrigins__0` — allowed browser origin(s)
+- `Smtp__Host` / `Port` / `Username` / `Password` / `From` / `To` — contact
+  notification email. Blank `Host` = submissions are stored and logged only.
 
-### Frontend
+Submissions persist to `backend/storage/contact-submissions.json` (mount a
+volume in containers — the compose file does).
 
-- `VITE_API_BASE_URL`: optional API base URL override
-- `VITE_API_PROXY_TARGET`: dev proxy target, default `http://localhost:8787`
+### Frontend (build-time)
 
-## Local Run
+- `VITE_API_BASE_URL` — leave blank when the API is same-origin (nginx proxy);
+  set to the API URL otherwise.
 
-1. `npm install`
-2. `npm run dev:api`
-3. `npm run dev:web`
-4. Open `http://localhost:5173`
+## Local production run
 
-## Production Run
+```bash
+npm install
+npm run build
+npm run preview            # static preview on http://localhost:4173
+dotnet run --project backend -c Release   # API on http://localhost:5000
+```
 
-1. `npm install`
-2. `npm run build`
-3. `npm run start`
-4. Open `http://localhost:8787`
+## Docker
 
-## Docker Run
+```bash
+docker compose up --build -d
+# Frontend  http://localhost:3000
+# Health    http://localhost:3000/api/health
+```
 
-1. `docker compose up --build -d`
-2. Open `http://localhost:3000`
-3. Check `http://localhost:3000/api/health`
+## Checklist before shipping
 
-## Operational Notes
-
-- Contact submissions persist to `backend/storage/contact-submissions.json`
-- Interaction events persist to `backend/storage/interaction-events.json`
-- Git hooks enforce staged-file linting before commit and full verification before push
+- `npm run verify` passes (lint + typecheck + build + test)
+- Lighthouse ≥ 95 (performance / a11y / best-practices / SEO), both themes
+- `Cors:AllowedOrigins` set to the real domain
+- SMTP configured (or accept log-only submissions)
+- `public/sitemap.xml`, `public/robots.txt`, and `og.png` reflect the live domain
