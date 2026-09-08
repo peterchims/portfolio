@@ -5,7 +5,7 @@ import { X } from 'lucide-react';
 import { navItems } from '../../content/nav';
 import { hero } from '../../content/site';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
-import { buttonClass } from '../ui/Button';
+import { buttonClass } from '../ui/button-classes';
 
 interface MobileNavProps {
   open: boolean;

@@ -1,31 +1,10 @@
 import type { ButtonHTMLAttributes, ReactNode } from 'react';
 import { Link } from 'react-router-dom';
-import { cn } from '../../lib/cn';
-
-type Variant = 'primary' | 'secondary' | 'ghost';
-type Size = 'md' | 'lg';
-
-const base =
-  'inline-flex items-center justify-center gap-2 rounded-full font-medium transition-colors duration-150 disabled:cursor-not-allowed disabled:opacity-60';
-
-const variants: Record<Variant, string> = {
-  primary: 'bg-accent text-accent-contrast hover:bg-accent-hover',
-  secondary: 'border border-border-strong text-text hover:bg-bg-subtle',
-  ghost: 'text-text-muted hover:text-text hover:bg-bg-subtle',
-};
-
-const sizes: Record<Size, string> = {
-  md: 'h-10 px-4 text-sm',
-  lg: 'h-12 px-6 text-[0.95rem]',
-};
-
-export function buttonClass(variant: Variant = 'primary', size: Size = 'md', className?: string) {
-  return cn(base, variants[variant], sizes[size], className);
-}
+import { buttonClass, type ButtonSize, type ButtonVariant } from './button-classes';
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: Variant;
-  size?: Size;
+  variant?: ButtonVariant;
+  size?: ButtonSize;
   children: ReactNode;
 }
 
@@ -38,8 +17,8 @@ export function Button({ variant, size, className, children, ...rest }: ButtonPr
 }
 
 interface LinkButtonProps {
-  variant?: Variant;
-  size?: Size;
+  variant?: ButtonVariant;
+  size?: ButtonSize;
   className?: string;
   children: ReactNode;
   /** Internal route. */

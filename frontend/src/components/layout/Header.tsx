@@ -5,7 +5,7 @@ import { navItems } from '../../content/nav';
 import { hero } from '../../content/site';
 import { useScrollSpy } from '../../hooks/useScrollSpy';
 import { cn } from '../../lib/cn';
-import { buttonClass } from '../ui/Button';
+import { buttonClass } from '../ui/button-classes';
 import { ThemeToggle } from '../ui/ThemeToggle';
 import { Brand } from './Brand';
 import { MobileNav } from './MobileNav';

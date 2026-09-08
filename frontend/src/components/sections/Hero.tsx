@@ -4,7 +4,7 @@ import { profile } from '../../content/profile';
 import { hero } from '../../content/site';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
 import { cn } from '../../lib/cn';
-import { buttonClass } from '../ui/Button';
+import { buttonClass } from '../ui/button-classes';
 import { Container } from '../ui/Container';
 import { motion } from 'framer-motion';
 
