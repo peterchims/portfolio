@@ -2,43 +2,51 @@ import { services } from '../../content/services';
 import { sectionIntros } from '../../content/site';
 import { Reveal, RevealItem } from '../ui/Reveal';
 import { Section, SectionHeader } from '../ui/Section';
-import { SpotlightCard } from '../ui/SpotlightCard';
 
-const HUES = [200, 152, 42];
+const HUES = [210, 268, 152, 42];
 
 export function Services() {
   return (
     <Section id="services" tone="subtle">
       <SectionHeader {...sectionIntros.services} />
 
-      <Reveal as="div" stagger className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-        {services.map((service, index) => (
-          <RevealItem as="div" key={service.title}>
-            <SpotlightCard hue={HUES[index % HUES.length]} className="h-full p-6">
-              <span
-                className="inline-flex h-9 items-center rounded-full border border-border px-3 font-mono text-xs text-text-faint"
-                style={{ color: `hsl(${HUES[index % HUES.length]} 55% 55%)` }}
-              >
-                {String(index + 1).padStart(2, '0')}
-              </span>
-              <h3 className="mt-4 text-base font-semibold text-text">{service.title}</h3>
-              <p className="mt-2.5 text-sm leading-relaxed text-text-muted">
-                {service.description}
-              </p>
-              <ul className="mt-5 space-y-2.5">
-                {service.bullets.map((bullet) => (
-                  <li key={bullet} className="relative pl-5 text-sm text-text-muted">
-                    <span
-                      className="absolute left-0 top-[0.55rem] h-1 w-1 rounded-full"
-                      style={{ background: `hsl(${HUES[index % HUES.length]} 60% 55%)` }}
-                    />
-                    {bullet}
-                  </li>
-                ))}
-              </ul>
-            </SpotlightCard>
-          </RevealItem>
-        ))}
+      <Reveal as="ol" stagger className="mt-12 border-t border-border">
+        {services.map((service, index) => {
+          const hue = HUES[index % HUES.length];
+          return (
+            <RevealItem as="li" key={service.title}>
+              <div className="group grid gap-x-10 gap-y-4 border-b border-border py-8 transition-colors duration-300 hover:bg-surface/60 md:grid-cols-[8rem_1fr] md:py-10">
+                <div className="flex items-start gap-4 md:flex-col md:gap-3">
+                  <span
+                    className="font-mono text-sm tabular-nums text-text-faint transition-colors duration-300 group-hover:text-[color:var(--hue)]"
+                    style={{ ['--hue' as string]: `hsl(${hue} 60% 55%)` }}
+                  >
+                    {String(index + 1).padStart(2, '0')}
+                  </span>
+                  <h3 className="text-base font-semibold text-text md:text-[1.05rem]">
+                    {service.title}
+                  </h3>
+                </div>
+
+                <div className="md:pr-6">
+                  <p className="max-w-xl text-sm leading-relaxed text-text-muted">
+                    {service.description}
+                  </p>
+                  <ul className="mt-4 flex flex-wrap gap-2">
+                    {service.tags.map((tag) => (
+                      <li
+                        key={tag}
+                        className="rounded-full border border-border bg-bg px-3 py-1 font-mono text-[0.7rem] text-text-muted transition-colors group-hover:border-border-strong"
+                      >
+                        {tag}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </RevealItem>
+          );
+        })}
       </Reveal>
     </Section>
   );

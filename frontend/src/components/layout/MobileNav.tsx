@@ -58,7 +58,7 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
     <AnimatePresence>
       {open ? (
         <motion.div
-          className="fixed inset-0 z-50 md:hidden"
+          className="fixed inset-0 z-50 lg:hidden"
           initial={reduced ? undefined : { opacity: 0 }}
           animate={reduced ? undefined : { opacity: 1 }}
           exit={reduced ? undefined : { opacity: 0 }}
