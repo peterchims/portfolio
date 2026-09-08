@@ -42,11 +42,6 @@ export interface ProcessStep {
   description: string;
 }
 
-export interface StackGroup {
-  title: string;
-  items: string[];
-}
-
 export interface CaseStudy {
   problem: string;
   approach: string;

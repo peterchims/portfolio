@@ -1,61 +1,40 @@
-import { processSteps, stackGroups } from '../../content/process';
+import { processSteps } from '../../content/process';
 import { sectionIntros } from '../../content/site';
-import { Chip } from '../ui/Chip';
-import { Marquee } from '../ui/Marquee';
-import { Reveal } from '../ui/Reveal';
+import { Reveal, RevealItem } from '../ui/Reveal';
 import { Section, SectionHeader } from '../ui/Section';
-
-const allTech = Array.from(new Set(stackGroups.flatMap((group) => group.items)));
 
 export function Process() {
   return (
     <Section id="process">
-      <SectionHeader {...sectionIntros.process} />
+      <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16">
+        <div className="lg:sticky lg:top-24 lg:self-start">
+          <SectionHeader {...sectionIntros.process} />
+          <p className="mt-6 font-mono text-xs text-text-faint">
+            {processSteps.length} steps · every project
+          </p>
+        </div>
 
-      <div className="mt-10 grid gap-12 lg:grid-cols-[1.05fr_0.95fr]">
-        <ol className="relative">
+        <Reveal as="ol" stagger className="relative">
           <span
             aria-hidden
-            className="absolute bottom-2 left-[0.6rem] top-2 w-px bg-border"
+            className="absolute bottom-6 left-[1.15rem] top-6 w-px bg-gradient-to-b from-border via-border to-transparent"
           />
           {processSteps.map((step, index) => (
-            <Reveal as="li" key={step.title} delay={index} className="relative flex gap-5 pb-8 last:pb-0">
-              <span className="relative z-[1] mt-0.5 flex h-[1.2rem] w-[1.2rem] shrink-0 items-center justify-center rounded-full border border-border-strong bg-bg text-[0.6rem] font-semibold text-text-faint">
-                {index + 1}
-              </span>
-              <div>
-                <h3 className="text-base font-semibold text-text">{step.title}</h3>
-                <p className="mt-1.5 text-sm leading-relaxed text-text-muted">
-                  {step.description}
-                </p>
+            <RevealItem as="li" key={step.title}>
+              <div className="group relative flex gap-6 pb-10 last:pb-0">
+                <span className="relative z-[1] flex h-[2.4rem] w-[2.4rem] shrink-0 items-center justify-center rounded-full border border-border bg-bg font-mono text-xs text-text-muted transition-colors duration-300 group-hover:border-accent group-hover:text-accent">
+                  {String(index + 1).padStart(2, '0')}
+                </span>
+                <div className="pt-1.5">
+                  <h3 className="text-[0.95rem] font-semibold text-text">{step.title}</h3>
+                  <p className="mt-2 max-w-md text-sm leading-relaxed text-text-muted">
+                    {step.description}
+                  </p>
+                </div>
               </div>
-            </Reveal>
+            </RevealItem>
           ))}
-        </ol>
-
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
-          {stackGroups.map((group, index) => (
-            <Reveal
-              key={group.title}
-              delay={index}
-              className="rounded-2xl border border-border bg-bg-subtle p-5"
-            >
-              <h3 className="text-sm font-semibold text-text">{group.title}</h3>
-              <div className="mt-3 flex flex-wrap gap-2">
-                {group.items.map((item) => (
-                  <Chip key={item}>{item}</Chip>
-                ))}
-              </div>
-            </Reveal>
-          ))}
-        </div>
-      </div>
-
-      <div className="mt-12 border-t border-border pt-8">
-        <p className="mb-4 text-center font-mono text-xs uppercase tracking-[0.16em] text-text-faint">
-          Tools in rotation
-        </p>
-        <Marquee items={allTech.map((tech) => <span key={tech}>{tech}</span>)} />
+        </Reveal>
       </div>
     </Section>
   );
