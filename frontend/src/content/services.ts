@@ -2,33 +2,49 @@ import type { Service } from '../types/portfolio';
 
 export const services: Service[] = [
   {
-    title: 'Frontend systems',
+    title: 'Product frontends',
     description:
-      'Responsive interfaces with clear hierarchy, considered pacing, and interaction design that serves the product instead of decorating it.',
-    bullets: [
-      'Design systems and reusable UI foundations',
-      'React and TypeScript architecture',
-      'Mobile-first execution with performance discipline',
+      'Typed, component-driven UIs in Next.js and Angular that stay maintainable as they scale — with performance and accessibility treated as a baseline, not an afterthought.',
+    tags: [
+      'Next.js · React · Angular',
+      'Design systems',
+      'Code-splitting & lazy loading',
+      'Core Web Vitals',
+      'WCAG / a11y',
     ],
   },
   {
-    title: 'Backend delivery',
+    title: 'Resilient APIs & services',
     description:
-      'APIs, validation, and runtime safeguards that turn a polished frontend into a dependable application.',
-    bullets: [
-      'REST endpoints and contract shaping',
-      'Validation, persistence, and request tracing',
-      'Deployment-ready server workflows',
+      'Services that communicate cleanly, with clear boundaries between the synchronous request path and the async work behind it. Go and Node.js, REST, GraphQL and WebSockets.',
+    tags: [
+      'Go · Node.js / Express',
+      'REST · GraphQL · WebSockets',
+      'Validation & request tracing',
+      'Clear service boundaries',
     ],
   },
   {
-    title: 'Launch discipline',
+    title: 'Infrastructure that holds up',
     description:
-      'I do not stop at UI polish. I wire the content, deployment path, and runtime behaviour needed to ship cleanly and evolve safely.',
-    bullets: [
-      'Production build flow and environment handling',
-      'Content modelling for maintainable updates',
-      'Clear handoff documentation and cleanup',
+      'The parts most people skip: caching, rate limiting, and background workers so nothing that should not block a response ever does — and the system degrades gracefully when something fails.',
+    tags: [
+      'Redis — caching & rate limiting',
+      'Background workers / job queues',
+      'PostgreSQL · MongoDB',
+      'Docker',
+      'Graceful degradation',
+    ],
+  },
+  {
+    title: 'Launch & reliability',
+    description:
+      'Solution-first delivery: scope from the user outcome, wire the build and deployment path, and leave behind documentation instead of tribal knowledge.',
+    tags: [
+      'CI/CD & production build flow',
+      'Observability of failure modes',
+      'Testing — Jest · Cypress',
+      'Handoff documentation',
     ],
   },
 ];

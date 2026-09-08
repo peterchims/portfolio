@@ -25,19 +25,23 @@ export const processSteps: ProcessStep[] = [
 
 export const stackGroups: StackGroup[] = [
   {
-    title: 'Interface',
-    items: ['React', 'TypeScript', 'Tailwind CSS', 'Vite', 'Framer Motion'],
+    title: 'Languages',
+    items: ['TypeScript', 'JavaScript (ES6+)', 'Go'],
+  },
+  {
+    title: 'Frontend',
+    items: ['Next.js', 'React', 'Angular', 'Tailwind CSS', 'Sass'],
   },
   {
     title: 'Backend',
-    items: ['Node.js', '.NET', 'REST APIs', 'Validation', 'Request tracing'],
+    items: ['Node.js', 'Express', 'Go services', 'REST', 'GraphQL', 'WebSockets'],
   },
   {
-    title: 'Data & ops',
-    items: ['PostgreSQL', 'MongoDB', 'Docker', 'Health checks', 'CI workflows'],
+    title: 'Data & infra',
+    items: ['PostgreSQL', 'MongoDB', 'Redis', 'Docker', 'Job queues / workers'],
   },
   {
-    title: 'Delivery',
-    items: ['Git workflows', 'Refactors', 'Documentation', 'Production cleanup', 'Launch support'],
+    title: 'Tooling & testing',
+    items: ['Vite', 'Webpack', 'Jest', 'Cypress', 'Git'],
   },
 ];

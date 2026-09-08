@@ -3,17 +3,18 @@ import type { Profile } from '../types/portfolio';
 export const profile: Profile = {
   name: 'Peter Ogba',
   role: 'Full-Stack Engineer',
-  headline: 'Product interfaces that read clearly, backend systems that hold up.',
+  headline: 'I start from the problem, then ship the whole system — frontend, API, and the infrastructure under it.',
   summary:
-    'Lagos-based engineer shipping React, TypeScript, and Node.js products for teams that want sharp user experience and disciplined delivery in the same lane.',
+    'Lagos-based full-stack engineer. Typed frontends in Next.js and Angular, resilient APIs in Go and Node.js, and the caching, queues and workers that keep them fast under real load.',
   location: 'Lagos, Nigeria',
   email: 'peter4tech@gmail.com',
   phone: '+234 808 639 2101',
-  availability: 'Open to freelance builds, contract delivery, and product teams that care about quality.',
+  availability: 'Open to full-stack contracts, product teams, and builds that need someone across the whole stack.',
   resumeUrl: '/peter-ogba-resume.pdf',
   // Add a portrait at frontend/public/images/peter-ogba.jpg and set this to
   // '/images/peter-ogba.jpg'. Until then the About section renders a monogram.
   photoUrl: null,
+  githubUser: 'peterchims',
   socials: [
     { label: 'GitHub', href: 'https://github.com/peterchims', handle: '@peterchims' },
     {

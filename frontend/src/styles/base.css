@@ -29,8 +29,8 @@
     font-family:
       'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica,
       Arial, sans-serif;
-    font-size: 0.9375rem;
-    line-height: 1.62;
+    font-size: 0.875rem;
+    line-height: 1.6;
     font-feature-settings: 'cv11', 'ss01';
     transition:
       background-color 0.25s ease,
