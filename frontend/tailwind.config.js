@@ -29,9 +29,9 @@ export default {
         mono: ['"IBM Plex Mono"', 'ui-monospace', 'monospace'],
       },
       fontSize: {
-        'display-lg': ['clamp(1.95rem, 3.4vw, 2.9rem)', { lineHeight: '1.1', letterSpacing: '-0.02em' }],
-        'display-md': ['clamp(1.55rem, 2.6vw, 2.15rem)', { lineHeight: '1.15', letterSpacing: '-0.018em' }],
-        'display-sm': ['clamp(1.3rem, 1.9vw, 1.6rem)', { lineHeight: '1.22', letterSpacing: '-0.012em' }],
+        'display-lg': ['clamp(1.65rem, 3vw, 2.55rem)', { lineHeight: '1.12', letterSpacing: '-0.02em' }],
+        'display-md': ['clamp(1.45rem, 2.4vw, 1.95rem)', { lineHeight: '1.18', letterSpacing: '-0.016em' }],
+        'display-sm': ['clamp(1.2rem, 1.7vw, 1.5rem)', { lineHeight: '1.25', letterSpacing: '-0.01em' }],
         'kicker': ['0.7rem', { lineHeight: '1', letterSpacing: '0.18em' }],
       },
       maxWidth: {

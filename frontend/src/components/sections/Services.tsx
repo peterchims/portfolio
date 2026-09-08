@@ -11,7 +11,7 @@ export function Services() {
     <Section id="services" tone="subtle">
       <SectionHeader {...sectionIntros.services} />
 
-      <Reveal as="div" stagger className="mt-10 grid gap-5 md:grid-cols-3">
+      <Reveal as="div" stagger className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {services.map((service, index) => (
           <RevealItem as="div" key={service.title}>
             <SpotlightCard hue={HUES[index % HUES.length]} className="h-full p-6">

@@ -44,7 +44,7 @@ export function Hero() {
   return (
     <section
       id="home"
-      className="relative isolate overflow-hidden border-b border-border py-20 sm:py-28"
+      className="relative isolate overflow-hidden border-b border-border py-14 sm:py-20 lg:py-24"
     >
       <AuroraBackground />
 
@@ -79,7 +79,7 @@ export function Hero() {
               initial={reduced ? false : { opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.35, ease: EASE }}
-              className="mt-5 max-w-lg text-base text-text-muted"
+              className="mt-5 max-w-lg text-sm leading-relaxed text-text-muted sm:text-base"
             >
               {profile.summary}
             </motion.p>
@@ -88,18 +88,21 @@ export function Hero() {
               initial={reduced ? false : { opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.44, ease: EASE }}
-              className="mt-7 flex flex-wrap items-center gap-3"
+              className="mt-7 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center"
             >
-              <Magnetic>
-                <Link to={`/${hero.primaryCta.href}`} className={buttonClass('primary', 'lg')}>
+              <Magnetic className="max-sm:w-full">
+                <Link
+                  to={`/${hero.primaryCta.href}`}
+                  className={buttonClass('primary', 'lg', 'max-sm:w-full')}
+                >
                   {hero.primaryCta.label}
                   <ArrowRight size={17} />
                 </Link>
               </Magnetic>
-              <Magnetic strength={0.25}>
+              <Magnetic strength={0.25} className="max-sm:w-full">
                 <a
                   href={hero.secondaryCta.href}
-                  className={buttonClass('secondary', 'lg')}
+                  className={buttonClass('secondary', 'lg', 'max-sm:w-full')}
                   target="_blank"
                   rel="noreferrer"
                 >
