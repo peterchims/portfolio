@@ -1,0 +1,144 @@
+/* =========================================================================
+   Theme tokens
+   Tier 1: primitives (raw scales, never used directly in components)
+   Tier 2: semantic tokens (what components consume)
+   Light is the base on :root. Dark is applied when:
+     - the OS prefers dark AND the user has not forced light, OR
+     - the user has explicitly chosen dark ([data-theme="dark"]).
+   A color is never defined only inside a media query.
+   ========================================================================= */
+
+:root {
+  /* ---- Tier 1: primitives ------------------------------------------------ */
+  --grey-0: #ffffff;
+  --grey-25: #fbfbfa;
+  --grey-50: #f4f4f3;
+  --grey-100: #ececeb;
+  --grey-200: #dededc;
+  --grey-300: #c4c4c1;
+  --grey-400: #9a9a96;
+  --grey-500: #71716d;
+  --grey-600: #55554f; /* Add contrast for muted text on light bg */
+  --grey-700: #3a3a37;
+  --grey-800: #262624;
+  --grey-850: #1c1c1a;
+  --grey-900: #141413;
+  --grey-950: #0d0d0c;
+  --grey-1000: #080807;
+
+  --accent-300: #a9bcff;
+  --accent-400: #7d97ff;
+  --accent-500: #4f6bf5; /* brand accent */
+  --accent-600: #3b53d6;
+  --accent-700: #2f42ab;
+
+  --positive-500: #2f855a;
+  --positive-400: #48bb78;
+  --negative-500: #c53030;
+  --negative-400: #f56565;
+
+  /* ---- Tier 2: semantic tokens (LIGHT) --------------------------------- */
+  --bg: var(--grey-25);
+  --bg-subtle: var(--grey-50);
+  --surface: var(--grey-0);
+  --surface-raised: var(--grey-0);
+  --surface-sunken: var(--grey-50);
+
+  --border: var(--grey-200);
+  --border-strong: var(--grey-300);
+
+  --text: var(--grey-900);
+  --text-muted: var(--grey-600);
+  --text-faint: var(--grey-500);
+  --text-on-accent: #ffffff;
+
+  --accent: var(--accent-500);
+  --accent-hover: var(--accent-600);
+  --accent-contrast: #ffffff;
+  --accent-surface: rgba(79, 107, 245, 0.08);
+  --accent-border: rgba(79, 107, 245, 0.28);
+
+  --positive: var(--positive-500);
+  --negative: var(--negative-500);
+
+  --focus-ring: 0 0 0 2px var(--bg), 0 0 0 4px var(--accent);
+
+  --shadow-sm: 0 1px 2px rgba(15, 15, 14, 0.06), 0 1px 3px rgba(15, 15, 14, 0.05);
+  --shadow-md: 0 4px 12px rgba(15, 15, 14, 0.08), 0 2px 4px rgba(15, 15, 14, 0.04);
+  --shadow-lg: 0 24px 48px -12px rgba(15, 15, 14, 0.14);
+
+  --selection-bg: rgba(79, 107, 245, 0.18);
+
+  color-scheme: light;
+}
+
+/* ---- Tier 2: semantic tokens (DARK) ----------------------------------- */
+/* System preference (only when the user has not forced a theme) */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --bg: var(--grey-950);
+    --bg-subtle: var(--grey-900);
+    --surface: var(--grey-900);
+    --surface-raised: var(--grey-850);
+    --surface-sunken: var(--grey-1000);
+
+    --border: rgba(255, 255, 255, 0.09);
+    --border-strong: rgba(255, 255, 255, 0.16);
+
+    --text: var(--grey-50);
+    --text-muted: #a6a6a1;
+    --text-faint: #75756f;
+    --text-on-accent: #ffffff;
+
+    --accent: var(--accent-400);
+    --accent-hover: var(--accent-300);
+    --accent-contrast: #0d0d0c;
+    --accent-surface: rgba(125, 151, 255, 0.12);
+    --accent-border: rgba(125, 151, 255, 0.28);
+
+    --positive: var(--positive-400);
+    --negative: var(--negative-400);
+
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+    --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.45);
+    --shadow-lg: 0 24px 52px -12px rgba(0, 0, 0, 0.6);
+
+    --selection-bg: rgba(125, 151, 255, 0.28);
+
+    color-scheme: dark;
+  }
+}
+
+/* Explicit user choice always wins in both directions */
+:root[data-theme='dark'] {
+  --bg: var(--grey-950);
+  --bg-subtle: var(--grey-900);
+  --surface: var(--grey-900);
+  --surface-raised: var(--grey-850);
+  --surface-sunken: var(--grey-1000);
+
+  --border: rgba(255, 255, 255, 0.09);
+  --border-strong: rgba(255, 255, 255, 0.16);
+
+  --text: var(--grey-50);
+  --text-muted: #a6a6a1;
+  --text-faint: #75756f;
+  --text-on-accent: #ffffff;
+
+  --accent: var(--accent-400);
+  --accent-hover: var(--accent-300);
+  --accent-contrast: #0d0d0c;
+  --accent-surface: rgba(125, 151, 255, 0.12);
+  --accent-border: rgba(125, 151, 255, 0.28);
+
+  --positive: var(--positive-400);
+  --negative: var(--negative-400);
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 24px 52px -12px rgba(0, 0, 0, 0.6);
+
+  --selection-bg: rgba(125, 151, 255, 0.28);
+
+  color-scheme: dark;
+}
