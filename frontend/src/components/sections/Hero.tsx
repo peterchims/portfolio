@@ -22,7 +22,14 @@ export function Hero() {
         };
 
   return (
-    <section id="home" className="border-b border-border py-24 sm:py-32">
+    <section
+      id="home"
+      className="relative isolate overflow-hidden border-b border-border py-24 sm:py-32"
+    >
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 -top-32 -z-10 h-72 bg-[radial-gradient(55%_100%_at_50%_0%,var(--accent-surface),transparent_72%)]"
+      />
       <Container>
         <motion.p
           {...anim(0)}
