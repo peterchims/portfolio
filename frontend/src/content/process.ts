@@ -1,43 +1,24 @@
-import type { ProcessStep, StackGroup } from '../types/portfolio';
+import type { ProcessStep } from '../types/portfolio';
 
 export const processSteps: ProcessStep[] = [
   {
-    title: 'Clarify the brief',
+    title: 'Scope from the outcome',
     description:
-      'Translate vague requirements into concrete screens, contracts, and delivery priorities before writing implementation code.',
+      'Start at the problem and the user outcome — not the stack. Translate vague requirements into concrete screens, contracts, and delivery priorities.',
   },
   {
-    title: 'Shape the system',
+    title: 'Draw the boundaries',
     description:
-      'Define the content model, API boundaries, runtime safeguards, and component structure early so the work scales cleanly.',
+      'Define the data model, the API surface, and where the synchronous request path ends and async work begins. Redis and queues get planned in, not bolted on.',
   },
   {
-    title: 'Ship with intent',
+    title: 'Build both sides',
     description:
-      'Build the interface, wire the backend, and remove dead weight so the result feels coherent instead of patched together.',
+      'Typed frontend, resilient API, and the workers behind them — shipped together so the seams are tested, not assumed.',
   },
   {
-    title: 'Prepare for production',
+    title: 'Harden for real load',
     description:
-      'Verify build paths, storage behaviour, and deployment instructions so the work is ready to run, not just ready to demo.',
-  },
-];
-
-export const stackGroups: StackGroup[] = [
-  {
-    title: 'Interface',
-    items: ['React', 'TypeScript', 'Tailwind CSS', 'Vite', 'Framer Motion'],
-  },
-  {
-    title: 'Backend',
-    items: ['Node.js', '.NET', 'REST APIs', 'Validation', 'Request tracing'],
-  },
-  {
-    title: 'Data & ops',
-    items: ['PostgreSQL', 'MongoDB', 'Docker', 'Health checks', 'CI workflows'],
-  },
-  {
-    title: 'Delivery',
-    items: ['Git workflows', 'Refactors', 'Documentation', 'Production cleanup', 'Launch support'],
+      'Caching, rate limiting, graceful degradation, Core Web Vitals, and the deployment path. Leave documentation instead of tribal knowledge.',
   },
 ];

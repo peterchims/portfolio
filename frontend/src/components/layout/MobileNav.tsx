@@ -58,7 +58,7 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
     <AnimatePresence>
       {open ? (
         <motion.div
-          className="fixed inset-0 z-50 md:hidden"
+          className="fixed inset-0 z-50 lg:hidden"
           initial={reduced ? undefined : { opacity: 0 }}
           animate={reduced ? undefined : { opacity: 1 }}
           exit={reduced ? undefined : { opacity: 0 }}
@@ -98,8 +98,9 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
                   key={item.id}
                   to={`/#${item.id}`}
                   onClick={onClose}
-                  className="rounded-lg px-3 py-2.5 text-base font-medium text-text-muted hover:bg-bg-subtle hover:text-text"
+                  className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-base font-medium text-text-muted hover:bg-bg-subtle hover:text-text"
                 >
+                  <item.Icon size={16} strokeWidth={2} className="text-text-faint" />
                   {item.label}
                 </Link>
               ))}

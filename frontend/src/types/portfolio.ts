@@ -1,3 +1,5 @@
+import type { LucideIcon } from 'lucide-react';
+
 export interface SocialLink {
   label: string;
   href: string;
@@ -16,28 +18,28 @@ export interface Profile {
   resumeUrl: string;
   /** Portrait for the About section. Drop a file in /public/images and point here. */
   photoUrl: string | null;
+  /** GitHub username, used for the stats widgets. */
+  githubUser: string;
   socials: SocialLink[];
 }
 
 export interface NavItem {
   id: string;
   label: string;
+  /** Lucide icon component, shown beside the label in the nav. */
+  Icon: LucideIcon;
 }
 
 export interface Service {
   title: string;
   description: string;
-  bullets: string[];
+  /** Short capability tags shown as pills. */
+  tags: string[];
 }
 
 export interface ProcessStep {
   title: string;
   description: string;
-}
-
-export interface StackGroup {
-  title: string;
-  items: string[];
 }
 
 export interface CaseStudy {

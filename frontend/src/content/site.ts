@@ -13,13 +13,13 @@ export const sectionIntros = {
   },
   services: {
     kicker: 'Capabilities',
-    title: 'Sharp in the interface, stable in delivery.',
-    copy: 'The objective is not decorative polish. It is stronger hierarchy, better contracts, and cleaner execution from UI to runtime.',
+    title: 'The whole stack — and the parts most people skip.',
+    copy: 'Frontend, API, and the infrastructure underneath. Where the sync path stays fast and async work fails gracefully.',
   },
   process: {
     kicker: 'How I work',
-    title: 'A build path that keeps the frontend readable and the system maintainable.',
-    copy: 'Clarify the brief, shape the system, then ship a cleaner interface with a runtime path that survives handoff and growth.',
+    title: 'Scope from the problem. Then choose the stack that fits.',
+    copy: 'Clarify the outcome, draw the service boundaries, and ship a runtime path that survives handoff and real load.',
   },
   about: {
     kicker: 'About',
@@ -39,9 +39,9 @@ export const hero = {
   secondaryCta: { label: 'Download résumé', href: '/peter-ogba-resume.pdf' },
   headerCta: { label: 'Start a project', href: '#contact' },
   proofPoints: [
-    { value: '4 live products', label: 'Shipped & in production' },
+    { value: '3 platforms', label: 'Web · mobile · admin, end to end' },
     { value: '3+ yrs', label: 'Full-stack delivery' },
-    { value: 'React · Node · .NET', label: 'Core operating lane' },
+    { value: 'TS · Go · Node', label: 'Core operating lane' },
   ],
 };
 

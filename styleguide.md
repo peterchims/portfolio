@@ -44,10 +44,15 @@ glows, no second accent hue.
 
 ## Typography
 
-- Display / headings — **Sora**, weight 600, tight tracking (`-0.02em`)
-- Body / UI — **Inter**
+- Display (`h1`, `h2`) — **Sora**, weight 600, tracking `-0.02em`
+- Sub-heads (`h3`, `h4`), body, UI — **Inter**
 - Micro-labels (kickers, metadata, "at a glance") — **IBM Plex Mono**, uppercase,
-  `0.2em` tracking
+  `0.18em` tracking, `text-kicker` (0.7rem)
+
+Scale is deliberately restrained — base body is `0.9375rem`. Display sizes are
+`text-display-lg` `clamp(1.65rem, 3vw, 2.55rem)`, `-md` `clamp(1.45rem, 2.4vw,
+1.95rem)`, `-sm` `clamp(1.2rem, 1.7vw, 1.5rem)`. Section copy and case-study prose
+run at `text-sm` / `0.95rem`. Nothing shouts.
 
 Rules: headlines short and assertive; no long paragraphs above the fold; one
 `<h1>` per route; ordered heading levels.
@@ -94,9 +99,23 @@ The portfolio is bespoke-visual, not stock-photo.
 
 ## Motion
 
-- Entrance: subtle upward reveal (`Reveal`), staggered, `once`
-- Hover: small lift + shadow shift only
-- Everything behind `prefers-reduced-motion` — `Reveal` renders static
+Every animation is disabled or frozen under `prefers-reduced-motion`.
+
+- **Hero backdrop** — `AuroraBackground`: three blurred colour blobs drifting on
+  22–28s loops over a gradient wash and dot-grid, faded to `--bg` at the base.
+- **Hero entrance** — the headline reveals word-by-word (mask + `y` slide);
+  eyebrow, lead, CTAs and socials stagger in after.
+- **`Reveal` / `RevealItem`** — scroll-triggered opacity + `y` + `blur(6px)→0`,
+  `once`, optional `stagger` container.
+- **`SpotlightCard`** — cursor-following radial glow (CSS vars, no re-render),
+  `-translate-y-1` + shadow on hover; project covers zoom `1.04` inside.
+- **`Magnetic`** — wraps a CTA, springs toward the cursor and back.
+- **`useCountUp`** — hero proof numbers count from 0 when scrolled into view.
+- **`Marquee`** — seamless tech-stack ticker, pauses on hover.
+- **Header** — scroll-progress hairline; the active-section pill slides between
+  nav links via a shared `layoutId`.
+- **Routes** — `AppRoutes` cross-fades pages with a small `y` shift.
+- Hover elsewhere: small lift + shadow shift only.
 
 ## Accessibility
 

@@ -39,7 +39,7 @@ export function ProjectCover({
           src={image}
           alt={`${title} — interface`}
           loading="lazy"
-          className="h-full w-full object-cover object-top"
+          className="h-full w-full object-cover object-left-top"
         />
         <div className="absolute inset-0 ring-1 ring-inset ring-black/10" />
       </div>
