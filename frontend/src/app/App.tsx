@@ -17,7 +17,7 @@ export function App() {
         <ScrollToTop />
         <SkipLink />
         <Header />
-        <main id="main">
+        <main id="main" className="pt-14">
           <AppRoutes />
         </main>
         <Footer />

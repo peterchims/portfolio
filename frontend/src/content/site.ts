@@ -44,9 +44,9 @@ export const hero = {
   secondaryCta: { label: 'Download résumé', href: '/peter-ogba-resume.pdf' },
   headerCta: { label: 'Start a project', href: '#contact' },
   proofPoints: [
+    { value: '5+ yrs', label: 'Full-stack delivery' },
     { value: '3 platforms', label: 'Web · mobile · admin, end to end' },
-    { value: '3+ yrs', label: 'Full-stack delivery' },
-    { value: 'TS · Go · Node', label: 'Core operating lane' },
+    { value: 'Stack-agnostic', label: 'Picks the language and tools the product actually needs' },
   ],
 };
 

@@ -35,7 +35,7 @@ export function Header() {
       animate={{ y: hidden && !menuOpen ? '-100%' : '0%' }}
       transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
       className={cn(
-        'sticky top-0 z-40 transition-[background-color,border-color,box-shadow] duration-300',
+        'fixed inset-x-0 top-0 z-40 transition-[background-color,border-color,box-shadow] duration-300',
         dark && 'header-on-dark',
         scrolled &&
           dark &&
@@ -43,8 +43,7 @@ export function Header() {
         scrolled &&
           !dark &&
           'border-b border-border bg-bg/70 shadow-[0_1px_0_rgba(0,0,0,0.02),0_8px_24px_-16px_rgba(0,0,0,0.3)] backdrop-blur-xl',
-        !scrolled && dark && 'border-b border-transparent bg-[#05060b]',
-        !scrolled && !dark && 'border-b border-transparent bg-transparent',
+        !scrolled && 'border-b border-transparent bg-transparent',
       )}
     >
       <div className="mx-auto flex h-14 w-full max-w-content items-center justify-between gap-4 px-5 sm:px-6 lg:px-8">

@@ -1,4 +1,12 @@
-import { ArrowRight, ChevronDown, Download } from 'lucide-react';
+import {
+  ArrowRight,
+  ChevronDown,
+  Download,
+  Layers,
+  Sparkles,
+  Workflow,
+  type LucideIcon,
+} from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { profile } from '../../content/profile';
@@ -9,13 +17,27 @@ import { buttonClass } from '../ui/button-classes';
 import { CinematicBackground } from '../ui/CinematicBackground';
 import { Container } from '../ui/Container';
 import { Magnetic } from '../ui/Magnetic';
+import { cn } from '../../lib/cn';
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
 const secondaryCtaClass =
   'inline-flex h-12 items-center justify-center gap-2 rounded-full border border-white/25 bg-white/[0.06] px-6 text-[0.95rem] font-medium text-white backdrop-blur-sm transition-colors duration-150 hover:bg-white/[0.12] active:scale-[0.97] motion-reduce:active:scale-100';
 
-function ProofStat({ value, label, index }: { value: string; label: string; index: number }) {
+/** One icon per proof point, in the same order as `hero.proofPoints`. */
+const PROOF_ICONS: LucideIcon[] = [Sparkles, Layers, Workflow];
+
+function ProofStat({
+  value,
+  label,
+  index,
+  Icon,
+}: {
+  value: string;
+  label: string;
+  index: number;
+  Icon: LucideIcon;
+}) {
   const match = value.match(/^(\d+)(.*)$/);
   const { value: counted, ref } = useCountUp(match ? Number(match[1]) : 0);
   return (
@@ -24,12 +46,13 @@ function ProofStat({ value, label, index }: { value: string; label: string; inde
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.5, delay: index * 0.08, ease: EASE }}
-      className={index > 0 ? 'sm:border-l sm:border-white/15 sm:pl-8' : ''}
+      className={cn('flex flex-col gap-2', index > 0 && 'sm:border-l sm:border-white/10 sm:pl-8')}
     >
+      <Icon size={16} strokeWidth={1.75} className="text-accent" />
       <dd ref={ref as never} className="font-display text-lg font-semibold text-white sm:text-xl">
         {match ? `${counted}${match[2]}` : value}
       </dd>
-      <dt className="mt-1 text-sm text-white/50">{label}</dt>
+      <dt className="text-sm leading-snug text-white/55">{label}</dt>
     </motion.div>
   );
 }
@@ -41,7 +64,7 @@ export function Hero() {
   return (
     <section
       id="home"
-      className="relative isolate flex min-h-[100vh] items-center overflow-hidden py-28"
+      className="relative isolate -mt-14 flex min-h-[100vh] items-center overflow-hidden py-28"
       data-cursor
     >
       <CinematicBackground />
@@ -130,11 +153,25 @@ export function Hero() {
           </motion.div>
         </div>
 
-        <dl className="mx-auto mt-16 grid max-w-2xl gap-8 border-t border-white/15 pt-7 sm:grid-cols-3">
-          {hero.proofPoints.map((point, index) => (
-            <ProofStat key={point.label} value={point.value} label={point.label} index={index} />
-          ))}
-        </dl>
+        <motion.div
+          initial={reduced ? false : { opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.4 }}
+          transition={{ duration: 0.6, ease: EASE }}
+          className="mx-auto mt-16 max-w-2xl rounded-2xl border border-white/10 bg-white/[0.04] px-6 py-7 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-xl sm:px-10"
+        >
+          <dl className="grid gap-8 sm:grid-cols-3">
+            {hero.proofPoints.map((point, index) => (
+              <ProofStat
+                key={point.label}
+                value={point.value}
+                label={point.label}
+                index={index}
+                Icon={PROOF_ICONS[index] ?? Sparkles}
+              />
+            ))}
+          </dl>
+        </motion.div>
       </Container>
 
       <motion.a
