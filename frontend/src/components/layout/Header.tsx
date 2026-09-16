@@ -5,6 +5,7 @@ import { ArrowUpRight, Menu } from 'lucide-react';
 import { navItems } from '../../content/nav';
 import { hero } from '../../content/site';
 import { useHeaderState } from '../../hooks/useHeaderState';
+import { useHeroOverlap } from '../../hooks/useHeroOverlap';
 import { useScrollSpy } from '../../hooks/useScrollSpy';
 import { cn } from '../../lib/cn';
 import { buttonClass } from '../ui/button-classes';
@@ -13,6 +14,8 @@ import { Brand } from './Brand';
 import { MobileNav } from './MobileNav';
 
 const NAV_IDS = navItems.map((item) => item.id);
+/** Must match the `h-14` header row below. */
+const HEADER_HEIGHT = 56;
 
 export function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -20,6 +23,8 @@ export function Header() {
   const { pathname } = useLocation();
   const activeId = useScrollSpy(NAV_IDS);
   const onHome = pathname === '/';
+  const overHero = useHeroOverlap('home', HEADER_HEIGHT);
+  const dark = onHome && overHero;
 
   const { scrollYProgress } = useScroll();
   const progress = useSpring(scrollYProgress, { stiffness: 180, damping: 30, mass: 0.3 });
@@ -31,9 +36,15 @@ export function Header() {
       transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
       className={cn(
         'sticky top-0 z-40 transition-[background-color,border-color,box-shadow] duration-300',
-        scrolled
-          ? 'border-b border-border bg-bg/70 shadow-[0_1px_0_rgba(0,0,0,0.02),0_8px_24px_-16px_rgba(0,0,0,0.3)] backdrop-blur-xl'
-          : 'border-b border-transparent bg-transparent',
+        dark && 'header-on-dark',
+        scrolled &&
+          dark &&
+          'border-b border-white/10 bg-black/40 shadow-[0_1px_0_rgba(0,0,0,0.3),0_8px_24px_-16px_rgba(0,0,0,0.6)] backdrop-blur-xl',
+        scrolled &&
+          !dark &&
+          'border-b border-border bg-bg/70 shadow-[0_1px_0_rgba(0,0,0,0.02),0_8px_24px_-16px_rgba(0,0,0,0.3)] backdrop-blur-xl',
+        !scrolled && dark && 'border-b border-transparent bg-[#05060b]',
+        !scrolled && !dark && 'border-b border-transparent bg-transparent',
       )}
     >
       <div className="mx-auto flex h-14 w-full max-w-content items-center justify-between gap-4 px-5 sm:px-6 lg:px-8">

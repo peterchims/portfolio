@@ -4,6 +4,7 @@ import { personJsonLd } from '../lib/structured-data';
 import { Hero } from '../components/sections/Hero';
 import { TechTicker } from '../components/sections/TechTicker';
 import { Work } from '../components/sections/Work';
+import { CurrentlyBuilding } from '../components/sections/CurrentlyBuilding';
 import { Services } from '../components/sections/Services';
 import { Process } from '../components/sections/Process';
 import { About } from '../components/sections/About';
@@ -21,6 +22,7 @@ export function HomePage() {
       <Hero />
       <TechTicker />
       <Work />
+      <CurrentlyBuilding />
       <Services />
       <Process />
       <About />

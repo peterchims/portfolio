@@ -36,7 +36,11 @@ function FeaturedCard({ project, n }: { project: Project; n: number }) {
             className="absolute inset-0 h-full w-full transition-transform duration-[600ms] ease-out-expo group-hover/spot:scale-[1.04]"
           />
         </div>
-        <Link to={`/work/${project.slug}`} className="flex flex-col p-6 sm:p-8">
+        <Link
+          to={`/work/${project.slug}`}
+          className="flex flex-col p-6 sm:p-8"
+          data-cursor-text="View case study"
+        >
           <div className="flex items-center justify-between gap-4">
             <span className="flex items-center gap-3">
               <Index n={n} />
@@ -67,7 +71,11 @@ function GridCard({ project, n, delay }: { project: Project; n: number; delay: n
   return (
     <Reveal as="li" delay={delay}>
       <SpotlightCard hue={project.hue} className="h-full">
-        <Link to={`/work/${project.slug}`} className="flex h-full flex-col">
+        <Link
+          to={`/work/${project.slug}`}
+          className="flex h-full flex-col"
+          data-cursor-text="View case study"
+        >
           <div className="relative aspect-[16/10] overflow-hidden">
             <ProjectCover
               project={project}

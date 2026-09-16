@@ -5,6 +5,7 @@ import { AppRoutes } from './router';
 import { Header } from '../components/layout/Header';
 import { Footer } from '../components/layout/Footer';
 import { SkipLink } from '../components/ui/SkipLink';
+import { CustomCursor } from '../components/ui/CustomCursor';
 
 export function App() {
   return (
@@ -12,6 +13,7 @@ export function App() {
       <BrowserRouter
         future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
       >
+        <CustomCursor />
         <ScrollToTop />
         <SkipLink />
         <Header />

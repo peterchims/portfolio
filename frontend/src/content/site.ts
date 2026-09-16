@@ -11,6 +11,11 @@ export const sectionIntros = {
     title: 'Projects shaped around practical product outcomes.',
     copy: 'Each case study shows what the product is, where the leverage was, and which technical choices mattered.',
   },
+  building: {
+    kicker: 'In the lab',
+    title: "What I'm building right now.",
+    copy: "Active builds moving through the same discipline as the case studies above — several products in progress, with more starting up as they're scoped.",
+  },
   services: {
     kicker: 'Capabilities',
     title: 'The whole stack — and the parts most people skip.',

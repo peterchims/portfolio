@@ -77,6 +77,17 @@ export interface Project {
   figures: ProjectFigure[];
 }
 
+export interface BuildingProject {
+  slug: string;
+  title: string;
+  tagline: string;
+  description: string;
+  stack: string[];
+  status: string;
+  /** Hue (0-360) for the card's spotlight/tilt glow. */
+  hue: number;
+}
+
 export interface AboutContent {
   heading: string;
   paragraphs: string[];
