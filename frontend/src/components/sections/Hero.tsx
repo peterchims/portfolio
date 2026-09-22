@@ -15,6 +15,7 @@ import { useReducedMotion } from '../../hooks/useReducedMotion';
 import { useCountUp } from '../../hooks/useCountUp';
 import { buttonClass } from '../ui/button-classes';
 import { CinematicBackground } from '../ui/CinematicBackground';
+import { HeroPhotoBackground } from '../ui/HeroPhotoBackground';
 import { Container } from '../ui/Container';
 import { Magnetic } from '../ui/Magnetic';
 import { cn } from '../../lib/cn';
@@ -67,7 +68,13 @@ export function Hero() {
       className="relative isolate -mt-14 flex min-h-[100vh] items-center overflow-hidden py-28"
       data-cursor
     >
-      <CinematicBackground />
+      {profile.heroPhotos.length > 0 ? (
+        <HeroPhotoBackground
+          images={profile.heroPhotos.map((src) => ({ src, alt: profile.name }))}
+        />
+      ) : (
+        <CinematicBackground />
+      )}
 
       <Container className="relative">
         <div className="mx-auto max-w-2xl text-center">

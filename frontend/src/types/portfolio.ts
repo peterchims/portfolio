@@ -18,6 +18,8 @@ export interface Profile {
   resumeUrl: string;
   /** Portrait for the About section. Drop a file in /public/images and point here. */
   photoUrl: string | null;
+  /** Photos for the hero's crossfading backdrop, in /public/images/hero. Empty falls back to the abstract cinematic canvas. */
+  heroPhotos: string[];
   /** GitHub username, used for the stats widgets. */
   githubUser: string;
   socials: SocialLink[];

@@ -28,7 +28,7 @@ function Portrait({ className }: { className?: string }) {
         <img
           src={profile.photoUrl}
           alt={profile.name}
-          className="h-full w-full object-cover"
+          className="h-full w-full object-cover object-top"
         />
       ) : (
         <>

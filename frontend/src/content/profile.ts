@@ -11,9 +11,12 @@ export const profile: Profile = {
   phone: '+234 808 639 2101',
   availability: 'Open to full-stack contracts, product teams, and builds that need someone across the whole stack.',
   resumeUrl: '/peter-ogba-resume.pdf',
-  // Add a portrait at frontend/public/images/peter-ogba.jpg and set this to
-  // '/images/peter-ogba.jpg'. Until then the About section renders a monogram.
-  photoUrl: null,
+  photoUrl: '/images/peter-ogba.jpg',
+  heroPhotos: [
+    '/images/hero/peter-hero-1.jpg',
+    '/images/hero/peter-hero-2.jpg',
+    '/images/hero/peter-hero-3.jpg',
+  ],
   githubUser: 'peterchims',
   socials: [
     { label: 'GitHub', href: 'https://github.com/peterchims', handle: '@peterchims' },
