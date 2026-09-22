@@ -40,29 +40,40 @@ export function HeroPhotoBackground({ images, className }: HeroPhotoBackgroundPr
       <AnimatePresence initial={false}>
         <motion.div
           key={active.src}
-          className="absolute inset-0"
+          className="absolute -inset-6"
           initial={reduced ? false : { opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 1.6, ease: 'easeInOut' }}
+          transition={{ duration: 1.8, ease: 'easeInOut' }}
         >
           <motion.img
             src={active.src}
             alt=""
             className="h-full w-full object-cover object-top"
-            initial={reduced ? false : { scale: 1 }}
-            animate={reduced ? undefined : { scale: 1.09 }}
-            transition={{ duration: (SLIDE_MS + 1600) / 1000, ease: 'linear' }}
+            style={{ filter: 'blur(18px) saturate(1.12) contrast(1.1) brightness(0.82)' }}
+            initial={reduced ? false : { scale: 1.14 }}
+            animate={reduced ? undefined : { scale: 1.26 }}
+            transition={{ duration: (SLIDE_MS + 1800) / 1000, ease: 'linear' }}
           />
         </motion.div>
       </AnimatePresence>
 
-      {/* Grounding gradient so foreground text stays legible over any frame */}
-      <div className="absolute inset-0 bg-gradient-to-b from-[#05060b]/85 via-[#05060b]/55 to-[#05060b]/92" />
-      <div className="absolute inset-0 bg-gradient-to-t from-[#05060b] via-transparent to-[#05060b]/40" />
-      <div className="absolute inset-0 [background:radial-gradient(120%_90%_at_50%_10%,transparent_35%,rgba(0,0,0,0.6)_100%)]" />
+      {/* Duotone-ish colour wash so three differently-lit photos read as one graded sequence */}
       <div
-        className="absolute inset-0 opacity-[0.06] mix-blend-overlay"
+        className="absolute inset-0 mix-blend-color"
+        style={{
+          background:
+            'linear-gradient(160deg, rgba(79,107,245,0.55), rgba(30,16,64,0.6) 55%, rgba(5,6,11,0.75))',
+        }}
+      />
+      <div className="absolute inset-0 mix-blend-soft-light bg-[#4f6bf5]/25" />
+
+      {/* Grounding gradient so foreground text stays legible over any frame */}
+      <div className="absolute inset-0 bg-gradient-to-b from-[#05060b]/88 via-[#05060b]/62 to-[#05060b]/94" />
+      <div className="absolute inset-0 bg-gradient-to-t from-[#05060b] via-transparent to-[#05060b]/50" />
+      <div className="absolute inset-0 [background:radial-gradient(120%_90%_at_50%_10%,transparent_30%,rgba(0,0,0,0.68)_100%)]" />
+      <div
+        className="absolute inset-0 opacity-[0.08] mix-blend-overlay"
         style={{ backgroundImage: GRAIN_URL }}
       />
     </div>

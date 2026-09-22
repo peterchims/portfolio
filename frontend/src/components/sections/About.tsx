@@ -20,16 +20,21 @@ function Portrait({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        'relative aspect-[4/5] overflow-hidden rounded-2xl border border-border bg-surface-sunken',
+        'relative aspect-[4/5] overflow-hidden rounded-2xl border border-border bg-surface-sunken shadow-[0_24px_60px_-28px_rgba(15,15,25,0.55)]',
         className,
       )}
     >
       {profile.photoUrl ? (
-        <img
-          src={profile.photoUrl}
-          alt={profile.name}
-          className="h-full w-full object-cover object-top"
-        />
+        <>
+          <img
+            src={profile.photoUrl}
+            alt={profile.name}
+            className="h-full w-full origin-top scale-[1.7] object-cover object-top"
+            style={{ filter: 'contrast(1.08) saturate(1.1) brightness(1.03)' }}
+          />
+          <div className="pointer-events-none absolute inset-0 shadow-[inset_0_0_40px_18px_rgba(5,6,11,0.28)]" />
+          <div className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-white/10" />
+        </>
       ) : (
         <>
           <div className="bg-grid absolute inset-0 opacity-70" />
